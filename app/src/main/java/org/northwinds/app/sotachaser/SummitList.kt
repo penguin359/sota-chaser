@@ -47,6 +47,7 @@ class SummitList(input: InputStream) {
     }
 
     val names = summits.associateBy({ it.summitCode }, { it.summitName })
+    val summit_idx = summits.associateBy({ it.summitCode })
     val regions = summits.associateBy({ it.summitCode.split("-")[0] }, { it.regionName })
     val associations = summits.associateBy({ it.summitCode.split("/")[0] }, { it.associationName })
     private val regions_by_association = summits.groupBy { it.summitCode.split("/")[0] }

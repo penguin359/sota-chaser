@@ -17,41 +17,26 @@ class SummitListTest {
         val myPath = Paths.get(fileName)
 
         val input = Files.newInputStream(myPath)
-        BufferedReader(InputStreamReader(input, StandardCharsets.UTF_8)).use {
-    	    it.readLine()
-            val strategy = HeaderColumnNameMappingStrategy<Summit>()
-            strategy.type = Summit::class.java
+        val list = SummitList(input)
 
-            val csvToBean = CsvToBeanBuilder<Summit>(it)
-                    .withMappingStrategy(strategy)
-                    .withIgnoreLeadingWhiteSpace(true)
-                    .build()
+        //list.summits[0].setName("داۇد ")
+        list.summits.forEach(System.err::println)
+        assertEquals(164345, list.summits.count(), "Incorrect number of summits")
+        assertEquals(164345, list.names.count(), "Incorrect number of summit designators")
+        assertEquals(1422, list.regions.count(), "Incorrect number of summit regions")
+        assertEquals(194, list.associations.count(), "Incorrect number of summit associations")
+        assertEquals("Mount Saint Helens", list.names["W7W/LC-001"])
+        assertEquals("Ófæruhöfði", list.names["TF/SL-089"])
+        assertEquals("Ajman - عجمان", list.regions["A6/AJ"])
+        assertEquals("Brazil - Maranhão", list.associations["PR8"])
+        assertEquals(194, list.summits_by_region.count(), "Incorrect number of associations")
+        assertEquals(10, list.summits_by_region["W7O"]!!.count(), "Incorrect number of regions in Oregon association")
+        assertEquals(
+            127,
+            list.summits_by_region["W7O"]!!["W7O/NC"]!!.count(),
+            "Incorrect number of summits in North Coastal region"
+        )
 
-            val summits = csvToBean.parse()
-            //cars[0].setName("داۇد ")
-            summits.forEach(System.err::println)
-
-            val names = summits.associateBy({ it.summitCode }, { it.summitName })
-            val regions = summits.associateBy({ it.summitCode.split("-")[0] }, { it.regionName })
-            val associations = summits.associateBy({ it.summitCode.split("/")[0] }, { it.associationName })
-            assertEquals(164345, summits.count(), "Incorrect number of summits")
-            assertEquals(164345, names.count(), "Incorrect number of summit designators")
-            assertEquals(1422, regions.count(), "Incorrect number of summit regions")
-            assertEquals(194, associations.count(), "Incorrect number of summit associations")
-            assertEquals("Mount Saint Helens", names["W7W/LC-001"])
-            assertEquals("Ófæruhöfði", names["TF/SL-089"])
-            assertEquals("Ajman - عجمان", regions["A6/AJ"])
-            assertEquals("Brazil - Maranhão", associations["PR8"])
-            val regions_by_association = summits.groupBy { it.summitCode.split("/")[0] }
-            val summits_by_region = regions_by_association.mapValues { it.value.groupBy { it.summitCode.split("-")[0] } }
-            assertEquals(194, summits_by_region.count(), "Incorrect number of associations")
-            assertEquals(10, summits_by_region["W7O"]!!.count(), "Incorrect number of regions in Oregon association")
-            assertEquals(
-                127,
-                summits_by_region["W7O"]!!["W7O/NC"]!!.count(),
-                "Incorrect number of summits in North Coastal region"
-            )
-            println("Go!")
-        }
+        println("Go!")
     }
 }

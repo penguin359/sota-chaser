@@ -1,10 +1,5 @@
 package org.northwinds.app.sotachaser
 
-import com.opencsv.bean.CsvToBeanBuilder
-import com.opencsv.bean.HeaderColumnNameMappingStrategy
-import java.io.BufferedReader
-import java.io.InputStreamReader
-import java.nio.charset.StandardCharsets
 import java.nio.file.Files
 import java.nio.file.Paths
 import kotlin.test.Test

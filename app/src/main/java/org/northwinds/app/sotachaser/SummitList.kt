@@ -1,7 +1,8 @@
 package org.northwinds.app.sotachaser
 
-import com.opencsv.bean.CsvToBeanBuilder
-import com.opencsv.bean.HeaderColumnNameMappingStrategy
+import com.univocity.parsers.common.processor.BeanListProcessor
+import com.univocity.parsers.csv.CsvParser
+import com.univocity.parsers.csv.CsvParserSettings
 import java.io.BufferedReader
 import java.io.InputStream
 import java.io.InputStreamReader
@@ -34,15 +35,14 @@ class SummitList(input: InputStream) {
     init {
         BufferedReader(InputStreamReader(input, StandardCharsets.UTF_8)).use {
             it.readLine()
-            val strategy = HeaderColumnNameMappingStrategy<Summit>()
-            strategy.type = Summit::class.java
-
-            val csvToBean = CsvToBeanBuilder<Summit>(it)
-                .withMappingStrategy(strategy)
-                .withIgnoreLeadingWhiteSpace(true)
-                .build()
-
-            summits = csvToBean.parse()
+            val proc = BeanListProcessor(Summit::class.java)
+            val parserSettings = CsvParserSettings()
+            parserSettings.isLineSeparatorDetectionEnabled = true
+            parserSettings.rowProcessor = proc
+            parserSettings.isHeaderExtractionEnabled = true
+            val parser = CsvParser(parserSettings)
+            parser.parse(it)
+            summits = proc.beans
         }
     }
 

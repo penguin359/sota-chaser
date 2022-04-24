@@ -1,25 +1,25 @@
 package org.northwinds.app.sotachaser;
 
-import com.opencsv.bean.CsvBindByName;
+import com.univocity.parsers.annotations.Parsed;
 
 public class Summit {
-    @CsvBindByName private String summitCode;
-    @CsvBindByName private String associationName;
-    @CsvBindByName private String regionName;
-    @CsvBindByName private String summitName;
-    @CsvBindByName private int altM;
-    @CsvBindByName private int altFt;
-    @CsvBindByName private String gridRef1;  // Various formats
-    @CsvBindByName private String gridRef2;  // Various formats
-    @CsvBindByName private double longitude;
-    @CsvBindByName private double latitude;
-    @CsvBindByName private int points;
-    @CsvBindByName private int bonusPoints;
-    @CsvBindByName private String validFrom;  // Date in DD/MM/YYYY format
-    @CsvBindByName private String validTo;  // Date in DD/MM/YYYY format
-    @CsvBindByName private int activationCount;
-    @CsvBindByName private String activationDate;  // Date in DD/MM/YYYY format
-    @CsvBindByName private String activationCall;
+    @Parsed private String summitCode;
+    @Parsed private String associationName;
+    @Parsed private String regionName;
+    @Parsed private String summitName;
+    @Parsed private int altM;
+    @Parsed private int altFt;
+    @Parsed private String gridRef1;  // Various formats
+    @Parsed private String gridRef2;  // Various formats
+    @Parsed private double longitude;
+    @Parsed private double latitude;
+    @Parsed private int points;
+    @Parsed private int bonusPoints;
+    @Parsed private String validFrom;  // Date in DD/MM/YYYY format
+    @Parsed private String validTo;  // Date in DD/MM/YYYY format
+    @Parsed private int activationCount;
+    @Parsed private String activationDate;  // Date in DD/MM/YYYY format
+    @Parsed private String activationCall;
 
     public String getSummitCode() {
         return summitCode;

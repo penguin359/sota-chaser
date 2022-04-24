@@ -1,0 +1,11 @@
+* text=auto
+
+*.java text
+*.kt text
+*.svg text
+*.xml text
+
+*.sh text eol=lf
+*.bat text eof=crlf
+
+/gradlew text eol=lf

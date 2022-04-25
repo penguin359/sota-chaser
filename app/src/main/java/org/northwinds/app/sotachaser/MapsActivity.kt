@@ -2,6 +2,8 @@ package org.northwinds.app.sotachaser
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.widget.ArrayAdapter
+import androidx.activity.viewModels
 
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
@@ -14,7 +16,7 @@ import org.northwinds.app.sotachaser.databinding.ActivityMapsBinding
 
 @AndroidEntryPoint
 class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
-
+    val model: MapsViewModel by viewModels()
     private lateinit var mMap: GoogleMap
     private lateinit var binding: ActivityMapsBinding
 
@@ -28,6 +30,7 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
         val mapFragment = supportFragmentManager
                 .findFragmentById(R.id.map) as SupportMapFragment
         mapFragment.getMapAsync(this)
+        binding.association.adapter = ArrayAdapter(this, android.R.layout.simple_spinner_item, model.associations.value!!)
     }
 
     /**

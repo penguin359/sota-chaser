@@ -30,8 +30,10 @@ import com.google.android.gms.maps.model.MarkerOptions
  * SOFTWARE.
  */
 class MapsViewModel(app: Application) : AndroidViewModel(app) {
+    private val context = getApplication<Application>().applicationContext
+
     private val _associations = MutableLiveData<List<String>>().apply {
-        value = SummitList(app.resources.openRawResource(R.raw.summitslist)).summits_by_region.keys.toList()
+        value = SummitList(context.resources.openRawResource(R.raw.summitslist)).summits_by_region.keys.toList()
     }
 
     val associations: LiveData<List<String>> = _associations
@@ -41,4 +43,8 @@ class MapsViewModel(app: Application) : AndroidViewModel(app) {
     }
 
     val regions: LiveData<List<String>> = _regions
+
+    fun set_association(entry: Int) {
+        _regions.value = SummitList(context.resources.openRawResource(R.raw.summitslist)).summits_by_region[associations.value!![entry]]!!.keys.toList()
+    }
 }

@@ -2,6 +2,9 @@ package org.northwinds.app.sotachaser
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.view.View
+import android.widget.AdapterView
+import android.widget.AdapterView.OnItemSelectedListener
 import android.widget.ArrayAdapter
 import androidx.activity.viewModels
 
@@ -31,6 +34,19 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
                 .findFragmentById(R.id.map) as SupportMapFragment
         mapFragment.getMapAsync(this)
         binding.association.adapter = ArrayAdapter(this, android.R.layout.simple_spinner_item, model.associations.value!!)
+        binding.association.onItemSelectedListener = object: OnItemSelectedListener {
+            override fun onItemSelected(_adapter: AdapterView<*>?, _view: View?, position: Int, _id: Long) {
+                //TODO("Not yet implemented")
+                model.set_association(position)
+            }
+
+            override fun onNothingSelected(_adapter: AdapterView<*>?) {
+                //TODO("Not yet implemented")
+            }
+        }
+        model.regions.observe(this, {
+            binding.region.adapter = ArrayAdapter(this, android.R.layout.simple_spinner_item, it)
+        })
     }
 
     /**

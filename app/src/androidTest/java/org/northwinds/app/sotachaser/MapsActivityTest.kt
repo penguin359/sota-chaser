@@ -21,7 +21,9 @@
  */
 package org.northwinds.app.sotachaser
 
+import androidx.test.espresso.Espresso
 import androidx.test.espresso.Espresso.onView
+import androidx.test.espresso.action.ViewActions
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.matcher.ViewMatchers.*
 import androidx.test.ext.junit.rules.ActivityScenarioRule
@@ -48,6 +50,24 @@ class MapsActivityTest {
     fun load_map_activity() {
         onView(withId(R.id.association)).check(matches(isDisplayed()))
         //onView(withId(R.id.association)).check { assertEquals(194, this.count) }
-        onView(withId(R.id.association)).check(matches(withSpinnerText(Matchers.containsString("3Y"))))
+        //onView(withId(R.id.association)).check(matches(withSpinnerText(Matchers.containsString("3Y"))))
+        onView(withId(R.id.association)).perform(ViewActions.click())
+        Espresso.onData(
+            Matchers.allOf(
+                Matchers.`is`(Matchers.instanceOf(String::class.java)),
+                Matchers.`is`("W7O")
+            )
+        ).perform(ViewActions.click())
+        onView(withId(R.id.association)).check(matches(withSpinnerText(Matchers.containsString("W7O"))))
+        onView(withId(R.id.region)).check(matches(withSpinnerText(Matchers.containsString("CC"))))
+        onView(withId(R.id.association)).perform(ViewActions.click())
+        Espresso.onData(
+            Matchers.allOf(
+                Matchers.`is`(Matchers.instanceOf(String::class.java)),
+                Matchers.`is`("W7W")
+            )
+        ).perform(ViewActions.click())
+        onView(withId(R.id.association)).check(matches(withSpinnerText(Matchers.containsString("W7W"))))
+        onView(withId(R.id.region)).check(matches(withSpinnerText(Matchers.containsString("CH"))))
     }
 }

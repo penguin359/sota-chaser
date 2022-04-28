@@ -21,6 +21,7 @@
  */
 package org.northwinds.app.sotachaser
 
+import android.widget.Spinner
 import androidx.test.espresso.Espresso
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions
@@ -49,8 +50,12 @@ class MapsActivityTest {
     @Test
     fun load_map_activity() {
         onView(withId(R.id.association)).check(matches(isDisplayed()))
-        //onView(withId(R.id.association)).check { assertEquals(194, this.count) }
-        //onView(withId(R.id.association)).check(matches(withSpinnerText(Matchers.containsString("3Y"))))
+        onView(withId(R.id.association)).check { view, noViewException ->
+            if(view == null)
+                throw noViewException
+            assertEquals(194, (view as Spinner).count)
+        }
+        onView(withId(R.id.association)).check(matches(withSpinnerText(Matchers.containsString("3Y"))))
         onView(withId(R.id.association)).perform(ViewActions.click())
         Espresso.onData(
             Matchers.allOf(
@@ -60,6 +65,11 @@ class MapsActivityTest {
         ).perform(ViewActions.click())
         onView(withId(R.id.association)).check(matches(withSpinnerText(Matchers.containsString("W7O"))))
         onView(withId(R.id.region)).check(matches(withSpinnerText(Matchers.containsString("CC"))))
+        onView(withId(R.id.region)).check { view, noViewException ->
+            if(view == null)
+                throw noViewException
+            assertEquals(10, (view as Spinner).count)
+        }
         onView(withId(R.id.association)).perform(ViewActions.click())
         Espresso.onData(
             Matchers.allOf(
@@ -69,5 +79,10 @@ class MapsActivityTest {
         ).perform(ViewActions.click())
         onView(withId(R.id.association)).check(matches(withSpinnerText(Matchers.containsString("W7W"))))
         onView(withId(R.id.region)).check(matches(withSpinnerText(Matchers.containsString("CH"))))
+        onView(withId(R.id.region)).check { view, noViewException ->
+            if(view == null)
+                throw noViewException
+            assertEquals(17, (view as Spinner).count)
+        }
     }
 }

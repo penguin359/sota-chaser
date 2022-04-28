@@ -65,8 +65,12 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
         val sydney = LatLng(-34.0, 151.0)
         mMap.addMarker(MarkerOptions().position(sydney).title("Marker in Sydney"))
         mMap.moveCamera(CameraUpdateFactory.newLatLng(sydney))
-        SummitList(resources.openRawResource(R.raw.summitslist)).summits_by_region["W7O"]!!["W7O/CN"]!!.forEach {
-            mMap.addMarker(MarkerOptions().position(LatLng(it.latitude, it.longitude)).title(it.summitCode))
+        model.summits.observe(this) { summits ->
+            summits.forEach {
+                mMap.addMarker(
+                    MarkerOptions().position(LatLng(it.latitude, it.longitude)).title(it.summitCode)
+                )
+            }
         }
     }
 }

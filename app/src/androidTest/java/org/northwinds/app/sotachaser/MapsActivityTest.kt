@@ -31,6 +31,7 @@ import androidx.test.ext.junit.rules.ActivityScenarioRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import org.hamcrest.Matchers
 import org.junit.Assert.assertEquals
+import org.junit.Assert.assertNotNull
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -43,7 +44,30 @@ class MapsActivityTest {
     @Test
     fun load_map_viewmodel() {
         rule.scenario.onActivity {
-            assertEquals("Incorrect number of associations", 194, it.model.associations.value!!.count())
+            val associations = it.model.associations.value
+            assertNotNull("No associations found", associations)
+            assertEquals("Incorrect number of associations",
+                194, associations!!.count())
+            val associationIndex = associations.indexOf("W7O")
+            assertNotNull("Can't find W7O association", associationIndex)
+            it.model.set_association(associationIndex)
+            assertEquals("Incorrect number of regions for association",
+                10, it.model.regions.value!!.count())
+            val regionIndex = it.model.regions.value!!.indexOf("WV")
+            assertNotNull("Can't find WV region", regionIndex)
+            it.model.set_region(regionIndex)
+            assertEquals("Incorrect number of summits for region",
+                138, it.model.summits.value!!.count())
+            val associationIndex2 = associations.indexOf("W7W")
+            assertNotNull("Can't find W7W association", associationIndex2)
+            it.model.set_association(associationIndex2)
+            assertEquals("Incorrect number of regions for association",
+                17, it.model.regions.value!!.count())
+            val regionIndex2 = it.model.regions.value!!.indexOf("LC")
+            assertNotNull("Can't find LC region", regionIndex2)
+            it.model.set_region(regionIndex2)
+            assertEquals("Incorrect number of summits for region",
+                169, it.model.summits.value!!.count())
         }
     }
 

@@ -43,8 +43,20 @@ class MapsViewModel(app: Application) : AndroidViewModel(app) {
     }
 
     val regions: LiveData<List<String>> = _regions
+    private var association = ""
 
     fun set_association(entry: Int) {
-        _regions.value = SummitList(context.resources.openRawResource(R.raw.summitslist)).summits_by_region[associations.value!![entry]]!!.keys.toList()
+        association = associations.value!![entry]
+        _regions.value = SummitList(context.resources.openRawResource(R.raw.summitslist)).summits_by_region[association]!!.keys.toList()
+    }
+
+    private val _summits = MutableLiveData<List<Summit>>().apply {
+        value = listOf()
+    }
+
+    val summits: LiveData<List<Summit>> = _summits
+
+    fun set_region(entry: Int) {
+        _summits.value = SummitList(context.resources.openRawResource(R.raw.summitslist)).summits_by_region[association]!![regions.value!![entry]]!!.toList()
     }
 }

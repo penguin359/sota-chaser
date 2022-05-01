@@ -23,7 +23,9 @@ jobs:
         cache: gradle
 
     - name: Create properties file with empty API key
-      run: echo MAPS_API_KEY=a >> local.properties
+        env:
+          MAPS_API_KEY: ${{ secrets.MAPS_API_KEY || 'a' }}
+      run: echo MAPS_API_KEY="${MAPS_API_KEY}" >> local.properties
     - name: Build with Gradle
       run: ./gradlew build
     - name: Run Unit Tests

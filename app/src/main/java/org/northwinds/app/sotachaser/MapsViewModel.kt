@@ -1,12 +1,10 @@
 package org.northwinds.app.sotachaser
 
 import android.app.Application
+import android.util.Log
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
-import com.google.android.gms.maps.model.LatLng
-import com.google.android.gms.maps.model.MarkerOptions
 
 /*
  * Copyright (c) 2022 Loren M. Lang
@@ -30,6 +28,7 @@ import com.google.android.gms.maps.model.MarkerOptions
  * SOFTWARE.
  */
 class MapsViewModel(app: Application) : AndroidViewModel(app) {
+    private val Tag = "SOTAChaser-MapsViewModel"
     private val context = getApplication<Application>().applicationContext
 
     private val _associations = MutableLiveData<List<String>>().apply {
@@ -47,6 +46,7 @@ class MapsViewModel(app: Application) : AndroidViewModel(app) {
 
     fun set_association(entry: Int) {
         association = associations.value!![entry]
+        Log.d(Tag, "Selected association: " + association)
         _regions.value = SummitList(context.resources.openRawResource(R.raw.summitslist)).summits_by_region[association]!!.keys.toList()
     }
 
@@ -57,6 +57,8 @@ class MapsViewModel(app: Application) : AndroidViewModel(app) {
     val summits: LiveData<List<Summit>> = _summits
 
     fun set_region(entry: Int) {
-        _summits.value = SummitList(context.resources.openRawResource(R.raw.summitslist)).summits_by_region[association]!![regions.value!![entry]]!!.toList()
+        val region = regions.value!![entry]
+        Log.d(Tag, "Selected region: $region")
+        _summits.value = SummitList(context.resources.openRawResource(R.raw.summitslist)).summits_by_region[association]!![region]!!.toList()
     }
 }

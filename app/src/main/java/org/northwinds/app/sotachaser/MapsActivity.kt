@@ -2,6 +2,7 @@ package org.northwinds.app.sotachaser
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import android.widget.AdapterView
 import android.widget.AdapterView.OnItemSelectedListener
@@ -13,12 +14,14 @@ import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.LatLng
+import com.google.android.gms.maps.model.LatLngBounds
 import com.google.android.gms.maps.model.MarkerOptions
 import dagger.hilt.android.AndroidEntryPoint
 import org.northwinds.app.sotachaser.databinding.ActivityMapsBinding
 
 @AndroidEntryPoint
 class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
+    private val Tag = "SOTAChaser-MapsActivity"
     val model: MapsViewModel by viewModels()
     private lateinit var mMap: GoogleMap
     private lateinit var binding: ActivityMapsBinding
@@ -36,8 +39,20 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
         binding.association.adapter = ArrayAdapter(this, android.R.layout.simple_spinner_item, model.associations.value!!)
         binding.association.onItemSelectedListener = object: OnItemSelectedListener {
             override fun onItemSelected(_adapter: AdapterView<*>?, _view: View?, position: Int, _id: Long) {
+                Log.d(Tag, "Selecting association: $position")
                 //TODO("Not yet implemented")
                 model.set_association(position)
+            }
+
+            override fun onNothingSelected(_adapter: AdapterView<*>?) {
+                //TODO("Not yet implemented")
+            }
+        }
+        binding.region.onItemSelectedListener = object: OnItemSelectedListener {
+            override fun onItemSelected(_adapter: AdapterView<*>?, _view: View?, position: Int, _id: Long) {
+                Log.d(Tag, "Selecting region: $position")
+                //TODO("Not yet implemented")
+                model.set_region(position)
             }
 
             override fun onNothingSelected(_adapter: AdapterView<*>?) {
@@ -47,6 +62,7 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
         model.regions.observe(this, {
             binding.region.adapter = ArrayAdapter(this, android.R.layout.simple_spinner_item, it)
         })
+        Log.d(Tag, "Maps activity configured")
     }
 
     /**
@@ -61,16 +77,40 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
     override fun onMapReady(googleMap: GoogleMap) {
         mMap = googleMap
 
+        Log.d(Tag, "Google Maps ready")
         // Add a marker in Sydney and move the camera
         val sydney = LatLng(-34.0, 151.0)
         mMap.addMarker(MarkerOptions().position(sydney).title("Marker in Sydney"))
         mMap.moveCamera(CameraUpdateFactory.newLatLng(sydney))
         model.summits.observe(this) { summits ->
+            Log.d(Tag, "Updating Map with summit count: " + summits.count())
+            if(summits.count() == 0)
+                return@observe
+            var minLatitude = summits[0].latitude
+            var maxLatitude = summits[0].latitude
+            var minLongitude = summits[0].longitude
+            var maxLongitude = summits[0].longitude
             summits.forEach {
+                if(it.latitude < minLatitude)
+                    minLatitude = it.latitude
+                if(it.latitude > maxLatitude)
+                    maxLatitude = it.latitude
+                if(it.longitude < minLongitude)
+                    minLongitude = it.longitude
+                if(it.longitude > maxLongitude)
+                    maxLongitude = it.longitude
                 mMap.addMarker(
                     MarkerOptions().position(LatLng(it.latitude, it.longitude)).title(it.summitCode)
                 )
             }
+            mMap.moveCamera(CameraUpdateFactory.newLatLngBounds(LatLngBounds(
+                LatLng(minLatitude, minLongitude),
+                LatLng(maxLatitude, maxLongitude)), 1))
         }
+        //SummitList(resources.openRawResource(R.raw.summitslist)).summits_by_region["W7O"]!!["CN"]!!.forEach {
+        //    mMap.addMarker(
+        //        MarkerOptions().position(LatLng(it.latitude, it.longitude)).title(it.summitCode)
+        //    )
+        //}
     }
 }

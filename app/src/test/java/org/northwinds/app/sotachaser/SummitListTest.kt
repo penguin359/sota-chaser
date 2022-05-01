@@ -33,7 +33,7 @@ class SummitListTest {
         )
         assertEquals(
             127,
-            list.summits_by_region["W7O"]!!["W7O/NC"]!!.count(),
+            list.summits_by_region["W7O"]!!["NC"]!!.count(),
             "Incorrect number of summits in North Coastal region"
         )
 

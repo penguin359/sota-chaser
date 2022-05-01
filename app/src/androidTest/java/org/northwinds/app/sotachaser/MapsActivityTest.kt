@@ -21,7 +21,10 @@
  */
 package org.northwinds.app.sotachaser
 
+import android.content.Context
+import android.content.Intent
 import android.widget.Spinner
+import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.Espresso
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions
@@ -29,9 +32,11 @@ import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.matcher.ViewMatchers.*
 import androidx.test.ext.junit.rules.ActivityScenarioRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import androidx.test.platform.app.InstrumentationRegistry.getInstrumentation
+import androidx.test.uiautomator.*
 import org.hamcrest.Matchers
-import org.junit.Assert.assertEquals
-import org.junit.Assert.assertNotNull
+import org.junit.Assert.*
+import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -39,35 +44,46 @@ import org.junit.runner.RunWith
 @RunWith(AndroidJUnit4::class)
 //@HiltAndroidTest
 class MapsActivityTest {
-    @get:Rule val rule = ActivityScenarioRule(MapsActivity::class.java)
+    @get:Rule
+    val rule = ActivityScenarioRule(MapsActivity::class.java)
 
     @Test
     fun load_map_viewmodel() {
         rule.scenario.onActivity {
             val associations = it.model.associations.value
             assertNotNull("No associations found", associations)
-            assertEquals("Incorrect number of associations",
-                194, associations!!.count())
+            assertEquals(
+                "Incorrect number of associations",
+                194, associations!!.count()
+            )
             val associationIndex = associations.indexOf("W7O")
             assertNotNull("Can't find W7O association", associationIndex)
             it.model.set_association(associationIndex)
-            assertEquals("Incorrect number of regions for association",
-                10, it.model.regions.value!!.count())
+            assertEquals(
+                "Incorrect number of regions for association",
+                10, it.model.regions.value!!.count()
+            )
             val regionIndex = it.model.regions.value!!.indexOf("WV")
             assertNotNull("Can't find WV region", regionIndex)
             it.model.set_region(regionIndex)
-            assertEquals("Incorrect number of summits for region",
-                138, it.model.summits.value!!.count())
+            assertEquals(
+                "Incorrect number of summits for region",
+                138, it.model.summits.value!!.count()
+            )
             val associationIndex2 = associations.indexOf("W7W")
             assertNotNull("Can't find W7W association", associationIndex2)
             it.model.set_association(associationIndex2)
-            assertEquals("Incorrect number of regions for association",
-                17, it.model.regions.value!!.count())
+            assertEquals(
+                "Incorrect number of regions for association",
+                17, it.model.regions.value!!.count()
+            )
             val regionIndex2 = it.model.regions.value!!.indexOf("LC")
             assertNotNull("Can't find LC region", regionIndex2)
             it.model.set_region(regionIndex2)
-            assertEquals("Incorrect number of summits for region",
-                169, it.model.summits.value!!.count())
+            assertEquals(
+                "Incorrect number of summits for region",
+                169, it.model.summits.value!!.count()
+            )
         }
     }
 
@@ -75,7 +91,7 @@ class MapsActivityTest {
     fun load_map_activity() {
         onView(withId(R.id.association)).check(matches(isDisplayed()))
         onView(withId(R.id.association)).check { view, noViewException ->
-            if(view == null)
+            if (view == null)
                 throw noViewException
             assertEquals(194, (view as Spinner).count)
         }
@@ -90,7 +106,7 @@ class MapsActivityTest {
         onView(withId(R.id.association)).check(matches(withSpinnerText(Matchers.containsString("W7O"))))
         onView(withId(R.id.region)).check(matches(withSpinnerText(Matchers.containsString("CC"))))
         onView(withId(R.id.region)).check { view, noViewException ->
-            if(view == null)
+            if (view == null)
                 throw noViewException
             assertEquals(10, (view as Spinner).count)
         }
@@ -104,9 +120,81 @@ class MapsActivityTest {
         onView(withId(R.id.association)).check(matches(withSpinnerText(Matchers.containsString("W7W"))))
         onView(withId(R.id.region)).check(matches(withSpinnerText(Matchers.containsString("CH"))))
         onView(withId(R.id.region)).check { view, noViewException ->
-            if(view == null)
+            if (view == null)
                 throw noViewException
             assertEquals(17, (view as Spinner).count)
+        }
+    }
+}
+
+private const val PACKAGE = "org.northwinds.app.sotachaser"
+private const val LAUNCH_TIMEOUT = 5000L
+
+@RunWith(AndroidJUnit4::class)
+//@HiltAndroidTest
+//@SdkSuppress(minSdkVersion = 18)
+class MapsActivityUiTest {
+    private val device: UiDevice = UiDevice.getInstance(getInstrumentation())
+
+    @Before
+    fun load_map_location() {
+        device.pressHome()
+
+        //val appAppsButton: UiObject = device.findObject(UiSelector().description("Apps"))
+        //appAppsButton.clickAndWaitForNewWindow()
+
+        val context = ApplicationProvider.getApplicationContext<Context>()
+        val intent = context.packageManager.getLaunchIntentForPackage(
+            PACKAGE)?.apply {
+            addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK)
+        }
+        context.startActivity(intent)
+
+        device.wait(
+            Until.hasObject(By.pkg(PACKAGE).depth(0)),
+            LAUNCH_TIMEOUT
+        )
+    }
+
+    @Test
+    fun has_location() {
+        val expectedSummits = listOf(
+            "W7O/CN-001",
+            "W7O/CN-014",
+            "W7O/CN-039",
+            "W7O/CN-052",
+            "W7O/CN-077",
+        )
+        expectedSummits.forEach {
+            val marker = device.findObject(UiSelector().descriptionContains(it))
+            assertFalse("Marker for summit $it should not be present", marker.exists())
+        }
+        val associationSpinner = device.findObject(
+            UiSelector().descriptionContains("Association")
+                .className("android.widget.Spinner")
+        )
+        val regionSpinner = device.findObject(
+            UiSelector().descriptionContains("Region")
+                .className("android.widget.Spinner")
+        )
+        assertTrue(associationSpinner.exists() && associationSpinner.isEnabled)
+        associationSpinner.click()
+        val selection = UiScrollable(UiSelector().className("android.widget.ListView"))
+        val association: UiObject = selection.getChildByText(UiSelector().text("W7O"), "W7O")
+        association.click()
+        assertTrue(regionSpinner.exists() && regionSpinner.isEnabled)
+//        Thread.sleep(10000)
+        assertEquals("Wrong region visible", "CC", regionSpinner.getChild(UiSelector().className("android.widget.TextView")).text)
+        regionSpinner.click()
+        val selection2 = UiScrollable(UiSelector().className("android.widget.ListView"))
+        selection2.getChildByText(UiSelector().text("CN"), "CN").click()
+        //val marker = device.findObject(UiSelector().descriptionContains("Sydney"))
+        //assertTrue("Can't find marker", marker.exists())
+        //marker.click()
+        //Thread.sleep(10000)
+        expectedSummits.forEach {
+            val marker1 = device.findObject(UiSelector().descriptionContains(it))
+            assertTrue("Marker for summit $it should be present", marker1.exists())
         }
     }
 }

@@ -70,6 +70,9 @@ dependencies {
     // For local unit tests
     testImplementation 'com.google.dagger:hilt-android-testing:2.41'
     kaptTest 'com.google.dagger:hilt-compiler:2.41'
+
+    // Required API 18
+    androidTestImplementation 'androidx.test.uiautomator:uiautomator:2.2.0'
 }
 
 kapt {

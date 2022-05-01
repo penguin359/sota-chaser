@@ -197,4 +197,48 @@ class MapsActivityUiTest {
             assertTrue("Marker for summit $it should be present", marker1.exists())
         }
     }
+
+    @Test
+    fun will_move_locations() {
+        val expectedSummits = listOf(
+            "HL/JN-001",
+            "HL/JN-039",
+            "HL/JN-211",
+            "HL/JN-319",
+            "HL/JN-346",
+        )
+        expectedSummits.forEach {
+            val marker = device.findObject(UiSelector().descriptionContains(it))
+            assertFalse("Marker for summit $it should not be present", marker.exists())
+        }
+        val associationSpinner = device.findObject(
+            UiSelector().descriptionContains("Association")
+                .className("android.widget.Spinner")
+        )
+        val regionSpinner = device.findObject(
+            UiSelector().descriptionContains("Region")
+                .className("android.widget.Spinner")
+        )
+        val selection = UiScrollable(UiSelector().className("android.widget.ListView"))
+
+        associationSpinner.click()
+        selection.getChildByText(UiSelector().text("W7O"), "W7O").click()
+        regionSpinner.click()
+        selection.getChildByText(UiSelector().text("CN"), "CN").click()
+
+        assertTrue("Marker for summit W7O/CN-001 should be present",
+            device.findObject(UiSelector().descriptionContains("W7O/CN-001")).exists())
+        assertFalse("Marker for summit HL/JN-001 should NOT be present",
+            device.findObject(UiSelector().descriptionContains("HL/JN-001")).exists())
+
+        associationSpinner.click()
+        selection.getChildByText(UiSelector().text("HL"), "HL").click()
+        regionSpinner.click()
+        selection.getChildByText(UiSelector().text("JN"), "JN").click()
+
+        expectedSummits.forEach {
+            val marker1 = device.findObject(UiSelector().descriptionContains(it))
+            assertTrue("Marker for summit $it should be present", marker1.exists())
+        }
+    }
 }

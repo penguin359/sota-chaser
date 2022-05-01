@@ -84,6 +84,7 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
         mMap.moveCamera(CameraUpdateFactory.newLatLng(sydney))
         model.summits.observe(this) { summits ->
             Log.d(Tag, "Updating Map with summit count: " + summits.count())
+            mMap.clear()
             if(summits.count() == 0)
                 return@observe
             var minLatitude = summits[0].latitude
@@ -107,10 +108,5 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
                 LatLng(minLatitude, minLongitude),
                 LatLng(maxLatitude, maxLongitude)), 1))
         }
-        //SummitList(resources.openRawResource(R.raw.summitslist)).summits_by_region["W7O"]!!["CN"]!!.forEach {
-        //    mMap.addMarker(
-        //        MarkerOptions().position(LatLng(it.latitude, it.longitude)).title(it.summitCode)
-        //    )
-        //}
     }
 }

@@ -241,4 +241,37 @@ class MapsActivityUiTest {
             assertTrue("Marker for summit $it should be present", marker1.exists())
         }
     }
+
+    @Test
+    fun previous_locations_are_cleared() {
+        val associationSpinner = device.findObject(
+            UiSelector().descriptionContains("Association")
+                .className("android.widget.Spinner")
+        )
+        val regionSpinner = device.findObject(
+            UiSelector().descriptionContains("Region")
+                .className("android.widget.Spinner")
+        )
+        val selection = UiScrollable(UiSelector().className("android.widget.ListView"))
+
+        associationSpinner.click()
+        selection.getChildByText(UiSelector().text("W7O"), "W7O").click()
+        regionSpinner.click()
+        selection.getChildByText(UiSelector().text("NC"), "NC").click()
+
+        assertTrue("Marker for summit W7O/NC-042 should be present",
+            device.findObject(UiSelector().descriptionContains("W7O/NC-042")).exists())
+        assertFalse("Marker for summit W7W/LC-001 should NOT be present",
+            device.findObject(UiSelector().descriptionContains("W7W/LC-001")).exists())
+
+        associationSpinner.click()
+        selection.getChildByText(UiSelector().text("W7W"), "W7W").click()
+        regionSpinner.click()
+        selection.getChildByText(UiSelector().text("LC"), "LC").click()
+
+        assertTrue("Marker for summit W7W/LC-001 should be present",
+            device.findObject(UiSelector().descriptionContains("W7W/LC-001")).exists())
+        assertFalse("Marker for summit W7O/NC-042 should NOT be present",
+            device.findObject(UiSelector().descriptionContains("W7O/NC-042")).exists())
+    }
 }

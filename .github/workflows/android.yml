@@ -36,7 +36,7 @@ jobs:
         target: google_apis_playstore
         arch: x86
         profile: Nexus 6
-        script: ./gradlew connectedCheck --stacktrace
+        script: adb logcat -c && adb logcat -f /sdcard/logcat.txt & ./gradlew connectedCheck --stacktrace || ( adb pull /sdcard/logcat.txt build/reports/; exit 1 )
 
     - name: Upload reports
       uses: actions/upload-artifact@v2

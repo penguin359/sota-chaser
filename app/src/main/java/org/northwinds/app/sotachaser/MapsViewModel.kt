@@ -50,11 +50,11 @@ class MapsViewModel(app: Application) : AndroidViewModel(app) {
         _regions.value = SummitList(context.resources.openRawResource(R.raw.summitslist)).summits_by_region[association]!!.keys.toList()
     }
 
-    private val _summits = MutableLiveData<List<Summit>>().apply {
+    private val _summits = MutableLiveData<List<SummitRecord>>().apply {
         value = listOf()
     }
 
-    val summits: LiveData<List<Summit>> = _summits
+    val summits: LiveData<List<SummitRecord>> = _summits
 
     fun set_region(entry: Int) {
         val region = regions.value!![entry]

@@ -2,7 +2,7 @@ package org.northwinds.app.sotachaser;
 
 import com.univocity.parsers.annotations.Parsed;
 
-public class Summit {
+public class SummitRecord {
     @Parsed private String summitCode;
     @Parsed private String associationName;
     @Parsed private String regionName;
@@ -93,7 +93,7 @@ public class Summit {
         this.summitName = summitName;
     }
 
-    public Summit() {}
+    public SummitRecord() {}
 
     @Override
     public String toString() {

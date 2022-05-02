@@ -7,7 +7,7 @@ import androidx.room.ForeignKey.CASCADE
     Index(value = ["code"], unique = true)
 ])
 data class Association(
-    @PrimaryKey(autoGenerate = true) val uid: Long,
+    @PrimaryKey(autoGenerate = true) val id: Long,
     @ColumnInfo(name = "code") val code: String,
     @ColumnInfo(name = "name") val name: String
 )

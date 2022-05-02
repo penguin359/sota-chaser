@@ -1,9 +1,12 @@
 package org.northwinds.app.sotachaser
 
+import androidx.room.ColumnInfo
 import com.univocity.parsers.common.processor.BeanListProcessor
 import com.univocity.parsers.csv.CsvParser
 import com.univocity.parsers.csv.CsvParserSettings
 import org.northwinds.app.sotachaser.room.Association
+import org.northwinds.app.sotachaser.room.Region
+import org.northwinds.app.sotachaser.room.Summit
 import org.northwinds.app.sotachaser.room.SummitDao
 import java.io.BufferedReader
 import java.io.InputStream
@@ -32,12 +35,12 @@ import java.nio.charset.StandardCharsets
  * SOFTWARE.
  */
 class SummitList(input: InputStream) {
-    val summits: List<Summit>
+    val summits: List<SummitRecord>
 
     init {
         BufferedReader(InputStreamReader(input, StandardCharsets.UTF_8)).use {
             it.readLine()
-            val proc = BeanListProcessor(Summit::class.java)
+            val proc = BeanListProcessor(SummitRecord::class.java)
             val parserSettings = CsvParserSettings()
             parserSettings.isLineSeparatorDetectionEnabled = true
             parserSettings.rowProcessor = proc
@@ -59,8 +62,31 @@ class SummitList(input: InputStream) {
 object SummitInterface {
     fun load_database(dao: SummitDao, summitList: SummitList) {
         dao.clear()
-        summitList.associations.forEach {
-            dao.insertAll(Association(0, it.key, it.value))
+        summitList.associations.forEach { association ->
+            val aid = dao.insertAssociation(Association(0, association.key, association.value))
+            summitList.summits_by_region[association.key]!!.forEach { region ->
+                val rid = dao.insertRegion(Region(0, aid[0], region.key, region.value[0]!!.regionName))
+                region.value.forEach { summit ->
+                    dao.insertSummit(Summit(0,
+                        rid[0],
+                        summit.summitCode.split('-')[1],
+                        summit.summitName,
+                        summit.altM,
+                        summit.altFt,
+                        summit.gridRef1,
+                        summit.gridRef2,
+                        summit.longitude,
+                        summit.latitude,
+                        summit.points,
+                        summit.bonusPoints,
+                        summit.validFrom,
+                        summit.validTo,
+                        summit.activationCount,
+                        summit.activationDate,
+                        summit.activationCall,
+                    ))
+                }
+            }
         }
 
     }

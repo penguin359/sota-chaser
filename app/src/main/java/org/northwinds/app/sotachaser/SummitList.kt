@@ -3,6 +3,8 @@ package org.northwinds.app.sotachaser
 import com.univocity.parsers.common.processor.BeanListProcessor
 import com.univocity.parsers.csv.CsvParser
 import com.univocity.parsers.csv.CsvParserSettings
+import org.northwinds.app.sotachaser.room.Association
+import org.northwinds.app.sotachaser.room.SummitDao
 import java.io.BufferedReader
 import java.io.InputStream
 import java.io.InputStreamReader
@@ -52,4 +54,14 @@ class SummitList(input: InputStream) {
     val associations = summits.associateBy({ it.summitCode.split("/")[0] }, { it.associationName })
     private val regions_by_association = summits.groupBy { it.summitCode.split("/")[0] }
     val summits_by_region = regions_by_association.mapValues { it.value.groupBy { it.summitCode.split("-")[0].split("/")[1] } }
+}
+
+object SummitInterface {
+    fun load_database(dao: SummitDao, summitList: SummitList) {
+        dao.clear()
+        summitList.associations.forEach {
+            dao.insertAll(Association(0, it.key, it.value))
+        }
+
+    }
 }

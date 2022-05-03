@@ -1,4 +1,4 @@
-package org.northwinds.app.sotachaser
+package org.northwinds.app.sotachaser.ui
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
@@ -17,6 +17,7 @@ import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.LatLngBounds
 import com.google.android.gms.maps.model.MarkerOptions
 import dagger.hilt.android.AndroidEntryPoint
+import org.northwinds.app.sotachaser.R
 import org.northwinds.app.sotachaser.databinding.ActivityMapsBinding
 
 @AndroidEntryPoint

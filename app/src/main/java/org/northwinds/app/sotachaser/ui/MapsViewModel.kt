@@ -1,10 +1,13 @@
-package org.northwinds.app.sotachaser
+package org.northwinds.app.sotachaser.ui
 
 import android.app.Application
 import android.util.Log
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import org.northwinds.app.sotachaser.R
+import org.northwinds.app.sotachaser.SummitList
+import org.northwinds.app.sotachaser.SummitRecord
 
 /*
  * Copyright (c) 2022 Loren M. Lang
@@ -46,7 +49,7 @@ class MapsViewModel(app: Application) : AndroidViewModel(app) {
 
     fun set_association(entry: Int) {
         association = associations.value!![entry]
-        Log.d(Tag, "Selected association: " + association)
+        Log.d(Tag, "Selected association: $association")
         _regions.value = SummitList(context.resources.openRawResource(R.raw.summitslist)).summits_by_region[association]!!.keys.toList()
     }
 

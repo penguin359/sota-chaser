@@ -34,6 +34,9 @@ import androidx.test.ext.junit.rules.ActivityScenarioRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry.getInstrumentation
 import androidx.test.uiautomator.*
+import androidx.test.uiautomator.By.text
+import dagger.hilt.android.testing.HiltAndroidRule
+import dagger.hilt.android.testing.HiltAndroidTest
 import org.hamcrest.Matchers
 import org.junit.Assert.*
 import org.junit.Before
@@ -43,13 +46,17 @@ import org.junit.runner.RunWith
 import org.northwinds.app.sotachaser.ui.MapsActivity
 
 @RunWith(AndroidJUnit4::class)
-//@HiltAndroidTest
+@HiltAndroidTest
 class MapsActivityTest {
+    @get:Rule
+    val hiltRule = HiltAndroidRule(this)
+
     @get:Rule
     val rule = ActivityScenarioRule(MapsActivity::class.java)
 
     @Test
     fun load_map_viewmodel() {
+        Espresso.onIdle()
         rule.scenario.onActivity {
             val associations = it.model.associations.value
             assertNotNull("No associations found", associations)
@@ -60,6 +67,9 @@ class MapsActivityTest {
             val associationIndex = associations.indexOf("W7O")
             assertNotNull("Can't find W7O association", associationIndex)
             it.model.set_association(associationIndex)
+        }
+        Espresso.onIdle()
+        rule.scenario.onActivity {
             assertEquals(
                 "Incorrect number of regions for association",
                 10, it.model.regions.value!!.count()
@@ -67,13 +77,19 @@ class MapsActivityTest {
             val regionIndex = it.model.regions.value!!.indexOf("WV")
             assertNotNull("Can't find WV region", regionIndex)
             it.model.set_region(regionIndex)
+        }
+        Espresso.onIdle()
+        rule.scenario.onActivity {
             assertEquals(
                 "Incorrect number of summits for region",
                 138, it.model.summits.value!!.count()
             )
-            val associationIndex2 = associations.indexOf("W7W")
+            val associationIndex2 = it.model.associations.value!!.indexOf("W7W")
             assertNotNull("Can't find W7W association", associationIndex2)
             it.model.set_association(associationIndex2)
+        }
+        Espresso.onIdle()
+        rule.scenario.onActivity {
             assertEquals(
                 "Incorrect number of regions for association",
                 17, it.model.regions.value!!.count()
@@ -81,11 +97,69 @@ class MapsActivityTest {
             val regionIndex2 = it.model.regions.value!!.indexOf("LC")
             assertNotNull("Can't find LC region", regionIndex2)
             it.model.set_region(regionIndex2)
+        }
+        Espresso.onIdle()
+        rule.scenario.onActivity {
             assertEquals(
                 "Incorrect number of summits for region",
                 169, it.model.summits.value!!.count()
             )
         }
+    }
+
+    @Test
+    fun update_map_viewmodel() {
+        Espresso.onIdle()
+        rule.scenario.onActivity {
+            it.model.set_association(0)
+        }
+        Espresso.onIdle()
+        rule.scenario.onActivity {
+            it.model.set_region(0)
+        }
+        Espresso.onIdle()
+        rule.scenario.onActivity {
+            it.model.set_association(1)
+        }
+        Espresso.onIdle()
+        rule.scenario.onActivity {
+            it.model.set_region(0)
+        }
+            //val associations = it.model.associations.value
+            //assertNotNull("No associations found", associations)
+            //assertEquals(
+            //    "Incorrect number of associations",
+            //    194, associations!!.count()
+            //)
+            //val associationIndex = associations.indexOf("W7O")
+            //assertNotNull("Can't find W7O association", associationIndex)
+            //it.model.set_association(associationIndex)
+            //assertEquals(
+            //    "Incorrect number of regions for association",
+            //    10, it.model.regions.value!!.count()
+            //)
+            //val regionIndex = it.model.regions.value!!.indexOf("WV")
+            //assertNotNull("Can't find WV region", regionIndex)
+            //it.model.set_region(regionIndex)
+            //assertEquals(
+            //    "Incorrect number of summits for region",
+            //    138, it.model.summits.value!!.count()
+            //)
+            //val associationIndex2 = associations.indexOf("W7W")
+            //assertNotNull("Can't find W7W association", associationIndex2)
+            //it.model.set_association(associationIndex2)
+            //assertEquals(
+            //    "Incorrect number of regions for association",
+            //    17, it.model.regions.value!!.count()
+            //)
+            //val regionIndex2 = it.model.regions.value!!.indexOf("LC")
+            //assertNotNull("Can't find LC region", regionIndex2)
+            //it.model.set_region(regionIndex2)
+            //assertEquals(
+            //    "Incorrect number of summits for region",
+            //    169, it.model.summits.value!!.count()
+            //)
+        //}
     }
 
     @Test
@@ -132,9 +206,12 @@ private const val PACKAGE = "org.northwinds.app.sotachaser"
 private const val LAUNCH_TIMEOUT = 5000L
 
 @RunWith(AndroidJUnit4::class)
-//@HiltAndroidTest
+@HiltAndroidTest
 //@SdkSuppress(minSdkVersion = 18)
 class MapsActivityUiTest {
+    @get:Rule
+    val hiltRule = HiltAndroidRule(this)
+
     private val device: UiDevice = UiDevice.getInstance(getInstrumentation())
 
     @Before
@@ -181,6 +258,7 @@ class MapsActivityUiTest {
         assertTrue(associationSpinner.exists() && associationSpinner.isEnabled)
         associationSpinner.click()
         val selection = UiScrollable(UiSelector().className("android.widget.ListView"))
+        device.wait(Until.findObject(By.text("W7O")), LAUNCH_TIMEOUT)
         val association: UiObject = selection.getChildByText(UiSelector().text("W7O"), "W7O")
         association.click()
         assertTrue(regionSpinner.exists() && regionSpinner.isEnabled)
@@ -192,6 +270,9 @@ class MapsActivityUiTest {
         //val marker = device.findObject(UiSelector().descriptionContains("Sydney"))
         //assertTrue("Can't find marker", marker.exists())
         //marker.click()
+        //Thread.sleep(10000)
+        //Espresso.onIdle()
+        device.wait(Until.hasObject(By.descContains("/CN")), LAUNCH_TIMEOUT)
         //Thread.sleep(10000)
         expectedSummits.forEach {
             val marker1 = device.findObject(UiSelector().descriptionContains(it))
@@ -226,6 +307,8 @@ class MapsActivityUiTest {
         selection.getChildByText(UiSelector().text("W7O"), "W7O").click()
         regionSpinner.click()
         selection.getChildByText(UiSelector().text("CN"), "CN").click()
+        device.wait(Until.hasObject(By.descContains("CN")), LAUNCH_TIMEOUT)
+        //Thread.sleep(1000)
 
         assertTrue("Marker for summit W7O/CN-001 should be present",
             device.findObject(UiSelector().descriptionContains("W7O/CN-001")).exists())
@@ -236,6 +319,8 @@ class MapsActivityUiTest {
         selection.getChildByText(UiSelector().text("HL"), "HL").click()
         regionSpinner.click()
         selection.getChildByText(UiSelector().text("JN"), "JN").click()
+        device.wait(Until.hasObject(By.descContains("JN")), LAUNCH_TIMEOUT)
+        //Thread.sleep(1000)
 
         expectedSummits.forEach {
             val marker1 = device.findObject(UiSelector().descriptionContains(it))
@@ -259,6 +344,8 @@ class MapsActivityUiTest {
         selection.getChildByText(UiSelector().text("W7O"), "W7O").click()
         regionSpinner.click()
         selection.getChildByText(UiSelector().text("NC"), "NC").click()
+        device.wait(Until.hasObject(By.descContains("NC")), LAUNCH_TIMEOUT)
+        //Thread.sleep(1000)
 
         assertTrue("Marker for summit W7O/NC-042 should be present",
             device.findObject(UiSelector().descriptionContains("W7O/NC-042")).exists())
@@ -269,6 +356,8 @@ class MapsActivityUiTest {
         selection.getChildByText(UiSelector().text("W7W"), "W7W").click()
         regionSpinner.click()
         selection.getChildByText(UiSelector().text("LC"), "LC").click()
+        device.wait(Until.hasObject(By.descContains("LC")), LAUNCH_TIMEOUT)
+        //Thread.sleep(1000)
 
         assertTrue("Marker for summit W7W/LC-001 should be present",
             device.findObject(UiSelector().descriptionContains("W7W/LC-001")).exists())

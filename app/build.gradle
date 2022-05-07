@@ -16,7 +16,8 @@ android {
         versionCode 1
         versionName "0.1 Alpha"
 
-        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        testInstrumentationRunner "org.northwinds.app.sotachaser.SotaChaserTestRunner"
+        //testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
 
     buildTypes {
@@ -106,6 +107,9 @@ dependencies {
 
     // Required API 18
     androidTestImplementation 'androidx.test.uiautomator:uiautomator:2.2.0'
+
+    // For IdlingThreadPoolExecutor
+    androidTestImplementation 'androidx.test.espresso.idling:idling-concurrent:3.4.0'
 }
 
 kapt {

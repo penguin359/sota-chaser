@@ -37,7 +37,6 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
         val mapFragment = supportFragmentManager
                 .findFragmentById(R.id.map) as SupportMapFragment
         mapFragment.getMapAsync(this)
-        binding.association.adapter = ArrayAdapter(this, android.R.layout.simple_spinner_item, model.associations.value!!)
         binding.association.onItemSelectedListener = object: OnItemSelectedListener {
             override fun onItemSelected(_adapter: AdapterView<*>?, _view: View?, position: Int, _id: Long) {
                 Log.d(Tag, "Selecting association: $position")
@@ -60,6 +59,9 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
                 //TODO("Not yet implemented")
             }
         }
+        model.associations.observe(this, {
+            binding.association.adapter = ArrayAdapter(this, android.R.layout.simple_spinner_item, it)
+        })
         model.regions.observe(this, {
             binding.region.adapter = ArrayAdapter(this, android.R.layout.simple_spinner_item, it)
         })
@@ -107,7 +109,7 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
             }
             mMap.moveCamera(CameraUpdateFactory.newLatLngBounds(LatLngBounds(
                 LatLng(minLatitude, minLongitude),
-                LatLng(maxLatitude, maxLongitude)), 1))
+                LatLng(maxLatitude, maxLongitude)), 75))
         }
     }
 }

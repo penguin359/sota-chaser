@@ -5,9 +5,12 @@ import android.util.Log
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import dagger.hilt.android.lifecycle.HiltViewModel
 import org.northwinds.app.sotachaser.R
 import org.northwinds.app.sotachaser.SummitList
 import org.northwinds.app.sotachaser.SummitRecord
+import java.util.concurrent.ExecutorService
+import javax.inject.Inject
 
 /*
  * Copyright (c) 2022 Loren M. Lang
@@ -30,12 +33,21 @@ import org.northwinds.app.sotachaser.SummitRecord
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-class MapsViewModel(app: Application) : AndroidViewModel(app) {
+
+@HiltViewModel
+class MapsViewModel @Inject constructor(app: Application, private val executorService: ExecutorService) : AndroidViewModel(app) {
     private val Tag = "SOTAChaser-MapsViewModel"
     private val context = getApplication<Application>().applicationContext
 
     private val _associations = MutableLiveData<List<String>>().apply {
-        value = SummitList(context.resources.openRawResource(R.raw.summitslist)).summits_by_region.keys.toList()
+        //value = SummitList(context.resources.openRawResource(R.raw.summitslist)).summits_by_region.keys.toList()
+        value = listOf()
+    }
+
+    init {
+        executorService.execute {
+            _associations.postValue(SummitList(context.resources.openRawResource(R.raw.summitslist)).summits_by_region.keys.toList())
+        }
     }
 
     val associations: LiveData<List<String>> = _associations
@@ -50,7 +62,10 @@ class MapsViewModel(app: Application) : AndroidViewModel(app) {
     fun set_association(entry: Int) {
         association = associations.value!![entry]
         Log.d(Tag, "Selected association: $association")
-        _regions.value = SummitList(context.resources.openRawResource(R.raw.summitslist)).summits_by_region[association]!!.keys.toList()
+        _regions.value = listOf()
+        executorService.execute {
+            _regions.postValue(SummitList(context.resources.openRawResource(R.raw.summitslist)).summits_by_region[association]!!.keys.toList())
+        }
     }
 
     private val _summits = MutableLiveData<List<SummitRecord>>().apply {
@@ -62,6 +77,14 @@ class MapsViewModel(app: Application) : AndroidViewModel(app) {
     fun set_region(entry: Int) {
         val region = regions.value!![entry]
         Log.d(Tag, "Selected region: $region")
-        _summits.value = SummitList(context.resources.openRawResource(R.raw.summitslist)).summits_by_region[association]!![region]!!.toList()
+        _summits.value = listOf()
+        executorService.execute {
+            _summits.postValue(SummitList(context.resources.openRawResource(R.raw.summitslist)).summits_by_region[association]!![region]!!.toList())
+        }
+    }
+
+    override fun onCleared() {
+        super.onCleared()
+        executorService.shutdown()
     }
 }

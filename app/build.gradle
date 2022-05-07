@@ -4,6 +4,10 @@ plugins {
     id 'com.google.android.libraries.mapsplatform.secrets-gradle-plugin'
     id 'org.jetbrains.kotlin.kapt'
     id 'dagger.hilt.android.plugin'
+    // Used by Firebase
+    id 'com.google.gms.google-services'
+    id 'com.google.firebase.crashlytics'
+
 }
 
 android {
@@ -24,6 +28,10 @@ android {
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+        debug {
+            applicationIdSuffix ".dev"
+            versionNameSuffix "-dev"
         }
     }
     compileOptions {
@@ -111,6 +119,14 @@ dependencies {
 
     // For IdlingThreadPoolExecutor
     androidTestImplementation 'androidx.test.espresso.idling:idling-concurrent:3.4.0'
+
+    // Import the BoM for the Firebase platform
+    // Requires API 19
+    implementation platform('com.google.firebase:firebase-bom:30.0.0')
+
+    // Declare the dependencies for the Crashlytics and Analytics libraries
+    implementation 'com.google.firebase:firebase-crashlytics-ktx'
+    implementation 'com.google.firebase:firebase-analytics-ktx'
 }
 
 // Added for supporting Hilt with Kapt

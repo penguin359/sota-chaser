@@ -7,9 +7,11 @@ import android.os.Bundle
 import android.preference.PreferenceManager
 import android.util.Log
 import android.view.View
+import android.view.ViewGroup
 import android.widget.AdapterView
 import android.widget.AdapterView.OnItemSelectedListener
 import android.widget.ArrayAdapter
+import android.widget.Button
 import androidx.activity.viewModels
 import androidx.core.content.edit
 
@@ -88,6 +90,15 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
                 }
             }
         }
+        val crashButton = Button(this)
+        crashButton.text = "Test Crash"
+        crashButton.setOnClickListener {
+           throw RuntimeException("Test Crash") // Force a crash
+        }
+
+        addContentView(crashButton, ViewGroup.LayoutParams(
+               ViewGroup.LayoutParams.MATCH_PARENT,
+               ViewGroup.LayoutParams.WRAP_CONTENT))
         Log.d(Tag, "Maps activity configured")
     }
 

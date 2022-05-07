@@ -1,13 +1,17 @@
 package org.northwinds.app.sotachaser.ui
 
+import android.content.Context
+import android.content.SharedPreferences
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.preference.PreferenceManager
 import android.util.Log
 import android.view.View
 import android.widget.AdapterView
 import android.widget.AdapterView.OnItemSelectedListener
 import android.widget.ArrayAdapter
 import androidx.activity.viewModels
+import androidx.core.content.edit
 
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
@@ -25,7 +29,7 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
     private val Tag = "SOTAChaser-MapsActivity"
     val model: MapsViewModel by viewModels()
     private lateinit var mMap: GoogleMap
-    private lateinit var binding: ActivityMapsBinding
+    lateinit var binding: ActivityMapsBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -40,31 +44,50 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
         binding.association.onItemSelectedListener = object: OnItemSelectedListener {
             override fun onItemSelected(_adapter: AdapterView<*>?, _view: View?, position: Int, _id: Long) {
                 Log.d(Tag, "Selecting association: $position")
-                //TODO("Not yet implemented")
                 model.setAssociation(position)
+                //PreferenceManager.getDefaultSharedPreferences(applicationContext)
+                getPreferences(Context.MODE_PRIVATE).edit {
+                    putString("association", model.associations.value!![position])
+                    //putString("region", "")
+                }
             }
 
             override fun onNothingSelected(_adapter: AdapterView<*>?) {
-                //TODO("Not yet implemented")
             }
         }
         binding.region.onItemSelectedListener = object: OnItemSelectedListener {
             override fun onItemSelected(_adapter: AdapterView<*>?, _view: View?, position: Int, _id: Long) {
                 Log.d(Tag, "Selecting region: $position")
-                //TODO("Not yet implemented")
                 model.setRegion(position)
+                getPreferences(Context.MODE_PRIVATE).edit {
+                    putString("region", model.regions.value!![position])
+                }
             }
 
             override fun onNothingSelected(_adapter: AdapterView<*>?) {
-                //TODO("Not yet implemented")
             }
         }
-        model.associations.observe(this, {
-            binding.association.adapter = ArrayAdapter(this, android.R.layout.simple_spinner_item, it)
-        })
-        model.regions.observe(this, {
+        model.associations.observe(this) {
+            binding.association.adapter =
+                ArrayAdapter(this, android.R.layout.simple_spinner_item, it)
+            val last = getPreferences(Context.MODE_PRIVATE).getString("association", "")
+            if(last != "") {
+                val index = model.associations.value?.indexOf(last) ?: -1
+                if(index >= 0) {
+                    binding.association.setSelection(index)
+                }
+            }
+        }
+        model.regions.observe(this) {
             binding.region.adapter = ArrayAdapter(this, android.R.layout.simple_spinner_item, it)
-        })
+            val last = getPreferences(Context.MODE_PRIVATE).getString("region", "")
+            if(last != "") {
+                val index = model.regions.value?.indexOf(last) ?: -1
+                if(index >= 0) {
+                    binding.region.setSelection(index)
+                }
+            }
+        }
         Log.d(Tag, "Maps activity configured")
     }
 

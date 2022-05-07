@@ -37,6 +37,8 @@ import androidx.test.uiautomator.*
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
 import org.hamcrest.Matchers
+import org.hamcrest.Matchers.containsString
+import org.hamcrest.Matchers.equalTo
 import org.junit.Assert.*
 import org.junit.Before
 import org.junit.Rule
@@ -163,6 +165,14 @@ class MapsActivityTest {
 
     @Test
     fun load_map_activity() {
+        Espresso.onIdle()
+        rule.scenario.onActivity {
+            it.binding.association.setSelection(0)
+        }
+        Espresso.onIdle()
+        rule.scenario.onActivity {
+            it.binding.region.setSelection(0)
+        }
         onView(withId(R.id.association)).check(matches(isDisplayed()))
         onView(withId(R.id.association)).check { view, noViewException ->
             if (view == null)
@@ -234,7 +244,19 @@ class MapsActivityUiTest {
     @get:Rule
     val hiltRule = HiltAndroidRule(this)
 
-    private val device: UiDevice = UiDevice.getInstance(getInstrumentation())
+    private val device = UiDevice.getInstance(getInstrumentation())
+
+    private val associationSpinner = device.findObject(
+        UiSelector().descriptionContains("Association")
+            .className("android.widget.Spinner")
+    )
+
+    private val regionSpinner = device.findObject(
+        UiSelector().descriptionContains("Region")
+            .className("android.widget.Spinner")
+    )
+
+    private val selection = UiScrollable(UiSelector().className("android.widget.ListView"))
 
     @Before
     fun load_map_location() {
@@ -269,17 +291,8 @@ class MapsActivityUiTest {
             val marker = device.findObject(UiSelector().descriptionContains(it))
             assertFalse("Marker for summit $it should not be present", marker.exists())
         }
-        val associationSpinner = device.findObject(
-            UiSelector().descriptionContains("Association")
-                .className("android.widget.Spinner")
-        )
-        val regionSpinner = device.findObject(
-            UiSelector().descriptionContains("Region")
-                .className("android.widget.Spinner")
-        )
         assertTrue(associationSpinner.exists() && associationSpinner.isEnabled)
         associationSpinner.click()
-        val selection = UiScrollable(UiSelector().className("android.widget.ListView"))
         device.wait(Until.findObject(By.text("W7O")), LAUNCH_TIMEOUT)
         val association: UiObject = selection.getChildByText(UiSelector().text("W7O"), "W7O")
         association.click()
@@ -287,8 +300,7 @@ class MapsActivityUiTest {
 //        Thread.sleep(10000)
         assertEquals("Wrong region visible", "CC", regionSpinner.getChild(UiSelector().className("android.widget.TextView")).text)
         regionSpinner.click()
-        val selection2 = UiScrollable(UiSelector().className("android.widget.ListView"))
-        selection2.getChildByText(UiSelector().text("CN"), "CN").click()
+        selection.getChildByText(UiSelector().text("CN"), "CN").click()
         //val marker = device.findObject(UiSelector().descriptionContains("Sydney"))
         //assertTrue("Can't find marker", marker.exists())
         //marker.click()
@@ -315,15 +327,6 @@ class MapsActivityUiTest {
             val marker = device.findObject(UiSelector().descriptionContains(it))
             assertFalse("Marker for summit $it should not be present", marker.exists())
         }
-        val associationSpinner = device.findObject(
-            UiSelector().descriptionContains("Association")
-                .className("android.widget.Spinner")
-        )
-        val regionSpinner = device.findObject(
-            UiSelector().descriptionContains("Region")
-                .className("android.widget.Spinner")
-        )
-        val selection = UiScrollable(UiSelector().className("android.widget.ListView"))
 
         associationSpinner.click()
         selection.getChildByText(UiSelector().text("W7O"), "W7O").click()
@@ -352,16 +355,6 @@ class MapsActivityUiTest {
 
     @Test
     fun previous_locations_are_cleared() {
-        val associationSpinner = device.findObject(
-            UiSelector().descriptionContains("Association")
-                .className("android.widget.Spinner")
-        )
-        val regionSpinner = device.findObject(
-            UiSelector().descriptionContains("Region")
-                .className("android.widget.Spinner")
-        )
-        val selection = UiScrollable(UiSelector().className("android.widget.ListView"))
-
         associationSpinner.click()
         selection.getChildByText(UiSelector().text("W7O"), "W7O").click()
         regionSpinner.click()
@@ -385,5 +378,29 @@ class MapsActivityUiTest {
             device.findObject(UiSelector().descriptionContains("W7W/LC-001")).exists())
         assertFalse("Marker for summit W7O/NC-042 should NOT be present",
             device.findObject(UiSelector().descriptionContains("W7O/NC-042")).exists())
+    }
+
+    @Test
+    fun will_preserve_last_region() {
+        associationSpinner.click()
+        selection.getChildByText(UiSelector().text("W7O"), "W7O").click()
+        regionSpinner.click()
+        selection.getChildByText(UiSelector().text("WV"), "WV").click()
+        device.wait(Until.hasObject(By.descContains("WV")), LAUNCH_TIMEOUT)
+        associationSpinner.getChild(UiSelector().className(""))
+        //assertThat(//"Association",
+        //    associationSpinner.getChild(UiSelector().className("android.widget.TextView")).text,
+        //    //equalTo("W7O"))
+        //    containsString("D"))
+        //assertThat("Region",
+        //    regionSpinner.getChild(UiSelector().className("android.widget.TextView")).text,
+        //    equalTo("WV"))
+        assertEquals("Wrong association visible", "W7O", associationSpinner.getChild(UiSelector().className("android.widget.TextView")).text)
+        assertEquals("Wrong region visible", "WV", regionSpinner.getChild(UiSelector().className("android.widget.TextView")).text)
+        device.pressBack()
+        device.pressBack()
+        load_map_location()
+        assertEquals("Wrong association visible", "W7O", associationSpinner.getChild(UiSelector().className("android.widget.TextView")).text)
+        assertEquals("Wrong region visible", "WV", regionSpinner.getChild(UiSelector().className("android.widget.TextView")).text)
     }
 }

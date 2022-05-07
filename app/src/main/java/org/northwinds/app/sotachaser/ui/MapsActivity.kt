@@ -127,7 +127,7 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
                 if(it.longitude > maxLongitude)
                     maxLongitude = it.longitude
                 mMap.addMarker(
-                    MarkerOptions().position(LatLng(it.latitude, it.longitude)).title(it.summitCode)
+                    MarkerOptions().position(LatLng(it.latitude, it.longitude)).title(it.code)
                 )
             }
             mMap.moveCamera(CameraUpdateFactory.newLatLngBounds(LatLngBounds(

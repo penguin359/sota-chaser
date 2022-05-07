@@ -2,6 +2,7 @@ package org.northwinds.app.sotachaser.room
 
 import androidx.room.Dao
 import androidx.room.Insert
+import androidx.room.MapInfo
 import androidx.room.Query
 
 @Dao
@@ -36,7 +37,8 @@ interface SummitDao {
     @Query("SELECT * FROM summit WHERE region_id = :regionId")
     fun getSummitsInRegion(regionId: Long): List<Summit>
 
-    @Query("SELECT summit.* FROM summit JOIN region ON (summit.region_id = region.id) JOIN association ON (region.association_id = association.id) WHERE association.code = :associationId AND region.code = :region")
+    //@MapInfo(keyColumn = "summitCode")
+    @Query("SELECT summit.*, association.code || '/' || region.code || '-' || summit.code AS code FROM summit JOIN region ON (summit.region_id = region.id) JOIN association ON (region.association_id = association.id) WHERE association.code = :associationId AND region.code = :region")
     fun getSummits(associationId: String,  region: String): List<Summit>
 
     @Query("DELETE FROM association")

@@ -5,10 +5,16 @@ import android.util.Log
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import androidx.room.Room
 import dagger.hilt.android.lifecycle.HiltViewModel
 import org.northwinds.app.sotachaser.R
+import org.northwinds.app.sotachaser.SummitInterface
 import org.northwinds.app.sotachaser.SummitList
 import org.northwinds.app.sotachaser.SummitRecord
+import org.northwinds.app.sotachaser.room.Summit
+import org.northwinds.app.sotachaser.room.SummitDatabase
+import java.nio.file.Files
+import java.nio.file.Paths
 import java.util.concurrent.ExecutorService
 import javax.inject.Inject
 
@@ -38,6 +44,8 @@ import javax.inject.Inject
 class MapsViewModel @Inject constructor(app: Application, private val executorService: ExecutorService) : AndroidViewModel(app) {
     private val Tag = "SOTAChaser-MapsViewModel"
     private val context = getApplication<Application>().applicationContext
+    private val db = Room.databaseBuilder(context, SummitDatabase::class.java, "database").build()
+    private val dao = db.summitDao()
 
     private val _associations = MutableLiveData<List<String>>().apply {
         //value = SummitList(context.resources.openRawResource(R.raw.summitslist)).summits_by_region.keys.toList()
@@ -47,7 +55,16 @@ class MapsViewModel @Inject constructor(app: Application, private val executorSe
     init {
         Log.i(Tag, "Starting new model view")
         executorService.execute {
-            _associations.postValue(SummitList(context.resources.openRawResource(R.raw.summitslist)).summits_by_region.keys.toList())
+            var items = dao.getAssociations()
+            if(items.count() <= 0) {
+                val input = context.resources.openRawResource(R.raw.summitslist)
+                val list = SummitList(input)
+
+                SummitInterface.load_database(dao, list)
+                items = dao.getAssociations()
+            }
+            //_associations.postValue(SummitList(context.resources.openRawResource(R.raw.summitslist)).summits_by_region.keys.toList())
+            _associations.postValue(items.map { it.code })
         }
     }
 
@@ -71,15 +88,16 @@ class MapsViewModel @Inject constructor(app: Application, private val executorSe
         Log.d(Tag, "Selected association: $association")
         _regions.value = listOf()
         executorService.execute {
-            _regions.postValue(SummitList(context.resources.openRawResource(R.raw.summitslist)).summits_by_region[association]!!.keys.toList())
+            //_regions.postValue(SummitList(context.resources.openRawResource(R.raw.summitslist)).summits_by_region[association]!!.keys.toList())
+            _regions.postValue(dao.getRegionsInAssociationName(association).map { it.code })
         }
     }
 
-    private val _summits = MutableLiveData<List<SummitRecord>>().apply {
+    private val _summits = MutableLiveData<List<Summit>>().apply {
         value = listOf()
     }
 
-    val summits: LiveData<List<SummitRecord>> = _summits
+    val summits: LiveData<List<Summit>> = _summits
 
     fun setRegion(entry: Int) {
         val newRegion = regions.value!![entry]
@@ -89,7 +107,8 @@ class MapsViewModel @Inject constructor(app: Application, private val executorSe
         Log.d(Tag, "Selected region: $region")
         _summits.value = listOf()
         executorService.execute {
-            _summits.postValue(SummitList(context.resources.openRawResource(R.raw.summitslist)).summits_by_region[association]!![region]!!.toList())
+            //_summits.postValue(SummitList(context.resources.openRawResource(R.raw.summitslist)).summits_by_region[association]!![region]!!.toList())
+            _summits.postValue(dao.getSummits(association, region))
         }
     }
 

@@ -41,7 +41,7 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
             override fun onItemSelected(_adapter: AdapterView<*>?, _view: View?, position: Int, _id: Long) {
                 Log.d(Tag, "Selecting association: $position")
                 //TODO("Not yet implemented")
-                model.set_association(position)
+                model.setAssociation(position)
             }
 
             override fun onNothingSelected(_adapter: AdapterView<*>?) {
@@ -52,7 +52,7 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
             override fun onItemSelected(_adapter: AdapterView<*>?, _view: View?, position: Int, _id: Long) {
                 Log.d(Tag, "Selecting region: $position")
                 //TODO("Not yet implemented")
-                model.set_region(position)
+                model.setRegion(position)
             }
 
             override fun onNothingSelected(_adapter: AdapterView<*>?) {

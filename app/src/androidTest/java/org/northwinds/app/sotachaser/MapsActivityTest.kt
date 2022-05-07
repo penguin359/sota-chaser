@@ -34,7 +34,6 @@ import androidx.test.ext.junit.rules.ActivityScenarioRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry.getInstrumentation
 import androidx.test.uiautomator.*
-import androidx.test.uiautomator.By.text
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
 import org.hamcrest.Matchers
@@ -66,7 +65,7 @@ class MapsActivityTest {
             )
             val associationIndex = associations.indexOf("W7O")
             assertNotNull("Can't find W7O association", associationIndex)
-            it.model.set_association(associationIndex)
+            it.model.setAssociation(associationIndex)
         }
         Espresso.onIdle()
         rule.scenario.onActivity {
@@ -76,7 +75,7 @@ class MapsActivityTest {
             )
             val regionIndex = it.model.regions.value!!.indexOf("WV")
             assertNotNull("Can't find WV region", regionIndex)
-            it.model.set_region(regionIndex)
+            it.model.setRegion(regionIndex)
         }
         Espresso.onIdle()
         rule.scenario.onActivity {
@@ -86,7 +85,7 @@ class MapsActivityTest {
             )
             val associationIndex2 = it.model.associations.value!!.indexOf("W7W")
             assertNotNull("Can't find W7W association", associationIndex2)
-            it.model.set_association(associationIndex2)
+            it.model.setAssociation(associationIndex2)
         }
         Espresso.onIdle()
         rule.scenario.onActivity {
@@ -96,7 +95,7 @@ class MapsActivityTest {
             )
             val regionIndex2 = it.model.regions.value!!.indexOf("LC")
             assertNotNull("Can't find LC region", regionIndex2)
-            it.model.set_region(regionIndex2)
+            it.model.setRegion(regionIndex2)
         }
         Espresso.onIdle()
         rule.scenario.onActivity {
@@ -111,19 +110,19 @@ class MapsActivityTest {
     fun update_map_viewmodel() {
         Espresso.onIdle()
         rule.scenario.onActivity {
-            it.model.set_association(0)
+            it.model.setAssociation(0)
         }
         Espresso.onIdle()
         rule.scenario.onActivity {
-            it.model.set_region(0)
+            it.model.setRegion(0)
         }
         Espresso.onIdle()
         rule.scenario.onActivity {
-            it.model.set_association(1)
+            it.model.setAssociation(1)
         }
         Espresso.onIdle()
         rule.scenario.onActivity {
-            it.model.set_region(0)
+            it.model.setRegion(0)
         }
             //val associations = it.model.associations.value
             //assertNotNull("No associations found", associations)
@@ -199,6 +198,29 @@ class MapsActivityTest {
                 throw noViewException
             assertEquals(17, (view as Spinner).count)
         }
+    }
+
+    @Test
+    fun will_preserve_last_region() {
+        onView(withId(R.id.association)).perform(ViewActions.click())
+        Espresso.onData(
+            Matchers.allOf(
+                Matchers.`is`(Matchers.instanceOf(String::class.java)),
+                Matchers.`is`("W7O")
+            )
+        ).perform(ViewActions.click())
+        onView(withId(R.id.association)).check(matches(withSpinnerText(Matchers.containsString("W7O"))))
+        onView(withId(R.id.region)).perform(ViewActions.click())
+        Espresso.onData(
+            Matchers.allOf(
+                Matchers.`is`(Matchers.instanceOf(String::class.java)),
+                Matchers.`is`("WV")
+            )
+        ).perform(ViewActions.click())
+        onView(withId(R.id.region)).check(matches(withSpinnerText(Matchers.containsString("WV"))))
+        rule.scenario.recreate()
+        onView(withId(R.id.association)).check(matches(withSpinnerText(Matchers.containsString("W7O"))))
+        onView(withId(R.id.region)).check(matches(withSpinnerText(Matchers.containsString("WV"))))
     }
 }
 

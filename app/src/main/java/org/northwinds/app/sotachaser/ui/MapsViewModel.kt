@@ -45,6 +45,7 @@ class MapsViewModel @Inject constructor(app: Application, private val executorSe
     }
 
     init {
+        Log.i(Tag, "Starting new model view")
         executorService.execute {
             _associations.postValue(SummitList(context.resources.openRawResource(R.raw.summitslist)).summits_by_region.keys.toList())
         }
@@ -52,15 +53,21 @@ class MapsViewModel @Inject constructor(app: Application, private val executorSe
 
     val associations: LiveData<List<String>> = _associations
 
+    private var association = ""
+
     private val _regions = MutableLiveData<List<String>>().apply {
         value = listOf()
     }
 
     val regions: LiveData<List<String>> = _regions
-    private var association = ""
 
-    fun set_association(entry: Int) {
-        association = associations.value!![entry]
+    private var region = ""
+
+    fun setAssociation(entry: Int) {
+        val newAssociation = associations.value!![entry]
+        if(newAssociation == association)
+            return
+        association = newAssociation
         Log.d(Tag, "Selected association: $association")
         _regions.value = listOf()
         executorService.execute {
@@ -74,7 +81,10 @@ class MapsViewModel @Inject constructor(app: Application, private val executorSe
 
     val summits: LiveData<List<SummitRecord>> = _summits
 
-    fun set_region(entry: Int) {
+    fun setRegion(entry: Int) {
+        val newRegion = regions.value!![entry]
+        if(newRegion == region)
+            return
         val region = regions.value!![entry]
         Log.d(Tag, "Selected region: $region")
         _summits.value = listOf()

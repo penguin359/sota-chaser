@@ -127,6 +127,10 @@ dependencies {
     // Declare the dependencies for the Crashlytics and Analytics libraries
     implementation 'com.google.firebase:firebase-crashlytics-ktx'
     implementation 'com.google.firebase:firebase-analytics-ktx'
+
+    //def preference_version = "1.2.0"
+    //implementation "androidx.preference:preference-ktx:$preference_version"
+    implementation "androidx.preference:preference-ktx:1.2.0"
 }
 
 // Added for supporting Hilt with Kapt

@@ -24,6 +24,7 @@ package org.northwinds.app.sotachaser
 import android.content.Context
 import android.content.Intent
 import android.widget.Spinner
+import androidx.core.content.edit
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.Espresso
 import androidx.test.espresso.Espresso.onView
@@ -32,13 +33,13 @@ import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.matcher.ViewMatchers.*
 import androidx.test.ext.junit.rules.ActivityScenarioRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.platform.app.InstrumentationRegistry.getInstrumentation
 import androidx.test.uiautomator.*
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
+import org.aprsdroid.app.testing.SharedPreferencesRule
 import org.hamcrest.Matchers
-import org.hamcrest.Matchers.containsString
-import org.hamcrest.Matchers.equalTo
 import org.junit.Assert.*
 import org.junit.Before
 import org.junit.Rule
@@ -49,10 +50,19 @@ import org.northwinds.app.sotachaser.ui.MapsActivity
 @RunWith(AndroidJUnit4::class)
 @HiltAndroidTest
 class MapsActivityTest {
-    @get:Rule
+    @get:Rule(order = 0)
     val hiltRule = HiltAndroidRule(this)
 
-    @get:Rule
+    private val context = ApplicationProvider.getApplicationContext<Context>()
+
+    @get:Rule(order = 1)
+    val prefsRule = SharedPreferencesRule() {
+        it.edit() {
+            putBoolean(context.getString(R.string.preference_asked_for_consent), true)
+        }
+    }
+
+    @get:Rule(order = 2)
     val rule = ActivityScenarioRule(MapsActivity::class.java)
 
     @Test
@@ -234,7 +244,7 @@ class MapsActivityTest {
     }
 }
 
-private const val PACKAGE = "org.northwinds.app.sotachaser"
+//private const val PACKAGE = "org.northwinds.app.sotachaser"
 private const val LAUNCH_TIMEOUT = 5000L
 
 @RunWith(AndroidJUnit4::class)
@@ -243,6 +253,16 @@ private const val LAUNCH_TIMEOUT = 5000L
 class MapsActivityUiTest {
     @get:Rule
     val hiltRule = HiltAndroidRule(this)
+
+    private val context = ApplicationProvider.getApplicationContext<Context>()
+    private val `package` = InstrumentationRegistry.getInstrumentation().targetContext.packageName
+
+    @get:Rule
+    val prefsRule = SharedPreferencesRule() {
+        it.edit() {
+            putBoolean(context.getString(R.string.preference_asked_for_consent), true)
+        }
+    }
 
     private val device = UiDevice.getInstance(getInstrumentation())
 
@@ -265,15 +285,14 @@ class MapsActivityUiTest {
         //val appAppsButton: UiObject = device.findObject(UiSelector().description("Apps"))
         //appAppsButton.clickAndWaitForNewWindow()
 
-        val context = ApplicationProvider.getApplicationContext<Context>()
         val intent = context.packageManager.getLaunchIntentForPackage(
-            PACKAGE)?.apply {
+            `package`)?.apply {
             addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK)
         }
         context.startActivity(intent)
 
         device.wait(
-            Until.hasObject(By.pkg(PACKAGE).depth(0)),
+            Until.hasObject(By.pkg(`package`).depth(0)),
             LAUNCH_TIMEOUT
         )
     }

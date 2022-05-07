@@ -4,7 +4,6 @@ import android.content.Context
 import android.content.SharedPreferences
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.preference.PreferenceManager
 import android.util.Log
 import android.view.View
 import android.view.ViewGroup
@@ -13,7 +12,9 @@ import android.widget.AdapterView.OnItemSelectedListener
 import android.widget.ArrayAdapter
 import android.widget.Button
 import androidx.activity.viewModels
+import androidx.appcompat.app.AlertDialog
 import androidx.core.content.edit
+import androidx.preference.PreferenceManager
 
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
@@ -96,9 +97,37 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
            throw RuntimeException("Test Crash") // Force a crash
         }
 
-        addContentView(crashButton, ViewGroup.LayoutParams(
-               ViewGroup.LayoutParams.MATCH_PARENT,
-               ViewGroup.LayoutParams.WRAP_CONTENT))
+        //addContentView(crashButton, ViewGroup.LayoutParams(
+        //       ViewGroup.LayoutParams.MATCH_PARENT,
+        //       ViewGroup.LayoutParams.WRAP_CONTENT))
+
+        val prefs = PreferenceManager.getDefaultSharedPreferences(this)
+
+        val asked = prefs.getBoolean(getString(R.string.preference_asked_for_consent), false)
+        if (!asked) {
+            val builder = AlertDialog.Builder(this)
+            builder.setTitle(getString(R.string.title_analytics))
+
+            val analytics = arrayOf(
+                getString(R.string.title_anonymous_usage),
+                getString(R.string.title_crash_reports))
+            var checkedItems = booleanArrayOf(false, false)
+            builder.setMultiChoiceItems(analytics, checkedItems) { _, which, isChecked ->
+                checkedItems[which] = isChecked
+            }
+
+            builder.setPositiveButton("OK") { _, _ ->
+                prefs.edit {
+                    putBoolean(getString(R.string.preference_enable_analytics), checkedItems[0])
+                    putBoolean(getString(R.string.preference_enable_crash_reports), checkedItems[1])
+                    putBoolean(getString(R.string.preference_asked_for_consent), true)
+                }
+            }
+
+            val dialog = builder.create()
+            dialog.show()
+        }
+
         Log.d(Tag, "Maps activity configured")
     }
 

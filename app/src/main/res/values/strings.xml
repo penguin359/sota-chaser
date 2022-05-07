@@ -3,4 +3,12 @@
     <string name="title_activity_maps">Summit Map</string>
     <string name="association">Association</string>
     <string name="region">Region</string>
+
+    <string name="title_analytics">Analytics Opt-in</string>
+    <string name="title_anonymous_usage">Anonymous usage statistics</string>
+    <string name="title_crash_reports">Automatically submit crash reports</string>
+
+    <string name="preference_asked_for_consent">asked_for_consent</string>
+    <string name="preference_enable_analytics">enable_analytics</string>
+    <string name="preference_enable_crash_reports">enable_crash_reports</string>
 </resources>

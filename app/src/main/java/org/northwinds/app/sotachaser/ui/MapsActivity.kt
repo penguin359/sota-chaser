@@ -2,7 +2,6 @@ package org.northwinds.app.sotachaser.ui
 
 import android.content.Context
 import android.content.Intent
-import android.content.SharedPreferences
 import android.net.Uri
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
@@ -25,6 +24,7 @@ import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.LatLngBounds
 import com.google.android.gms.maps.model.MarkerOptions
 import dagger.hilt.android.AndroidEntryPoint
+import org.northwinds.app.sotachaser.BuildConfig
 import org.northwinds.app.sotachaser.R
 import org.northwinds.app.sotachaser.databinding.ActivityMapsBinding
 
@@ -103,6 +103,22 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
         //       ViewGroup.LayoutParams.WRAP_CONTENT))
 
         val prefs = PreferenceManager.getDefaultSharedPreferences(this)
+
+        val changelogVersion = prefs.getInt(getString(R.string.preference_changelog), 0)
+        if (changelogVersion < BuildConfig.VERSION_CODE) {
+            val builder = AlertDialog.Builder(this)
+            builder.setTitle(R.string.title_changelog)
+
+            builder.setMessage(R.string.changelog_text)
+            builder.setPositiveButton("OK") { _, _ ->
+                prefs.edit {
+                    putInt(getString(R.string.preference_changelog),BuildConfig.VERSION_CODE)
+                }
+            }
+
+            val dialog = builder.create()
+            dialog.show()
+        }
 
         val asked = prefs.getBoolean(getString(R.string.preference_asked_for_consent), false)
         if (!asked) {

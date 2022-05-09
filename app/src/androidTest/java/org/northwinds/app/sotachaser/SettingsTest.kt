@@ -130,6 +130,7 @@ class SettingsOpenTest {
         it.edit() {
             clear()
             putBoolean(context.getString(R.string.preference_asked_for_consent), true)
+            putInt(context.getString(R.string.preference_changelog), BuildConfig.VERSION_CODE)
         }
     }
 

@@ -7,10 +7,13 @@
     <string name="title_analytics">Analytics Opt-in</string>
     <string name="title_anonymous_usage">Anonymous usage statistics</string>
     <string name="title_crash_reports">Automatically submit crash reports</string>
+    <string name="title_changelog">Changelog</string>
+    <string name="changelog_text">New in version 0.3!!!</string>
 
     <string name="preference_asked_for_consent">asked_for_consent</string>
     <string name="preference_enable_analytics">enable_analytics</string>
     <string name="preference_enable_crash_reports">enable_crash_reports</string>
+    <string name="preference_changelog">changelog</string>
 
     <string name="title_activity_settings">SettingsActivity</string>
     <string name="settings">Settings</string>

@@ -64,6 +64,7 @@ class MapsActivityTest {
     val prefsRule = SharedPreferencesRule() {
         it.edit() {
             putBoolean(context.getString(R.string.preference_asked_for_consent), true)
+            putInt(context.getString(R.string.preference_changelog), BuildConfig.VERSION_CODE)
         }
     }
 
@@ -302,6 +303,7 @@ class MapsActivityUiTest {
     val prefsRule = SharedPreferencesRule() {
         it.edit() {
             putBoolean(context.getString(R.string.preference_asked_for_consent), true)
+            putInt(context.getString(R.string.preference_changelog), BuildConfig.VERSION_CODE)
         }
     }
 

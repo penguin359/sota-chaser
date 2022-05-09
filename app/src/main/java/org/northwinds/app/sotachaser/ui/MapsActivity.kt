@@ -1,12 +1,12 @@
 package org.northwinds.app.sotachaser.ui
 
 import android.content.Context
+import android.content.Intent
 import android.content.SharedPreferences
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
 import android.widget.AdapterView
 import android.widget.AdapterView.OnItemSelectedListener
 import android.widget.ArrayAdapter
@@ -129,6 +129,23 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
         }
 
         Log.d(Tag, "Maps activity configured")
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu): Boolean {
+        //val inflater: MenuInflater = menuInflater
+        menuInflater.inflate(R.menu.top, menu)
+        return true
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        // Handle item selection
+        return when (item.itemId) {
+            R.id.settings -> {
+                startActivity(Intent(applicationContext, SettingsActivity::class.java))
+                true
+            }
+            else -> super.onOptionsItemSelected(item)
+        }
     }
 
     /**

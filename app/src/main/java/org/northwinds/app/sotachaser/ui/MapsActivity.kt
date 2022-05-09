@@ -3,6 +3,7 @@ package org.northwinds.app.sotachaser.ui
 import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
+import android.net.Uri
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
@@ -142,6 +143,15 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
         return when (item.itemId) {
             R.id.settings -> {
                 startActivity(Intent(applicationContext, SettingsActivity::class.java))
+                true
+            }
+            R.id.feedback -> {
+                val intent = Intent(Intent.ACTION_SENDTO, Uri.Builder().scheme("mailto").build())
+                //intent.type = "text/html"
+                intent.putExtra(Intent.EXTRA_EMAIL, arrayOf("penguin359@gmail.com"))
+                intent.putExtra(Intent.EXTRA_SUBJECT, "Feedback for SOTA Chaser")
+                intent.putExtra(Intent.EXTRA_TEXT, "Version 0.1")
+                startActivity(Intent.createChooser(intent, "Send Feedback"))
                 true
             }
             else -> super.onOptionsItemSelected(item)

@@ -21,8 +21,10 @@
  */
 package org.northwinds.app.sotachaser
 
+import android.app.Activity
 import android.content.Context
 import android.content.Intent
+import android.util.Log
 import android.widget.Spinner
 import androidx.core.content.edit
 import androidx.test.core.app.ApplicationProvider
@@ -30,6 +32,8 @@ import androidx.test.espresso.Espresso
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions
 import androidx.test.espresso.assertion.ViewAssertions.matches
+import androidx.test.espresso.intent.Intents
+import androidx.test.espresso.intent.matcher.IntentMatchers.*
 import androidx.test.espresso.matcher.ViewMatchers.*
 import androidx.test.ext.junit.rules.ActivityScenarioRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
@@ -40,6 +44,7 @@ import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
 import org.aprsdroid.app.testing.SharedPreferencesRule
 import org.hamcrest.Matchers
+import org.hamcrest.Matchers.*
 import org.junit.Assert.*
 import org.junit.Before
 import org.junit.Rule
@@ -241,6 +246,42 @@ class MapsActivityTest {
         rule.scenario.recreate()
         onView(withId(R.id.association)).check(matches(withSpinnerText(Matchers.containsString("W7O"))))
         onView(withId(R.id.region)).check(matches(withSpinnerText(Matchers.containsString("WV"))))
+    }
+
+    @Test
+    fun willSendFeedback() {
+        Intents.init()
+        Espresso.openActionBarOverflowOrOptionsMenu(context)
+
+        val appCompatTextView = onView(
+            Matchers.allOf(
+                withText("Feedback"),
+                isDisplayed()
+            )
+        )
+        appCompatTextView.perform(ViewActions.click())
+
+        Log.d(TAG, "All Intents: ${Intents.getIntents().toString()}")
+        Intents.intended(allOf(
+            hasAction(Intent.ACTION_CHOOSER),
+            hasExtra(`is`(Intent.EXTRA_INTENT), allOf(
+                hasAction(Intent.ACTION_SENDTO),
+                //hasType("text/plain"),
+                hasExtra(Intent.EXTRA_EMAIL, arrayOf("penguin359@gmail.com")),
+                hasExtra(`is`(Intent.EXTRA_SUBJECT), allOf(
+                    containsStringIgnoringCase("feedback"),
+                    containsStringIgnoringCase("SOTA Chaser"),
+                )),
+                hasExtra(`is`(Intent.EXTRA_TEXT), allOf(
+                    containsStringIgnoringCase("Version")
+                )),
+            )),
+        ))
+        Intents.release()
+    }
+
+    companion object {
+        private const val TAG = "SOTAChaser-MapsTest"
     }
 }
 

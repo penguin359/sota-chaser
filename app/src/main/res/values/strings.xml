@@ -8,7 +8,20 @@
     <string name="title_anonymous_usage">Anonymous usage statistics</string>
     <string name="title_crash_reports">Automatically submit crash reports</string>
     <string name="title_changelog">Changelog</string>
-    <string name="changelog_text">New in version 0.3!!!</string>
+    <string name="changelog_text">Updates in this release:\n
+\n
+<b>Version 0.3 Alpha</b>\n
+• Added opt-in analytics and crash reporting\n
+• Added feedback button\n
+• Added settings screen\n
+• Speed up first load of app\n
+\n
+<b>Version 0.2 Alpha</b>\n
+• Prevent user interface from hanging while loading data\n
+• Preserve last location when returning to app\n
+\n
+<b>Version 0.1 Alpha</b>\n
+• First demo release of SOTA Summit Mapping</string>
 
     <string name="preference_asked_for_consent">asked_for_consent</string>
     <string name="preference_enable_analytics">enable_analytics</string>

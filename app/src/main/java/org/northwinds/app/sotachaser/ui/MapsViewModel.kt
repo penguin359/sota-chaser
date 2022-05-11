@@ -10,11 +10,8 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import org.northwinds.app.sotachaser.R
 import org.northwinds.app.sotachaser.SummitInterface
 import org.northwinds.app.sotachaser.SummitList
-import org.northwinds.app.sotachaser.SummitRecord
 import org.northwinds.app.sotachaser.room.Summit
 import org.northwinds.app.sotachaser.room.SummitDatabase
-import java.nio.file.Files
-import java.nio.file.Paths
 import java.util.concurrent.ExecutorService
 import javax.inject.Inject
 
@@ -60,7 +57,7 @@ class MapsViewModel @Inject constructor(app: Application, private val executorSe
                 val input = context.resources.openRawResource(R.raw.summitslist)
                 val list = SummitList(input)
 
-                SummitInterface.load_database(dao, list)
+                SummitInterface.loadDatabase(dao, list)
                 items = dao.getAssociations()
             }
             //_associations.postValue(SummitList(context.resources.openRawResource(R.raw.summitslist)).summits_by_region.keys.toList())

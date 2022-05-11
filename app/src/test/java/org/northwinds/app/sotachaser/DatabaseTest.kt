@@ -18,7 +18,6 @@ import java.lang.Exception
 import java.nio.file.Files
 import java.nio.file.Paths
 import kotlin.test.assertEquals
-import kotlin.test.assertTrue
 
 @RunWith(RobolectricTestRunner::class)
 @Config(manifest=Config.NONE)
@@ -42,7 +41,7 @@ class DatabaseTest {
         ).build()
         dao = db!!.summitDao()
         try {
-            SummitInterface.load_database(dao, list)
+            SummitInterface.loadDatabase(dao, list)
         } catch (ex: Exception) {
             shutdown_database()
             throw ex

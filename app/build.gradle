@@ -17,8 +17,8 @@ android {
         applicationId "org.northwinds.app.sotachaser"
         minSdk 24
         targetSdk 32
-        versionCode 2
-        versionName "0.2 Alpha"
+        versionCode 3
+        versionName "0.3 Alpha"
 
         testInstrumentationRunner "org.northwinds.app.sotachaser.SotaChaserTestRunner"
         //testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"

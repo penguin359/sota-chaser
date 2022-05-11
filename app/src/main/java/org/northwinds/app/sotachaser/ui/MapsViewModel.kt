@@ -1,10 +1,13 @@
 package org.northwinds.app.sotachaser.ui
 
 import android.app.Application
+import android.content.Context
 import android.util.Log
+import androidx.core.content.edit
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import androidx.preference.PreferenceManager
 import androidx.room.Room
 import dagger.hilt.android.lifecycle.HiltViewModel
 import org.northwinds.app.sotachaser.R
@@ -39,7 +42,6 @@ import javax.inject.Inject
 
 @HiltViewModel
 class MapsViewModel @Inject constructor(app: Application, private val executorService: ExecutorService) : AndroidViewModel(app) {
-    private val Tag = "SOTAChaser-MapsViewModel"
     private val context = getApplication<Application>().applicationContext
     private val db = Room.databaseBuilder(context, SummitDatabase::class.java, "database").build()
     private val dao = db.summitDao()
@@ -50,14 +52,17 @@ class MapsViewModel @Inject constructor(app: Application, private val executorSe
     }
 
     init {
-        Log.i(Tag, "Starting new model view")
+        Log.i(Companion.TAG, "Starting new model view")
         executorService.execute {
             var items = dao.getAssociations()
-            if(items.count() <= 0) {
+            //val prefs = PreferenceManager.ge
+            val prefs = context.getSharedPreferences("database", Context.MODE_PRIVATE)
+            if(!prefs.getBoolean("database_loaded", false)) {
                 val input = context.resources.openRawResource(R.raw.summitslist)
                 val list = SummitList(input)
 
                 SummitInterface.loadDatabase(dao, list)
+                prefs.edit { putBoolean("database_loaded", true) }
                 items = dao.getAssociations()
             }
             //_associations.postValue(SummitList(context.resources.openRawResource(R.raw.summitslist)).summits_by_region.keys.toList())
@@ -82,7 +87,7 @@ class MapsViewModel @Inject constructor(app: Application, private val executorSe
         if(newAssociation == association)
             return
         association = newAssociation
-        Log.d(Tag, "Selected association: $association")
+        Log.d(Companion.TAG, "Selected association: $association")
         _regions.value = listOf()
         executorService.execute {
             //_regions.postValue(SummitList(context.resources.openRawResource(R.raw.summitslist)).summits_by_region[association]!!.keys.toList())
@@ -101,7 +106,7 @@ class MapsViewModel @Inject constructor(app: Application, private val executorSe
         if(newRegion == region)
             return
         val region = regions.value!![entry]
-        Log.d(Tag, "Selected region: $region")
+        Log.d(Companion.TAG, "Selected region: $region")
         _summits.value = listOf()
         executorService.execute {
             //_summits.postValue(SummitList(context.resources.openRawResource(R.raw.summitslist)).summits_by_region[association]!![region]!!.toList())
@@ -112,5 +117,9 @@ class MapsViewModel @Inject constructor(app: Application, private val executorSe
     override fun onCleared() {
         super.onCleared()
         executorService.shutdown()
+    }
+
+    companion object {
+        private const val TAG = "SOTAChaser-MapsViewModel"
     }
 }

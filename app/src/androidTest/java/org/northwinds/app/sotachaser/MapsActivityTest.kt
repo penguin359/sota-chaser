@@ -75,7 +75,8 @@ class MapsActivityTest {
     fun load_map_viewmodel() {
         Espresso.onIdle()
         rule.scenario.onActivity {
-            val associations = it.model.associations.value
+            val frag = it.supportFragmentManager.fragments[0] as MapsFragment
+            val associations = frag.model.associations.value
             assertNotNull("No associations found", associations)
             assertEquals(
                 "Incorrect number of associations",
@@ -83,43 +84,47 @@ class MapsActivityTest {
             )
             val associationIndex = associations.indexOf("W7O")
             assertNotNull("Can't find W7O association", associationIndex)
-            it.model.setAssociation(associationIndex)
+            frag.model.setAssociation(associationIndex)
         }
         Espresso.onIdle()
         rule.scenario.onActivity {
+            val frag = it.supportFragmentManager.fragments[0] as MapsFragment
             assertEquals(
                 "Incorrect number of regions for association",
-                10, it.model.regions.value!!.count()
+                10, frag.model.regions.value!!.count()
             )
-            val regionIndex = it.model.regions.value!!.indexOf("WV")
+            val regionIndex = frag.model.regions.value!!.indexOf("WV")
             assertNotNull("Can't find WV region", regionIndex)
-            it.model.setRegion(regionIndex)
+            frag.model.setRegion(regionIndex)
         }
         Espresso.onIdle()
         rule.scenario.onActivity {
+            val frag = it.supportFragmentManager.fragments[0] as MapsFragment
             assertEquals(
                 "Incorrect number of summits for region",
-                138, it.model.summits.value!!.count()
+                138, frag.model.summits.value!!.count()
             )
-            val associationIndex2 = it.model.associations.value!!.indexOf("W7W")
+            val associationIndex2 = frag.model.associations.value!!.indexOf("W7W")
             assertNotNull("Can't find W7W association", associationIndex2)
-            it.model.setAssociation(associationIndex2)
+            frag.model.setAssociation(associationIndex2)
         }
         Espresso.onIdle()
         rule.scenario.onActivity {
+            val frag = it.supportFragmentManager.fragments[0] as MapsFragment
             assertEquals(
                 "Incorrect number of regions for association",
-                17, it.model.regions.value!!.count()
+                17, frag.model.regions.value!!.count()
             )
-            val regionIndex2 = it.model.regions.value!!.indexOf("LC")
+            val regionIndex2 = frag.model.regions.value!!.indexOf("LC")
             assertNotNull("Can't find LC region", regionIndex2)
-            it.model.setRegion(regionIndex2)
+            frag.model.setRegion(regionIndex2)
         }
         Espresso.onIdle()
         rule.scenario.onActivity {
+            val frag = it.supportFragmentManager.fragments[0] as MapsFragment
             assertEquals(
                 "Incorrect number of summits for region",
-                169, it.model.summits.value!!.count()
+                169, frag.model.summits.value!!.count()
             )
         }
     }
@@ -128,19 +133,23 @@ class MapsActivityTest {
     fun update_map_viewmodel() {
         Espresso.onIdle()
         rule.scenario.onActivity {
-            it.model.setAssociation(0)
+            val frag = it.supportFragmentManager.fragments[0] as MapsFragment
+            frag.model.setAssociation(0)
         }
         Espresso.onIdle()
         rule.scenario.onActivity {
-            it.model.setRegion(0)
+            val frag = it.supportFragmentManager.fragments[0] as MapsFragment
+            frag.model.setRegion(0)
         }
         Espresso.onIdle()
         rule.scenario.onActivity {
-            it.model.setAssociation(1)
+            val frag = it.supportFragmentManager.fragments[0] as MapsFragment
+            frag.model.setAssociation(1)
         }
         Espresso.onIdle()
         rule.scenario.onActivity {
-            it.model.setRegion(0)
+            val frag = it.supportFragmentManager.fragments[0] as MapsFragment
+            frag.model.setRegion(0)
         }
             //val associations = it.model.associations.value
             //assertNotNull("No associations found", associations)
@@ -183,11 +192,13 @@ class MapsActivityTest {
     fun load_map_activity() {
         Espresso.onIdle()
         rule.scenario.onActivity {
-            it.binding.association.setSelection(0)
+            val frag = it.supportFragmentManager.fragments[0] as MapsFragment
+            frag.binding.association.setSelection(0)
         }
         Espresso.onIdle()
         rule.scenario.onActivity {
-            it.binding.region.setSelection(0)
+            val frag = it.supportFragmentManager.fragments[0] as MapsFragment
+            frag.binding.region.setSelection(0)
         }
         onView(withId(R.id.association)).check(matches(isDisplayed()))
         onView(withId(R.id.association)).check { view, noViewException ->

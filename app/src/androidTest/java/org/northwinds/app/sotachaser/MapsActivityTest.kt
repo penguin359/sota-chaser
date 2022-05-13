@@ -27,6 +27,7 @@ import android.content.Intent
 import android.util.Log
 import android.widget.Spinner
 import androidx.core.content.edit
+import androidx.fragment.app.testing.FragmentScenario
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.Espresso
 import androidx.test.espresso.Espresso.onView
@@ -50,6 +51,7 @@ import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
+import org.northwinds.app.sotachaser.testing.HiltFragmentScenario
 import org.northwinds.app.sotachaser.ui.MapsActivity
 
 @RunWith(AndroidJUnit4::class)
@@ -72,11 +74,63 @@ class MapsActivityTest {
     val rule = ActivityScenarioRule(MapsActivity::class.java)
 
     @Test
+    fun willSendFeedback() {
+        Intents.init()
+        Espresso.openActionBarOverflowOrOptionsMenu(context)
+
+        val appCompatTextView = onView(
+            Matchers.allOf(
+                withText("Feedback"),
+                isDisplayed()
+            )
+        )
+        appCompatTextView.perform(ViewActions.click())
+
+        Log.d(TAG, "All Intents: ${Intents.getIntents().toString()}")
+        Intents.intended(allOf(
+            hasAction(Intent.ACTION_CHOOSER),
+            hasExtra(`is`(Intent.EXTRA_INTENT), allOf(
+                hasAction(Intent.ACTION_SENDTO),
+                //hasType("text/plain"),
+                hasExtra(Intent.EXTRA_EMAIL, arrayOf("penguin359@gmail.com")),
+                hasExtra(`is`(Intent.EXTRA_SUBJECT), allOf(
+                    containsStringIgnoringCase("feedback"),
+                    containsStringIgnoringCase("SOTA Chaser"),
+                )),
+                hasExtra(`is`(Intent.EXTRA_TEXT), allOf(
+                    containsStringIgnoringCase("Version")
+                )),
+            )),
+        ))
+        Intents.release()
+    }
+
+    companion object {
+        private const val TAG = "SOTAChaser-MapsTest"
+    }
+}
+
+
+@RunWith(AndroidJUnit4::class)
+@HiltAndroidTest
+class MapsFragmentTest {
+    @get:Rule
+    val hiltRule = HiltAndroidRule(this)
+
+    //private val context = ApplicationProvider.getApplicationContext<Context>()
+
+    private lateinit var frag: HiltFragmentScenario<MapsFragment>
+
+    @Before
+    fun load_fragment() {
+        frag = HiltFragmentScenario.launchInHiltContainer(MapsFragment::class.java)
+    }
+
+    @Test
     fun load_map_viewmodel() {
         Espresso.onIdle()
-        rule.scenario.onActivity {
-            val frag = it.supportFragmentManager.fragments[0] as MapsFragment
-            val associations = frag.model.associations.value
+        frag.onFragment {
+            val associations = it.model.associations.value
             assertNotNull("No associations found", associations)
             assertEquals(
                 "Incorrect number of associations",
@@ -84,47 +138,43 @@ class MapsActivityTest {
             )
             val associationIndex = associations.indexOf("W7O")
             assertNotNull("Can't find W7O association", associationIndex)
-            frag.model.setAssociation(associationIndex)
+            it.model.setAssociation(associationIndex)
         }
         Espresso.onIdle()
-        rule.scenario.onActivity {
-            val frag = it.supportFragmentManager.fragments[0] as MapsFragment
+        frag.onFragment {
             assertEquals(
                 "Incorrect number of regions for association",
-                10, frag.model.regions.value!!.count()
+                10, it.model.regions.value!!.count()
             )
-            val regionIndex = frag.model.regions.value!!.indexOf("WV")
+            val regionIndex = it.model.regions.value!!.indexOf("WV")
             assertNotNull("Can't find WV region", regionIndex)
-            frag.model.setRegion(regionIndex)
+            it.model.setRegion(regionIndex)
         }
         Espresso.onIdle()
-        rule.scenario.onActivity {
-            val frag = it.supportFragmentManager.fragments[0] as MapsFragment
+        frag.onFragment {
             assertEquals(
                 "Incorrect number of summits for region",
-                138, frag.model.summits.value!!.count()
+                138, it.model.summits.value!!.count()
             )
-            val associationIndex2 = frag.model.associations.value!!.indexOf("W7W")
+            val associationIndex2 = it.model.associations.value!!.indexOf("W7W")
             assertNotNull("Can't find W7W association", associationIndex2)
-            frag.model.setAssociation(associationIndex2)
+            it.model.setAssociation(associationIndex2)
         }
         Espresso.onIdle()
-        rule.scenario.onActivity {
-            val frag = it.supportFragmentManager.fragments[0] as MapsFragment
+        frag.onFragment {
             assertEquals(
                 "Incorrect number of regions for association",
-                17, frag.model.regions.value!!.count()
+                17, it.model.regions.value!!.count()
             )
-            val regionIndex2 = frag.model.regions.value!!.indexOf("LC")
+            val regionIndex2 = it.model.regions.value!!.indexOf("LC")
             assertNotNull("Can't find LC region", regionIndex2)
-            frag.model.setRegion(regionIndex2)
+            it.model.setRegion(regionIndex2)
         }
         Espresso.onIdle()
-        rule.scenario.onActivity {
-            val frag = it.supportFragmentManager.fragments[0] as MapsFragment
+        frag.onFragment {
             assertEquals(
                 "Incorrect number of summits for region",
-                169, frag.model.summits.value!!.count()
+                169, it.model.summits.value!!.count()
             )
         }
     }
@@ -132,73 +182,67 @@ class MapsActivityTest {
     @Test
     fun update_map_viewmodel() {
         Espresso.onIdle()
-        rule.scenario.onActivity {
-            val frag = it.supportFragmentManager.fragments[0] as MapsFragment
-            frag.model.setAssociation(0)
+        frag.onFragment {
+            it.model.setAssociation(0)
         }
         Espresso.onIdle()
-        rule.scenario.onActivity {
-            val frag = it.supportFragmentManager.fragments[0] as MapsFragment
-            frag.model.setRegion(0)
+        frag.onFragment {
+            it.model.setRegion(0)
         }
         Espresso.onIdle()
-        rule.scenario.onActivity {
-            val frag = it.supportFragmentManager.fragments[0] as MapsFragment
-            frag.model.setAssociation(1)
+        frag.onFragment {
+            it.model.setAssociation(1)
         }
         Espresso.onIdle()
-        rule.scenario.onActivity {
-            val frag = it.supportFragmentManager.fragments[0] as MapsFragment
-            frag.model.setRegion(0)
+        frag.onFragment {
+            it.model.setRegion(0)
         }
-            //val associations = it.model.associations.value
-            //assertNotNull("No associations found", associations)
-            //assertEquals(
-            //    "Incorrect number of associations",
-            //    194, associations!!.count()
-            //)
-            //val associationIndex = associations.indexOf("W7O")
-            //assertNotNull("Can't find W7O association", associationIndex)
-            //it.model.set_association(associationIndex)
-            //assertEquals(
-            //    "Incorrect number of regions for association",
-            //    10, it.model.regions.value!!.count()
-            //)
-            //val regionIndex = it.model.regions.value!!.indexOf("WV")
-            //assertNotNull("Can't find WV region", regionIndex)
-            //it.model.set_region(regionIndex)
-            //assertEquals(
-            //    "Incorrect number of summits for region",
-            //    138, it.model.summits.value!!.count()
-            //)
-            //val associationIndex2 = associations.indexOf("W7W")
-            //assertNotNull("Can't find W7W association", associationIndex2)
-            //it.model.set_association(associationIndex2)
-            //assertEquals(
-            //    "Incorrect number of regions for association",
-            //    17, it.model.regions.value!!.count()
-            //)
-            //val regionIndex2 = it.model.regions.value!!.indexOf("LC")
-            //assertNotNull("Can't find LC region", regionIndex2)
-            //it.model.set_region(regionIndex2)
-            //assertEquals(
-            //    "Incorrect number of summits for region",
-            //    169, it.model.summits.value!!.count()
-            //)
+        //val associations = it.model.associations.value
+        //assertNotNull("No associations found", associations)
+        //assertEquals(
+        //    "Incorrect number of associations",
+        //    194, associations!!.count()
+        //)
+        //val associationIndex = associations.indexOf("W7O")
+        //assertNotNull("Can't find W7O association", associationIndex)
+        //it.model.set_association(associationIndex)
+        //assertEquals(
+        //    "Incorrect number of regions for association",
+        //    10, it.model.regions.value!!.count()
+        //)
+        //val regionIndex = it.model.regions.value!!.indexOf("WV")
+        //assertNotNull("Can't find WV region", regionIndex)
+        //it.model.set_region(regionIndex)
+        //assertEquals(
+        //    "Incorrect number of summits for region",
+        //    138, it.model.summits.value!!.count()
+        //)
+        //val associationIndex2 = associations.indexOf("W7W")
+        //assertNotNull("Can't find W7W association", associationIndex2)
+        //it.model.set_association(associationIndex2)
+        //assertEquals(
+        //    "Incorrect number of regions for association",
+        //    17, it.model.regions.value!!.count()
+        //)
+        //val regionIndex2 = it.model.regions.value!!.indexOf("LC")
+        //assertNotNull("Can't find LC region", regionIndex2)
+        //it.model.set_region(regionIndex2)
+        //assertEquals(
+        //    "Incorrect number of summits for region",
+        //    169, it.model.summits.value!!.count()
+        //)
         //}
     }
 
     @Test
     fun load_map_activity() {
         Espresso.onIdle()
-        rule.scenario.onActivity {
-            val frag = it.supportFragmentManager.fragments[0] as MapsFragment
-            frag.binding.association.setSelection(0)
+        frag.onFragment {
+            it.binding.association.setSelection(0)
         }
         Espresso.onIdle()
-        rule.scenario.onActivity {
-            val frag = it.supportFragmentManager.fragments[0] as MapsFragment
-            frag.binding.region.setSelection(0)
+        frag.onFragment {
+            it.binding.region.setSelection(0)
         }
         onView(withId(R.id.association)).check(matches(isDisplayed()))
         onView(withId(R.id.association)).check { view, noViewException ->
@@ -255,45 +299,13 @@ class MapsActivityTest {
             )
         ).perform(ViewActions.click())
         onView(withId(R.id.region)).check(matches(withSpinnerText(Matchers.containsString("WV"))))
-        rule.scenario.recreate()
+        frag.recreate()
         onView(withId(R.id.association)).check(matches(withSpinnerText(Matchers.containsString("W7O"))))
         onView(withId(R.id.region)).check(matches(withSpinnerText(Matchers.containsString("WV"))))
     }
 
-    @Test
-    fun willSendFeedback() {
-        Intents.init()
-        Espresso.openActionBarOverflowOrOptionsMenu(context)
-
-        val appCompatTextView = onView(
-            Matchers.allOf(
-                withText("Feedback"),
-                isDisplayed()
-            )
-        )
-        appCompatTextView.perform(ViewActions.click())
-
-        Log.d(TAG, "All Intents: ${Intents.getIntents().toString()}")
-        Intents.intended(allOf(
-            hasAction(Intent.ACTION_CHOOSER),
-            hasExtra(`is`(Intent.EXTRA_INTENT), allOf(
-                hasAction(Intent.ACTION_SENDTO),
-                //hasType("text/plain"),
-                hasExtra(Intent.EXTRA_EMAIL, arrayOf("penguin359@gmail.com")),
-                hasExtra(`is`(Intent.EXTRA_SUBJECT), allOf(
-                    containsStringIgnoringCase("feedback"),
-                    containsStringIgnoringCase("SOTA Chaser"),
-                )),
-                hasExtra(`is`(Intent.EXTRA_TEXT), allOf(
-                    containsStringIgnoringCase("Version")
-                )),
-            )),
-        ))
-        Intents.release()
-    }
-
     companion object {
-        private const val TAG = "SOTAChaser-MapsTest"
+        private const val TAG = "SOTAChaser-MapsFragTest"
     }
 }
 

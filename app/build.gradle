@@ -136,6 +136,16 @@ dependencies {
 
     // Espresso Intent mocking
     androidTestImplementation 'androidx.test.espresso:espresso-intents:3.4.0'
+
+    implementation 'androidx.navigation:navigation-fragment-ktx:2.3.5'
+    def fragment_version = "1.4.0"
+
+    implementation "androidx.fragment:fragment-ktx:$fragment_version"
+    debugImplementation 'androidx.test:core:1.4.0'
+    //debugImplementation "androidx.fragment:fragment-testing:$fragment_version"
+    debugImplementation("androidx.fragment:fragment-testing:$fragment_version") {
+        exclude group: 'androidx.test', module: 'core'
+    }
 }
 
 // Added for supporting Hilt with Kapt

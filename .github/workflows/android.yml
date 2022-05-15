@@ -42,7 +42,7 @@ jobs:
           script: >
             adb logcat -c && adb logcat -f /sdcard/logcat.txt &
             ./gradlew installDebug --stacktrace &&
-            am start -n org.northwinds.app.sotachaser.dev/org.northwinds.app.sotachaser.ui.MainActivity &&
+            adb shell am start -n org.northwinds.app.sotachaser.dev/org.northwinds.app.sotachaser.ui.MainActivity &&
             sleep 300 &&
             ./gradlew connectedDebugAndroidTest --stacktrace ||
             ( adb pull /sdcard/logcat.txt build/reports/; exit 1 )

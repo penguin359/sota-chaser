@@ -27,9 +27,10 @@ jobs:
           MAPS_API_KEY: ${{ secrets.MAPS_API_KEY || 'a' }}
         run: echo MAPS_API_KEY="${MAPS_API_KEY}" >> local.properties
       - name: Build with Gradle
-        run: ./gradlew build
+        #run: ./gradlew build
+        run: ./gradlew buildDebug
       - name: Run Unit Tests
-        run: ./gradlew test
+        run: ./gradlew testDebug
 
       - name: Run Instrumented Tests
         uses: reactivecircus/android-emulator-runner@v2
@@ -40,8 +41,9 @@ jobs:
           profile: Nexus 6
           script: >
             adb logcat -c && adb logcat -f /sdcard/logcat.txt &
-            ./gradlew connectedCheck --stacktrace ||
+            ./gradlew connectedDebugAndroidTest --stacktrace ||
             ( adb pull /sdcard/logcat.txt build/reports/; exit 1 )
+            #./gradlew connectedCheck --stacktrace ||
 
       - name: Upload reports
         uses: actions/upload-artifact@v2

@@ -52,11 +52,11 @@ import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.northwinds.app.sotachaser.testing.HiltFragmentScenario
-import org.northwinds.app.sotachaser.ui.MapsActivity
+import org.northwinds.app.sotachaser.ui.MainActivity
 
 @RunWith(AndroidJUnit4::class)
 @HiltAndroidTest
-class MapsActivityTest {
+class MainActivityTest {
     @get:Rule(order = 0)
     val hiltRule = HiltAndroidRule(this)
 
@@ -71,7 +71,7 @@ class MapsActivityTest {
     }
 
     @get:Rule(order = 2)
-    val rule = ActivityScenarioRule(MapsActivity::class.java)
+    val rule = ActivityScenarioRule(MainActivity::class.java)
 
     @Test
     fun willSendFeedback() {
@@ -315,7 +315,7 @@ private const val LAUNCH_TIMEOUT = 5000L
 @RunWith(AndroidJUnit4::class)
 @HiltAndroidTest
 //@SdkSuppress(minSdkVersion = 18)
-class MapsActivityUiTest {
+class MainActivityUiTest {
     @get:Rule
     val hiltRule = HiltAndroidRule(this)
 

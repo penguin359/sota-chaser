@@ -66,7 +66,7 @@ import org.junit.Assert.assertTrue
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
-import org.northwinds.app.sotachaser.ui.MapsActivity
+import org.northwinds.app.sotachaser.ui.MainActivity
 
 @RunWith(AndroidJUnit4::class)
 @HiltAndroidTest
@@ -82,7 +82,7 @@ class DialogTest {
     }
 
     @get:Rule(order = 2)
-    val scenarioRule = ActivityScenarioRule(MapsActivity::class.java)
+    val scenarioRule = ActivityScenarioRule(MainActivity::class.java)
 
     private val appContext = InstrumentationRegistry.getInstrumentation().targetContext
     private val prefEnableAnalytics = appContext.getString(R.string.preference_enable_analytics)
@@ -177,7 +177,7 @@ class ChanglogDialogTest {
     }
 
     @get:Rule(order = 2)
-    val scenarioRule = ActivityScenarioRule(MapsActivity::class.java)
+    val scenarioRule = ActivityScenarioRule(MainActivity::class.java)
 
     private val appContext = InstrumentationRegistry.getInstrumentation().targetContext
     private val prefChangelog = appContext.getString(R.string.preference_changelog)

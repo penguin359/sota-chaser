@@ -1,43 +1,50 @@
 package org.northwinds.app.sotachaser.ui
 
-import android.content.Context
 import android.content.Intent
 import android.net.Uri
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
-import android.view.*
-import android.widget.AdapterView
-import android.widget.AdapterView.OnItemSelectedListener
-import android.widget.ArrayAdapter
+import android.view.Menu
+import android.view.MenuItem
 import android.widget.Button
-import androidx.activity.viewModels
 import androidx.appcompat.app.AlertDialog
+import com.google.android.material.bottomnavigation.BottomNavigationView
+import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.edit
+import androidx.navigation.findNavController
+import androidx.navigation.ui.AppBarConfiguration
+import androidx.navigation.ui.setupActionBarWithNavController
+import androidx.navigation.ui.setupWithNavController
 import androidx.preference.PreferenceManager
-
-import com.google.android.gms.maps.CameraUpdateFactory
-import com.google.android.gms.maps.GoogleMap
-import com.google.android.gms.maps.OnMapReadyCallback
-import com.google.android.gms.maps.SupportMapFragment
-import com.google.android.gms.maps.model.LatLng
-import com.google.android.gms.maps.model.LatLngBounds
-import com.google.android.gms.maps.model.MarkerOptions
 import dagger.hilt.android.AndroidEntryPoint
 import org.northwinds.app.sotachaser.BuildConfig
 import org.northwinds.app.sotachaser.R
-import org.northwinds.app.sotachaser.databinding.ActivityMapsBinding
+import org.northwinds.app.sotachaser.databinding.ActivityMainBinding
+
+private const val Tag = "SOTAChaser-MainActivity"
 
 @AndroidEntryPoint
-class MapsActivity : AppCompatActivity() {
-    private val Tag = "SOTAChaser-MapsActivity"
-    lateinit var binding: ActivityMapsBinding
+class MainActivity : AppCompatActivity() {
+    private lateinit var binding: ActivityMainBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        binding = ActivityMapsBinding.inflate(layoutInflater)
+        binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
+
+        val navView: BottomNavigationView = binding.navView
+
+        val navController = findNavController(R.id.nav_host_fragment_activity_main)
+        // Passing each menu ID as a set of Ids because each
+        // menu should be considered as top level destinations.
+        val appBarConfiguration = AppBarConfiguration(
+            setOf(
+                R.id.navigation_home, R.id.navigation_dashboard, R.id.navigation_notifications
+            )
+        )
+        setupActionBarWithNavController(navController, appBarConfiguration)
+        navView.setupWithNavController(navController)
 
         val crashButton = Button(this)
         crashButton.text = "Test Crash"

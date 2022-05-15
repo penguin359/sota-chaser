@@ -52,7 +52,7 @@ import org.junit.Assert.assertEquals
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
-import org.northwinds.app.sotachaser.ui.MapsActivity
+import org.northwinds.app.sotachaser.ui.MainActivity
 import org.northwinds.app.sotachaser.ui.SettingsActivity
 import java.lang.Thread.sleep
 
@@ -135,7 +135,7 @@ class SettingsOpenTest {
     }
 
     @get:Rule(order = 2)
-    var mActivityScenarioRule = ActivityScenarioRule(MapsActivity::class.java)
+    var mActivityScenarioRule = ActivityScenarioRule(MainActivity::class.java)
 
     @Test
     fun settingsTest() {

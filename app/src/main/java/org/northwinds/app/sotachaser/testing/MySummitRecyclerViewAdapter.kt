@@ -7,6 +7,7 @@ import android.view.ViewGroup
 import android.widget.TextView
 import org.northwinds.app.sotachaser.R
 import org.northwinds.app.sotachaser.databinding.FragmentSummitBinding
+import org.northwinds.app.sotachaser.room.Summit
 
 import org.northwinds.app.sotachaser.testing.placeholder.PlaceholderContent.PlaceholderItem
 
@@ -15,7 +16,7 @@ import org.northwinds.app.sotachaser.testing.placeholder.PlaceholderContent.Plac
  * TODO: Replace the implementation with code for your data type.
  */
 class MySummitRecyclerViewAdapter(
-    private val values: List<PlaceholderItem>
+    private val values: List<Summit>
 ) : RecyclerView.Adapter<MySummitRecyclerViewAdapter.ViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -32,8 +33,8 @@ class MySummitRecyclerViewAdapter(
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val item = values[position]
-        holder.idView.text = item.id
-        holder.contentView.text = item.content
+        holder.idView.text = item.code
+        holder.contentView.text = item.name
     }
 
     override fun getItemCount(): Int = values.size

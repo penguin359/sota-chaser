@@ -1,10 +1,13 @@
 package org.northwinds.app.sotachaser.ui
 
 import androidx.recyclerview.widget.RecyclerView
+import androidx.test.espresso.DataInteraction
 import androidx.test.espresso.Espresso.onData
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions.click
+import androidx.test.espresso.action.ViewActions.scrollTo
 import androidx.test.espresso.assertion.ViewAssertions.matches
+import androidx.test.espresso.contrib.RecyclerViewActions.scrollToPosition
 import androidx.test.espresso.matcher.ViewMatchers.*
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import dagger.hilt.android.testing.HiltAndroidRule
@@ -16,6 +19,8 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import org.northwinds.app.sotachaser.R
 import org.northwinds.app.sotachaser.testing.HiltFragmentScenario
+import org.northwinds.app.sotachaser.testing.Matcher.atPosition
+import org.northwinds.app.sotachaser.testing.MySummitRecyclerViewAdapter
 import org.northwinds.app.sotachaser.testing.SummitFragment
 
 @RunWith(AndroidJUnit4::class)
@@ -99,5 +104,42 @@ class SummitsFragmentTest {
             val recyclerView = view as RecyclerView
             assertEquals(76, recyclerView.adapter?.itemCount)
         }
+    }
+
+    @Test
+    fun loadSummitSummary() {
+        val frag = HiltFragmentScenario.launchInHiltContainer(SummitFragment::class.java)
+        onView(withId(R.id.association)).perform(click())
+        onData(
+            allOf(`is`(instanceOf(String::class.java)), `is`(equalTo("HL")))
+        ).perform(click())
+        onView(withId(R.id.region)).perform(click())
+        onData(
+            allOf(`is`(instanceOf(String::class.java)), `is`(equalTo("GN")))
+        ).perform(click())
+        onView(withId(R.id.list)).perform(
+                    scrollToPosition<MySummitRecyclerViewAdapter.ViewHolder>(45))/*.check(matches(atPosition(45, hasDescendant(
+            withText(containsString("뒷삐알산")
+        )))))*/
+        onView(withId(R.id.list)).check(matches(atPosition(45, hasDescendant(allOf(withId(R.id.points), withText("6"))))))
+        //onView(withId(R.id.list)).check(matches(atPosition(45, hasDescendant(allOf(withId(R.id.altitude), withText("2713"))))))
+        onView(allOf(withId(R.id.list), hasDescendant(atPosition(45, hasDescendant(allOf(withId(R.id.altitude)))))))
+        //kotlin.test.assertEquals("HL/GN-046", entry.summitCode)
+        //kotlin.test.assertEquals("South Korea", entry.associationName)
+        //kotlin.test.assertEquals("Gyeongnam", entry.regionName)
+        //kotlin.test.assertEquals("뒷삐알산 (Dwitppialsan)", entry.summitName)
+        //kotlin.test.assertEquals(827, entry.altM)
+        //kotlin.test.assertEquals(2713, entry.altFt)
+        //kotlin.test.assertEquals("128.9960", entry.gridRef1)
+        //kotlin.test.assertEquals("35.4368", entry.gridRef2)
+        //kotlin.test.assertEquals(128.996, entry.longitude)
+        //kotlin.test.assertEquals(35.4368, entry.latitude)
+        //kotlin.test.assertEquals(6, entry.points)
+        //kotlin.test.assertEquals(3, entry.bonusPoints)
+        //kotlin.test.assertEquals("01/07/2010", entry.validFrom)
+        //kotlin.test.assertEquals("31/12/2099", entry.validTo)
+        //kotlin.test.assertEquals(9, entry.activationCount)
+        //kotlin.test.assertEquals("02/10/2020", entry.activationDate)
+        //kotlin.test.assertEquals("DS5VKX", entry.activationCall)
     }
 }

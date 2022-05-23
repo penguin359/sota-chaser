@@ -35,6 +35,8 @@ class MySummitRecyclerViewAdapter(
         val item = values[position]
         holder.idView.text = item.code
         holder.contentView.text = item.name
+        holder.altView.text = "${item.altFt}"
+        holder.pointsView.text = "${item.points}"
     }
 
     override fun getItemCount(): Int = values.size
@@ -42,6 +44,8 @@ class MySummitRecyclerViewAdapter(
     inner class ViewHolder(binding: FragmentSummitBinding) : RecyclerView.ViewHolder(binding.root) {
         val idView: TextView = binding.itemNumber
         val contentView: TextView = binding.content
+        val altView = binding.altitude
+        val pointsView = binding.points
 
         override fun toString(): String {
             return super.toString() + " '" + contentView.text + "'"

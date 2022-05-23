@@ -1,7 +1,7 @@
 package com.dannyroa.espresso_samples.recyclerview;
 
 import android.content.res.Resources;
-import android.support.v7.widget.RecyclerView;
+import androidx.recyclerview.widget.RecyclerView;
 import android.view.View;
 import org.hamcrest.Description;
 import org.hamcrest.Matcher;
@@ -25,7 +25,7 @@ public class RecyclerViewMatcher {
 
         return new TypeSafeMatcher<View>() {
             Resources resources = null;
-            View childView;
+            View childView = null;
 
             public void describeTo(Description description) {
                 String idDescription = Integer.toString(recyclerViewId);
@@ -40,6 +40,8 @@ public class RecyclerViewMatcher {
                 }
 
                 description.appendText("with id: " + idDescription);
+                if (childView == null)
+                    description.appendText(" (child view not found)");
             }
 
             public boolean matchesSafely(View view) {
@@ -50,7 +52,13 @@ public class RecyclerViewMatcher {
                     RecyclerView recyclerView =
                         (RecyclerView) view.getRootView().findViewById(recyclerViewId);
                     if (recyclerView != null && recyclerView.getId() == recyclerViewId) {
-                        childView = recyclerView.findViewHolderForAdapterPosition(position).itemView;
+                        RecyclerView.ViewHolder childViewHolder = recyclerView.findViewHolderForAdapterPosition(position);
+                        if (childViewHolder != null) {
+                            childView = childViewHolder.itemView;
+                        }
+                        else {
+                            return false;
+                        }
                     }
                     else {
                         return false;

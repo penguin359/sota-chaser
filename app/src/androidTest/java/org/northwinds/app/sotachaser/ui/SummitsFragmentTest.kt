@@ -10,6 +10,7 @@ import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.contrib.RecyclerViewActions.scrollToPosition
 import androidx.test.espresso.matcher.ViewMatchers.*
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import com.dannyroa.espresso_samples.recyclerview.RecyclerViewMatcher
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
 import junit.framework.Assert.assertEquals
@@ -22,6 +23,7 @@ import org.northwinds.app.sotachaser.testing.HiltFragmentScenario
 import org.northwinds.app.sotachaser.testing.Matcher.atPosition
 import org.northwinds.app.sotachaser.testing.MySummitRecyclerViewAdapter
 import org.northwinds.app.sotachaser.testing.SummitFragment
+import java.lang.Thread.sleep
 
 @RunWith(AndroidJUnit4::class)
 @HiltAndroidTest
@@ -117,13 +119,33 @@ class SummitsFragmentTest {
         onData(
             allOf(`is`(instanceOf(String::class.java)), `is`(equalTo("GN")))
         ).perform(click())
+        onView(RecyclerViewMatcher(R.id.list).atPosition(0)).check(matches(hasDescendant(withText(containsString("지리산")))))
+        onView(withId(R.id.list)).check(matches(atPosition(0, hasDescendant(allOf(withId(R.id.points), withText("10"))))))
+        onView(RecyclerViewMatcher(R.id.list).atPositionOnView(0, R.id.points)).check(matches(withText("10")))
+        onView(withId(R.id.list)).check(matches(atPosition(0, hasDescendant(allOf(withId(R.id.altitude), withText("6284"))))))
+        onView(RecyclerViewMatcher(R.id.list).atPositionOnView(0, R.id.altitude)).check(matches(withText("6284")))
+    }
+
+    @Test
+    fun loadSummitSummaryAtBottomOfList() {
+        // Position for summit HL/GN-046
+        val summitPosition = 44  // Zero-indexed and summit HL/GN-011 doesn't exist
+        val frag = HiltFragmentScenario.launchInHiltContainer(SummitFragment::class.java)
+        onView(withId(R.id.association)).perform(click())
+        onData(
+            allOf(`is`(instanceOf(String::class.java)), `is`(equalTo("HL")))
+        ).perform(click())
+        onView(withId(R.id.region)).perform(click())
+        onData(
+            allOf(`is`(instanceOf(String::class.java)), `is`(equalTo("GN")))
+        ).perform(click())
         onView(withId(R.id.list)).perform(
-                    scrollToPosition<MySummitRecyclerViewAdapter.ViewHolder>(45))/*.check(matches(atPosition(45, hasDescendant(
-            withText(containsString("뒷삐알산")
-        )))))*/
-        onView(withId(R.id.list)).check(matches(atPosition(45, hasDescendant(allOf(withId(R.id.points), withText("6"))))))
-        //onView(withId(R.id.list)).check(matches(atPosition(45, hasDescendant(allOf(withId(R.id.altitude), withText("2713"))))))
-        onView(allOf(withId(R.id.list), hasDescendant(atPosition(45, hasDescendant(allOf(withId(R.id.altitude)))))))
+            scrollToPosition<MySummitRecyclerViewAdapter.ViewHolder>(summitPosition))
+        onView(RecyclerViewMatcher(R.id.list).atPosition(summitPosition)).check(matches(hasDescendant(withText(containsString("뒷삐알산")))))
+        onView(RecyclerViewMatcher(R.id.list).atPositionOnView(summitPosition, R.id.summit_id)).check(matches(withText(containsString("046"))))
+        onView(RecyclerViewMatcher(R.id.list).atPositionOnView(summitPosition, R.id.name)).check(matches(withText(containsString("뒷삐알산"))))
+        onView(RecyclerViewMatcher(R.id.list).atPositionOnView(summitPosition, R.id.points)).check(matches(withText("6")))
+        onView(RecyclerViewMatcher(R.id.list).atPositionOnView(summitPosition, R.id.altitude)).check(matches(withText("2713")))
         //kotlin.test.assertEquals("HL/GN-046", entry.summitCode)
         //kotlin.test.assertEquals("South Korea", entry.associationName)
         //kotlin.test.assertEquals("Gyeongnam", entry.regionName)

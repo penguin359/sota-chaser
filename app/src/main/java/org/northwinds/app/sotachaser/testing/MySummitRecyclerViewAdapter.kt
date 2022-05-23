@@ -42,8 +42,8 @@ class MySummitRecyclerViewAdapter(
     override fun getItemCount(): Int = values.size
 
     inner class ViewHolder(binding: FragmentSummitBinding) : RecyclerView.ViewHolder(binding.root) {
-        val idView: TextView = binding.itemNumber
-        val contentView: TextView = binding.content
+        val idView: TextView = binding.summitId
+        val contentView: TextView = binding.name
         val altView = binding.altitude
         val pointsView = binding.points
 

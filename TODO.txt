@@ -3,3 +3,11 @@ Show summit details
 Show by distance
 Launcher Icon
 
+Tablet - Large Screen Layout
+Alerts/Spots
+
+
+Colorize points by value
+Colorize markers by point value or activation status
+Sort summits by designator/points/distance/name/last activated
+

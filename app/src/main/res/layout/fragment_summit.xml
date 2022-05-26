@@ -22,7 +22,7 @@
         android:layout_marginBottom="12dp"
         android:textAppearance="?attr/textAppearanceListItem"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/summit_id"
+        app:layout_constraintTop_toBottomOf="@id/summit_id"
         tools:text="Big Summit Name" />
 
     <TextView
@@ -30,18 +30,44 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textAppearance="?attr/textAppearanceListItem"
-        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/altitude"
+        app:layout_constraintTop_toBottomOf="@id/altitude"
         tools:text="10 points" />
 
     <TextView
         android:id="@+id/altitude"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
         android:textAppearance="?attr/textAppearanceListItem"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        tools:layout_editor_absoluteY="107dp"
         tools:text="1234 ft" />
+
+    <TextView
+        android:id="@+id/activation_count"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?attr/textAppearanceListItem"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/points"
+        tools:text="Activations: 137" />
+
+    <TextView
+        android:id="@+id/activation_callsign"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?attr/textAppearanceListItem"
+        app:layout_constraintTop_toBottomOf="@id/name"
+        app:layout_constraintStart_toStartOf="parent"
+        tools:text="AB1CDE" />
+
+    <TextView
+        android:id="@+id/activation_date"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?attr/textAppearanceListItem"
+        app:layout_constraintTop_toBottomOf="@id/activation_callsign"
+        app:layout_constraintStart_toStartOf="parent"
+        tools:text="2022-02-15" />
 </androidx.constraintlayout.widget.ConstraintLayout>

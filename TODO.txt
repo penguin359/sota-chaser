@@ -11,3 +11,8 @@ Colorize points by value
 Colorize markers by point value or activation status
 Sort summits by designator/points/distance/name/last activated
 
+Feet/meters
+
+Click to show on map
+Show local position relative to summit
+

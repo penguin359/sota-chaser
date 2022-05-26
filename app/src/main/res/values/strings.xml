@@ -10,6 +10,9 @@
     <string name="title_changelog">Changelog</string>
     <string name="changelog_text">Updates in this release:\n
 \n
+<b>Version 0.4 Alpha</b>\n
+• Added screen for showing detailed summit info\n
+\n
 <b>Version 0.3 Alpha</b>\n
 • Added opt-in analytics and crash reporting\n
 • Added feedback button\n

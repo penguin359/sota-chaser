@@ -43,7 +43,7 @@ class MySummitRecyclerViewAdapter(
         holder.activationCountView.text = "Activations: ${item.activationCount}"
         holder.activationDateView.text = item.activationDate
         holder.activationCallsignView.text = item.activationCall
-        holder.distanceView.text = location?.run { calculateDistance(latitude, longitude, item.latitude, item.longitude).toString() } ?: ""
+        holder.distanceView.text = location?.run { "${"%.2f".format(calculateDistance(latitude, longitude, item.latitude, item.longitude))} miles" } ?: ""
     }
 
     override fun getItemCount(): Int = values.size

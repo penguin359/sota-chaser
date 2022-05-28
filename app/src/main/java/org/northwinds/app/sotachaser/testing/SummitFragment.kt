@@ -14,6 +14,7 @@ import android.view.ViewGroup
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.core.content.edit
 import androidx.fragment.app.viewModels
@@ -133,6 +134,9 @@ class SummitFragment : Fragment() {
                     locationClient.lastLocation.addOnSuccessListener { location ->
                         model.setLocation(location)
                     }
+                }
+                ActivityCompat.shouldShowRequestPermissionRationale(requireActivity(), Manifest.permission.ACCESS_COARSE_LOCATION) -> {
+                    // ...
                 }
                 else -> {
                     registerForActivityResult(ActivityResultContracts.RequestPermission()) { isGranted ->

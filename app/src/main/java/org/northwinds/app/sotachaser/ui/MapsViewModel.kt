@@ -2,6 +2,7 @@ package org.northwinds.app.sotachaser.ui
 
 import android.app.Application
 import android.content.Context
+import android.location.Location
 import android.util.Log
 import androidx.core.content.edit
 import androidx.lifecycle.AndroidViewModel
@@ -45,6 +46,13 @@ class MapsViewModel @Inject constructor(app: Application, private val executorSe
     private val context = getApplication<Application>().applicationContext
     private val db = Room.databaseBuilder(context, SummitDatabase::class.java, "database").build()
     private val dao = db.summitDao()
+
+    private val _location = MutableLiveData<Location?>()
+    val location: LiveData<Location?> = _location
+
+    fun setLocation(location: Location?) {
+        _location.value = location
+    }
 
     private val _associations = MutableLiveData<List<String>>().apply {
         //value = SummitList(context.resources.openRawResource(R.raw.summitslist)).summits_by_region.keys.toList()

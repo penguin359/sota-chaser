@@ -16,3 +16,8 @@ Feet/meters
 Click to show on map
 Show local position relative to summit
 
+Sota spotting
+Offline max
+Show association/region name in spinner
+Multi-select
+

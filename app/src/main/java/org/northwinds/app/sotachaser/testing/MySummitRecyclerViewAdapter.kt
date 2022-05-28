@@ -1,5 +1,6 @@
 package org.northwinds.app.sotachaser.testing
 
+import android.location.Location
 import androidx.recyclerview.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
@@ -10,13 +11,15 @@ import org.northwinds.app.sotachaser.databinding.FragmentSummitBinding
 import org.northwinds.app.sotachaser.room.Summit
 
 import org.northwinds.app.sotachaser.testing.placeholder.PlaceholderContent.PlaceholderItem
+import org.northwinds.app.sotachaser.util.calculateDistance
 
 /**
  * [RecyclerView.Adapter] that can display a [PlaceholderItem].
  * TODO: Replace the implementation with code for your data type.
  */
 class MySummitRecyclerViewAdapter(
-    private val values: List<Summit>
+    private val values: List<Summit>,
+    private val location: Location?
 ) : RecyclerView.Adapter<MySummitRecyclerViewAdapter.ViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -40,6 +43,7 @@ class MySummitRecyclerViewAdapter(
         holder.activationCountView.text = "Activations: ${item.activationCount}"
         holder.activationDateView.text = item.activationDate
         holder.activationCallsignView.text = item.activationCall
+        holder.distanceView.text = location?.run { calculateDistance(latitude, longitude, item.latitude, item.longitude).toString() } ?: ""
     }
 
     override fun getItemCount(): Int = values.size
@@ -52,6 +56,7 @@ class MySummitRecyclerViewAdapter(
         val activationCountView = binding.activationCount
         val activationDateView = binding.activationDate
         val activationCallsignView = binding.activationCallsign
+        val distanceView = binding.distance
 
         override fun toString(): String {
             return super.toString() + " '" + contentView.text + "'"

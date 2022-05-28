@@ -1,5 +1,7 @@
 package org.northwinds.app.sotachaser.testing
 
+import android.Manifest
+import android.content.pm.PackageManager
 import android.os.Bundle
 import android.util.Log
 import androidx.fragment.app.Fragment
@@ -11,9 +13,15 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.core.content.ContextCompat
 import androidx.core.content.edit
 import androidx.fragment.app.viewModels
 import androidx.preference.PreferenceManager
+import com.google.android.gms.common.ConnectionResult
+import com.google.android.gms.common.GoogleApiAvailability
+import com.google.android.gms.common.GooglePlayServicesUtil
+import com.google.android.gms.location.LocationServices
 import dagger.hilt.android.AndroidEntryPoint
 import org.northwinds.app.sotachaser.MapsFragment
 import org.northwinds.app.sotachaser.R
@@ -104,9 +112,42 @@ class SummitFragment : Fragment() {
                 else -> GridLayoutManager(context, columnCount)
             }
             model.summits.observe(viewLifecycleOwner) { summits ->
-                adapter = MySummitRecyclerViewAdapter(summits)
+                adapter = MySummitRecyclerViewAdapter(summits, model.location.value)
+            }
+            model.location.observe(viewLifecycleOwner) { location ->
+                if(model.summits.value != null) {
+                    adapter = MySummitRecyclerViewAdapter(model.summits.value!!, location)
+                }
             }
         }
+
+        if(GoogleApiAvailability().isGooglePlayServicesAvailable(requireContext()) == ConnectionResult.SUCCESS) {
+            when {
+                ContextCompat.checkSelfPermission(
+                    requireContext(),
+                    Manifest.permission.ACCESS_COARSE_LOCATION
+                ) == PackageManager.PERMISSION_GRANTED
+                -> {
+                    val locationClient =
+                        LocationServices.getFusedLocationProviderClient(requireActivity())
+                    locationClient.lastLocation.addOnSuccessListener { location ->
+                        model.setLocation(location)
+                    }
+                }
+                else -> {
+                    registerForActivityResult(ActivityResultContracts.RequestPermission()) { isGranted ->
+                        if (isGranted) {
+                            val locationClient =
+                                LocationServices.getFusedLocationProviderClient(requireActivity())
+                            locationClient.lastLocation.addOnSuccessListener { location ->
+                                model.setLocation(location)
+                            }
+                        }
+                    }.launch(Manifest.permission.ACCESS_COARSE_LOCATION)
+                }
+            }
+        }
+
         return binding.root
     }
 

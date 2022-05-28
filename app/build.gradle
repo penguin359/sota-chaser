@@ -152,6 +152,8 @@ dependencies {
     debugImplementation("androidx.fragment:fragment-testing:$fragment_version") {
         exclude group: 'androidx.test', module: 'core'
     }
+
+    implementation 'com.google.android.gms:play-services-location:19.0.1'
 }
 
 // Added for supporting Hilt with Kapt

@@ -1,5 +1,6 @@
 package org.northwinds.app.sotachaser
 
+import android.os.Build
 import android.text.method.TextKeyListener.clear
 import androidx.core.content.edit
 import androidx.preference.PreferenceManager
@@ -26,6 +27,11 @@ class AnalyticsTest {
     @Before
     fun setUp() {
         prefs.edit() { clear() }
+        /* Older android versions do not emit listener events on clear() */
+        if(Build.VERSION.SDK_INT < Build.VERSION_CODES.R) {
+            prefs.edit() { putBoolean(prefEnableAnalytics, false) }
+            prefs.edit() { putBoolean(prefEnableCrashReports, false) }
+        }
         Espresso.onIdle()
     }
 
@@ -72,6 +78,8 @@ class AnalyticsTest {
         Espresso.onIdle()
         assertThat("Analytics enabled", context.analyticsEnabled, `is`(equalTo(true)))
         prefs.edit() { clear() }
+        if(Build.VERSION.SDK_INT < Build.VERSION_CODES.R)
+            prefs.edit() { putBoolean(prefEnableAnalytics, false) }
         Espresso.onIdle()
         assertThat("Analytics enabled", context.analyticsEnabled, `is`(equalTo(false)))
     }
@@ -113,6 +121,8 @@ class AnalyticsTest {
         Espresso.onIdle()
         assertThat("Crash Reports enabled", context.crashReportsEnabled, `is`(equalTo(true)))
         prefs.edit() { clear() }
+        if(Build.VERSION.SDK_INT < Build.VERSION_CODES.R)
+            prefs.edit() { putBoolean(prefEnableCrashReports, false) }
         Espresso.onIdle()
         assertThat("Crash Reports enabled", context.crashReportsEnabled, `is`(equalTo(false)))
     }

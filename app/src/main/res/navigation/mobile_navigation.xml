@@ -15,13 +15,31 @@
         android:id="@+id/navigation_dashboard"
         android:name="org.northwinds.app.sotachaser.testing.SummitFragment"
         android:label="@string/title_dashboard"
-        tools:layout="@layout/fragment_dashboard" />
-
-<!--
+        tools:layout="@layout/fragment_dashboard" >
+        <action
+            android:id="@+id/action_navigation_dashboard_to_summitDetailsFragment"
+            app:destination="@id/summitDetailsFragment" />
+    </fragment>
     <fragment
-        android:id="@+id/navigation_notifications"
-        android:name="org.northwinds.app.sotachaser.ui.ui.notifications.NotificationsFragment"
-        android:label="@string/title_notifications"
-        tools:layout="@layout/fragment_notifications" />
--->
+        android:id="@+id/summitDetailsFragment"
+        android:name="org.northwinds.app.sotachaser.ui.ui.SummitDetailsFragment"
+        android:label="SummitDetailsFragment" >
+        <argument
+            android:name="region"
+            app:argType="string" />
+        <argument
+            android:name="association"
+            app:argType="string" />
+        <argument
+            android:name="summit"
+            app:argType="string" />
+    </fragment>
+
+    <!--
+        <fragment
+            android:id="@+id/navigation_notifications"
+            android:name="org.northwinds.app.sotachaser.ui.ui.notifications.NotificationsFragment"
+            android:label="@string/title_notifications"
+            tools:layout="@layout/fragment_notifications" />
+    -->
 </navigation>

@@ -7,7 +7,7 @@ plugins {
     // Used by Firebase
     id 'com.google.gms.google-services'
     id 'com.google.firebase.crashlytics'
-
+    //id 'androidx.navigation.safeargs.kotlin'
 }
 
 android {

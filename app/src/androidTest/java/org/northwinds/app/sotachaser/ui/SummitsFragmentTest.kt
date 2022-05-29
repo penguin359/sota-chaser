@@ -1,7 +1,9 @@
 package org.northwinds.app.sotachaser.ui
 
 import androidx.recyclerview.widget.RecyclerView
+import androidx.test.core.app.ActivityScenario
 import androidx.test.espresso.DataInteraction
+import androidx.test.espresso.Espresso
 import androidx.test.espresso.Espresso.onData
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions.click
@@ -169,5 +171,69 @@ class SummitsFragmentTest {
         //kotlin.test.assertEquals(9, entry.activationCount)
         //kotlin.test.assertEquals("02/10/2020", entry.activationDate)
         //kotlin.test.assertEquals("DS5VKX", entry.activationCall)
+    }
+
+    @Test
+    fun loadSummitDetailsFragment() {
+        //val frag = HiltFragmentScenario.launchInHiltContainer(SummitFragment::class.java)
+        ActivityScenario.launch(MainActivity::class.java)
+        onView(withId(R.id.navigation_dashboard)).perform(click())
+        onView(withId(R.id.association)).perform(click())
+        onData(
+            allOf(`is`(instanceOf(String::class.java)), `is`(equalTo("W7O")))
+        ).perform(click())
+        onView(withId(R.id.region)).perform(click())
+        onData(
+            allOf(`is`(instanceOf(String::class.java)), `is`(equalTo("CN")))
+        ).perform(click())
+        sleep(5000)
+        onView(withText(containsString("W7O/CN-001"))).perform(click())
+        onView(withId(R.id.map)).check(matches(isDisplayed()))
+    }
+
+    @Test
+    fun loadCorrectSummitDetailsFragment() {
+        //val frag = HiltFragmentScenario.launchInHiltContainer(SummitFragment::class.java)
+        ActivityScenario.launch(MainActivity::class.java)
+        onView(withId(R.id.navigation_dashboard)).perform(click())
+        onView(withId(R.id.association)).perform(click())
+        onData(
+            allOf(`is`(instanceOf(String::class.java)), `is`(equalTo("W7O")))
+        ).perform(click())
+        onView(withId(R.id.region)).perform(click())
+        onData(
+            allOf(`is`(instanceOf(String::class.java)), `is`(equalTo("CN")))
+        ).perform(click())
+        //sleep(5000)
+        onView(withText(containsString("W7O/CN-001"))).perform(click())
+        onView(withId(R.id.map)).check(matches(isDisplayed()))
+        onView(withId(R.id.summit_id))
+            .check(matches(withText(containsString("W7O/CN-001"))))
+        onView(withId(R.id.name))
+            .check(matches(withText(containsString("Mount Hood"))))
+        //onView(withId(R.id.name))
+        //    .check(matches(withText(containsString("지리산"))))
+    }
+
+    @Test
+    fun loadDifferentSummitDetailsFragment() {
+        ActivityScenario.launch(MainActivity::class.java)
+        onView(withId(R.id.navigation_dashboard)).perform(click())
+        onView(withId(R.id.association)).perform(click())
+        onData(
+            allOf(`is`(instanceOf(String::class.java)), `is`(equalTo("HL")))
+        ).perform(click())
+        onView(withId(R.id.region)).perform(click())
+        onData(
+            allOf(`is`(instanceOf(String::class.java)), `is`(equalTo("GN")))
+        ).perform(click())
+        onView(withId(R.id.list)).perform(
+            scrollToPosition<MySummitRecyclerViewAdapter.ViewHolder>(44))
+        onView(withText(containsString("HL/GN-046"))).perform(click())
+        onView(withId(R.id.map)).check(matches(isDisplayed()))
+        onView(withId(R.id.summit_id))
+            .check(matches(withText(containsString("HL/GN-046"))))
+        onView(withId(R.id.name))
+            .check(matches(withText(containsString("뒷삐알산"))))
     }
 }

@@ -6,6 +6,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
+import androidx.core.os.bundleOf
+import androidx.navigation.findNavController
 import org.northwinds.app.sotachaser.R
 import org.northwinds.app.sotachaser.databinding.FragmentSummitBinding
 import org.northwinds.app.sotachaser.room.Summit
@@ -44,11 +46,22 @@ class MySummitRecyclerViewAdapter(
         holder.activationDateView.text = item.activationDate
         holder.activationCallsignView.text = item.activationCall
         holder.distanceView.text = location?.run { "${"%.2f".format(calculateDistance(latitude, longitude, item.latitude, item.longitude))} miles" } ?: ""
+        holder.topView.setOnClickListener {
+            val a = item.code.split("/")[0]
+            val r = item.code.split("/")[1].split("-")[0]
+            val s = item.code.split("-")[1]
+            it.findNavController().navigate(R.id.action_navigation_dashboard_to_summitDetailsFragment, bundleOf(
+                "association" to a,
+                "region" to r,
+                "summit" to s,
+            ))
+        }
     }
 
     override fun getItemCount(): Int = values.size
 
     inner class ViewHolder(binding: FragmentSummitBinding) : RecyclerView.ViewHolder(binding.root) {
+        val topView = binding.summitDetails
         val idView = binding.summitId
         val contentView = binding.name
         val altView = binding.altitude

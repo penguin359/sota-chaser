@@ -1,7 +1,10 @@
 package org.northwinds.app.sotachaser.ui
 
+import androidx.core.content.edit
+import androidx.preference.PreferenceManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.test.core.app.ActivityScenario
+import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.DataInteraction
 import androidx.test.espresso.Espresso
 import androidx.test.espresso.Espresso.onData
@@ -11,16 +14,21 @@ import androidx.test.espresso.action.ViewActions.scrollTo
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.contrib.RecyclerViewActions.scrollToPosition
 import androidx.test.espresso.matcher.ViewMatchers.*
+import androidx.test.ext.junit.rules.ActivityScenarioRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import androidx.test.platform.app.InstrumentationRegistry
 import com.dannyroa.espresso_samples.recyclerview.RecyclerViewMatcher
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
 import junit.framework.Assert.assertEquals
+import org.aprsdroid.app.testing.SharedPreferencesRule
 import org.hamcrest.Matchers.*
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
+import org.northwinds.app.sotachaser.BuildConfig
 import org.northwinds.app.sotachaser.R
+import org.northwinds.app.sotachaser.SotaChaserBaseApplication
 import org.northwinds.app.sotachaser.testing.HiltFragmentScenario
 import org.northwinds.app.sotachaser.testing.Matcher.atPosition
 import org.northwinds.app.sotachaser.testing.MySummitRecyclerViewAdapter
@@ -176,6 +184,11 @@ class SummitsFragmentTest {
     @Test
     fun loadSummitDetailsFragment() {
         //val frag = HiltFragmentScenario.launchInHiltContainer(SummitFragment::class.java)
+        val appContext = InstrumentationRegistry.getInstrumentation().targetContext
+        PreferenceManager.getDefaultSharedPreferences(appContext).edit() {
+            putBoolean(appContext.getString(R.string.preference_asked_for_consent), true)
+            putInt(appContext.getString(R.string.preference_changelog), BuildConfig.VERSION_CODE)
+        }
         ActivityScenario.launch(MainActivity::class.java)
         onView(withId(R.id.navigation_dashboard)).perform(click())
         onView(withId(R.id.association)).perform(click())
@@ -193,7 +206,11 @@ class SummitsFragmentTest {
 
     @Test
     fun loadCorrectSummitDetailsFragment() {
-        //val frag = HiltFragmentScenario.launchInHiltContainer(SummitFragment::class.java)
+        val appContext = InstrumentationRegistry.getInstrumentation().targetContext
+        PreferenceManager.getDefaultSharedPreferences(appContext).edit() {
+            putBoolean(appContext.getString(R.string.preference_asked_for_consent), true)
+            putInt(appContext.getString(R.string.preference_changelog), BuildConfig.VERSION_CODE)
+        }
         ActivityScenario.launch(MainActivity::class.java)
         onView(withId(R.id.navigation_dashboard)).perform(click())
         onView(withId(R.id.association)).perform(click())
@@ -215,8 +232,30 @@ class SummitsFragmentTest {
         //    .check(matches(withText(containsString("지리산"))))
     }
 
+    //@get:Rule(order = 0)
+    //val hiltRule = HiltAndroidRule(this)
+    //
+    //private val context = ApplicationProvider.getApplicationContext<SotaChaserBaseApplication>()
+    //
+    //@get:Rule(order = 1)
+    //val prefsRule = SharedPreferencesRule() {
+    //    it.edit() {
+    //        clear()
+    //        putBoolean(context.getString(R.string.preference_asked_for_consent), true)
+    //        putInt(context.getString(R.string.preference_changelog), BuildConfig.VERSION_CODE)
+    //    }
+    //}
+    //
+    //@get:Rule(order = 2)
+    //var mActivityScenarioRule = ActivityScenarioRule(MainActivity::class.java)
+
     @Test
     fun loadDifferentSummitDetailsFragment() {
+        val appContext = InstrumentationRegistry.getInstrumentation().targetContext
+        PreferenceManager.getDefaultSharedPreferences(appContext).edit() {
+            putBoolean(appContext.getString(R.string.preference_asked_for_consent), true)
+            putInt(appContext.getString(R.string.preference_changelog), BuildConfig.VERSION_CODE)
+        }
         ActivityScenario.launch(MainActivity::class.java)
         onView(withId(R.id.navigation_dashboard)).perform(click())
         onView(withId(R.id.association)).perform(click())

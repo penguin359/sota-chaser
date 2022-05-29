@@ -382,17 +382,10 @@ class MainActivityUiTest {
         val association: UiObject = selection.getChildByText(UiSelector().text("W7O"), "W7O")
         association.click()
         assertTrue(regionSpinner.exists() && regionSpinner.isEnabled)
-//        Thread.sleep(10000)
         assertEquals("Wrong region visible", "CC", regionSpinner.getChild(UiSelector().className("android.widget.TextView")).text)
         regionSpinner.click()
         selection.getChildByText(UiSelector().text("CN"), "CN").click()
-        //val marker = device.findObject(UiSelector().descriptionContains("Sydney"))
-        //assertTrue("Can't find marker", marker.exists())
-        //marker.click()
-        //Thread.sleep(10000)
-        //Espresso.onIdle()
         device.wait(Until.hasObject(By.descContains("/CN")), LAUNCH_TIMEOUT)
-        //Thread.sleep(10000)
         expectedSummits.forEach {
             val marker1 = device.findObject(UiSelector().descriptionContains(it))
             assertTrue("Marker for summit $it should be present", marker1.exists())
@@ -418,7 +411,6 @@ class MainActivityUiTest {
         regionSpinner.click()
         selection.getChildByText(UiSelector().text("CN"), "CN").click()
         device.wait(Until.hasObject(By.descContains("CN")), LAUNCH_TIMEOUT)
-        //Thread.sleep(1000)
 
         assertTrue("Marker for summit W7O/CN-001 should be present",
             device.findObject(UiSelector().descriptionContains("W7O/CN-001")).exists())
@@ -430,7 +422,6 @@ class MainActivityUiTest {
         regionSpinner.click()
         selection.getChildByText(UiSelector().text("JN"), "JN").click()
         device.wait(Until.hasObject(By.descContains("JN")), LAUNCH_TIMEOUT)
-        //Thread.sleep(1000)
 
         expectedSummits.forEach {
             val marker1 = device.findObject(UiSelector().descriptionContains(it))
@@ -445,7 +436,6 @@ class MainActivityUiTest {
         regionSpinner.click()
         selection.getChildByText(UiSelector().text("NC"), "NC").click()
         device.wait(Until.hasObject(By.descContains("NC")), LAUNCH_TIMEOUT)
-        //Thread.sleep(1000)
 
         assertTrue("Marker for summit W7O/NC-042 should be present",
             device.findObject(UiSelector().descriptionContains("W7O/NC-042")).exists())
@@ -457,7 +447,6 @@ class MainActivityUiTest {
         regionSpinner.click()
         selection.getChildByText(UiSelector().text("LC"), "LC").click()
         device.wait(Until.hasObject(By.descContains("LC")), LAUNCH_TIMEOUT)
-        //Thread.sleep(1000)
 
         assertTrue("Marker for summit W7W/LC-001 should be present",
             device.findObject(UiSelector().descriptionContains("W7W/LC-001")).exists())

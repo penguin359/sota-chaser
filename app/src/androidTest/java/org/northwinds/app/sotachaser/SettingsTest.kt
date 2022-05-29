@@ -28,15 +28,12 @@ import android.view.ViewGroup
 import androidx.core.content.edit
 import androidx.lifecycle.Lifecycle
 import androidx.preference.PreferenceManager
-import androidx.recyclerview.widget.RecyclerView.ViewHolder
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.Espresso
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.Espresso.openActionBarOverflowOrOptionsMenu
-import androidx.test.espresso.NoActivityResumedException
-import androidx.test.espresso.action.ViewActions.*
+import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.assertion.ViewAssertions.matches
-import androidx.test.espresso.contrib.RecyclerViewActions.actionOnItemAtPosition
 import androidx.test.espresso.matcher.ViewMatchers.*
 import androidx.test.ext.junit.rules.ActivityScenarioRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
@@ -46,15 +43,16 @@ import androidx.test.uiautomator.UiDevice
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
 import org.aprsdroid.app.testing.SharedPreferencesRule
-import org.hamcrest.*
+import org.hamcrest.Description
+import org.hamcrest.Matcher
 import org.hamcrest.Matchers.*
+import org.hamcrest.TypeSafeMatcher
 import org.junit.Assert.assertEquals
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.northwinds.app.sotachaser.ui.MainActivity
 import org.northwinds.app.sotachaser.ui.SettingsActivity
-import java.lang.Thread.sleep
 
 @LargeTest
 @RunWith(AndroidJUnit4::class)
@@ -91,9 +89,7 @@ class SettingsSimpleTest {
                 isDisplayed()
             )
         )
-        Thread.sleep(300)
         appCompatImageButton.perform(click())
-        Thread.sleep(300)
         assertEquals(Lifecycle.State.DESTROYED, mActivityScenarioRule.scenario.state)
     }
 

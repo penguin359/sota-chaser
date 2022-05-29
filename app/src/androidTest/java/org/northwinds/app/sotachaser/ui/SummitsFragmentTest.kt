@@ -2,22 +2,16 @@ package org.northwinds.app.sotachaser.ui
 
 import android.Manifest
 import androidx.core.content.edit
-import androidx.preference.PreferenceManager
 import androidx.recyclerview.widget.RecyclerView
-import androidx.test.core.app.ActivityScenario
 import androidx.test.core.app.ApplicationProvider
-import androidx.test.espresso.DataInteraction
-import androidx.test.espresso.Espresso
 import androidx.test.espresso.Espresso.onData
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions.click
-import androidx.test.espresso.action.ViewActions.scrollTo
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.contrib.RecyclerViewActions.scrollToPosition
 import androidx.test.espresso.matcher.ViewMatchers.*
 import androidx.test.ext.junit.rules.ActivityScenarioRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.rule.GrantPermissionRule
 import com.dannyroa.espresso_samples.recyclerview.RecyclerViewMatcher
 import dagger.hilt.android.testing.HiltAndroidRule
@@ -35,7 +29,6 @@ import org.northwinds.app.sotachaser.testing.HiltFragmentScenario
 import org.northwinds.app.sotachaser.testing.Matcher.atPosition
 import org.northwinds.app.sotachaser.testing.MySummitRecyclerViewAdapter
 import org.northwinds.app.sotachaser.testing.SummitFragment
-import java.lang.Thread.sleep
 
 @RunWith(AndroidJUnit4::class)
 @HiltAndroidTest
@@ -303,7 +296,6 @@ class SummitsActivityTest {
         onData(
             allOf(`is`(instanceOf(String::class.java)), `is`(equalTo("CN")))
         ).perform(click())
-        sleep(5000)
         onView(withText(containsString("W7O/CN-001"))).perform(click())
         onView(withId(R.id.map)).check(matches(isDisplayed()))
     }
@@ -319,7 +311,6 @@ class SummitsActivityTest {
         onData(
             allOf(`is`(instanceOf(String::class.java)), `is`(equalTo("CN")))
         ).perform(click())
-        //sleep(5000)
         onView(withText(containsString("W7O/CN-001"))).perform(click())
         onView(withId(R.id.map)).check(matches(isDisplayed()))
         onView(withId(R.id.summit_id))

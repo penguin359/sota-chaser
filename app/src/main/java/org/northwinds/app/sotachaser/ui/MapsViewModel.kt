@@ -14,7 +14,9 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import org.northwinds.app.sotachaser.R
 import org.northwinds.app.sotachaser.SummitInterface
 import org.northwinds.app.sotachaser.SummitList
+import org.northwinds.app.sotachaser.repository.SummitsRepository
 import org.northwinds.app.sotachaser.room.Summit
+import org.northwinds.app.sotachaser.room.SummitDao
 import org.northwinds.app.sotachaser.room.SummitDatabase
 import java.util.concurrent.ExecutorService
 import javax.inject.Inject
@@ -42,10 +44,8 @@ import javax.inject.Inject
  */
 
 @HiltViewModel
-class MapsViewModel @Inject constructor(app: Application, private val executorService: ExecutorService) : AndroidViewModel(app) {
+class MapsViewModel @Inject constructor(app: Application, private val executorService: ExecutorService, private val dao: SummitDao, private val repo: SummitsRepository) : AndroidViewModel(app) {
     private val context = getApplication<Application>().applicationContext
-    private val db = Room.databaseBuilder(context, SummitDatabase::class.java, "database").build()
-    private val dao = db.summitDao()
 
     private val _location = MutableLiveData<Location?>()
     val location: LiveData<Location?> = _location
@@ -118,7 +118,7 @@ class MapsViewModel @Inject constructor(app: Application, private val executorSe
         _summits.value = listOf()
         executorService.execute {
             //_summits.postValue(SummitList(context.resources.openRawResource(R.raw.summitslist)).summits_by_region[association]!![region]!!.toList())
-            _summits.postValue(dao.getSummits(association, region))
+            _summits.postValue(repo.getSummits(association, region))
         }
     }
 

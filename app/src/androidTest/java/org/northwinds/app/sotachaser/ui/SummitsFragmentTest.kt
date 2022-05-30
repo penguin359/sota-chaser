@@ -14,6 +14,7 @@ import androidx.test.ext.junit.rules.ActivityScenarioRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.rule.GrantPermissionRule
 import com.dannyroa.espresso_samples.recyclerview.RecyclerViewMatcher
+import com.github.flank.utility.screenshot.ScreenshotTestRule
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
 import junit.framework.Assert.assertEquals
@@ -281,6 +282,9 @@ class SummitsActivityTest {
             putInt(context.getString(R.string.preference_changelog), BuildConfig.VERSION_CODE)
         }
     }
+
+    @get:Rule(order = 1)
+    val mScreenshotTestRule = ScreenshotTestRule()
 
     @get:Rule(order = 2)
     var mActivityScenarioRule = ActivityScenarioRule(MainActivity::class.java)

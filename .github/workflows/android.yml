@@ -41,12 +41,12 @@ jobs:
           profile: Nexus 6
           script: >
             adb logcat -c && adb logcat -f /sdcard/logcat.txt &
-            mkdir -p build/reports/ &&
+            mkdir -p app/build/reports/ &&
             ./gradlew installDebug --stacktrace &&
             adb shell am start -n org.northwinds.app.sotachaser.dev/org.northwinds.app.sotachaser.ui.MainActivity &&
             sleep 600 &&
             ./gradlew connectedDebugAndroidTest --stacktrace ||
-            ( adb pull /sdcard/logcat.txt build/reports/; exit 1 )
+            ( adb pull /sdcard/logcat.txt app/build/reports/; adb pull /sdcard/screenshots app/build/reports/; exit 1 )
             #./gradlew connectedCheck --stacktrace ||
 
       - name: Upload reports

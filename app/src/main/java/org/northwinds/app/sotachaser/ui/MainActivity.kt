@@ -20,6 +20,7 @@ import dagger.hilt.android.AndroidEntryPoint
 import org.northwinds.app.sotachaser.BuildConfig
 import org.northwinds.app.sotachaser.R
 import org.northwinds.app.sotachaser.databinding.ActivityMainBinding
+import org.northwinds.app.sotachaser.ui.ui.SettingsActivity
 
 private const val Tag = "SOTAChaser-MainActivity"
 

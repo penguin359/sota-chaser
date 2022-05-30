@@ -20,7 +20,7 @@
  * SOFTWARE.                                                                      *
  **********************************************************************************/
 
-package org.northwinds.app.sotachaser.ui
+package org.northwinds.app.sotachaser.ui.ui
 
 import android.os.Bundle
 import android.view.MenuItem

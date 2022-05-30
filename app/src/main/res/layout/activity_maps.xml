@@ -2,6 +2,6 @@
 <fragment
     xmlns:android="http://schemas.android.com/apk/res/android"
         android:id="@+id/fragmentContainerView"
-        android:name="org.northwinds.app.sotachaser.MapsFragment"
+        android:name="org.northwinds.app.sotachaser.ui.home.MapsFragment"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />

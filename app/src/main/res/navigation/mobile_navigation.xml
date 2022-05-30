@@ -7,13 +7,13 @@
 
     <fragment
         android:id="@+id/navigation_home"
-        android:name="org.northwinds.app.sotachaser.MapsFragment"
+        android:name="org.northwinds.app.sotachaser.ui.home.MapsFragment"
         android:label="@string/title_home"
         tools:layout="@layout/fragment_maps" />
 
     <fragment
         android:id="@+id/navigation_dashboard"
-        android:name="org.northwinds.app.sotachaser.testing.SummitFragment"
+        android:name="org.northwinds.app.sotachaser.ui.dashboard.SummitFragment"
         android:label="@string/title_dashboard"
         tools:layout="@layout/fragment_dashboard" >
         <action

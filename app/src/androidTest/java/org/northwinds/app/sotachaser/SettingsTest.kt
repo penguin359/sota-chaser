@@ -52,7 +52,7 @@ import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.northwinds.app.sotachaser.ui.MainActivity
-import org.northwinds.app.sotachaser.ui.SettingsActivity
+import org.northwinds.app.sotachaser.ui.ui.SettingsActivity
 
 @LargeTest
 @RunWith(AndroidJUnit4::class)

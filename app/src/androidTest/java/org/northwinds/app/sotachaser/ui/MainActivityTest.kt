@@ -21,13 +21,11 @@
  */
 package org.northwinds.app.sotachaser
 
-import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.util.Log
 import android.widget.Spinner
 import androidx.core.content.edit
-import androidx.fragment.app.testing.FragmentScenario
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.Espresso
 import androidx.test.espresso.Espresso.onView
@@ -53,6 +51,7 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import org.northwinds.app.sotachaser.testing.HiltFragmentScenario
 import org.northwinds.app.sotachaser.ui.MainActivity
+import org.northwinds.app.sotachaser.ui.home.MapsFragment
 
 @RunWith(AndroidJUnit4::class)
 @HiltAndroidTest

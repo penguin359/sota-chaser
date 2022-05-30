@@ -21,3 +21,11 @@ Offline max
 Show association/region name in spinner
 Multi-select
 
+
+sendfeedback dummy intent response
+hilt inject firebase
+copyright
+code analysis
+internationalize all strings
+format strings move to strings.xml
+RoboElectric

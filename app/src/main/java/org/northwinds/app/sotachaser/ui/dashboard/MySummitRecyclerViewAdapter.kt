@@ -1,18 +1,14 @@
-package org.northwinds.app.sotachaser.testing
+package org.northwinds.app.sotachaser.ui.dashboard
 
 import android.location.Location
-import androidx.recyclerview.widget.RecyclerView
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
-import android.widget.TextView
 import androidx.core.os.bundleOf
 import androidx.navigation.findNavController
+import androidx.recyclerview.widget.RecyclerView
 import org.northwinds.app.sotachaser.R
 import org.northwinds.app.sotachaser.databinding.FragmentSummitBinding
 import org.northwinds.app.sotachaser.room.Summit
-
-import org.northwinds.app.sotachaser.testing.placeholder.PlaceholderContent.PlaceholderItem
 import org.northwinds.app.sotachaser.util.calculateDistance
 
 /**

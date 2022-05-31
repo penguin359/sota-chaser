@@ -46,7 +46,7 @@ class ScreenshotTestRule : TestRule {
                 // Only espresso failures trigger the espresso failure handlers. For JUnit assert errors,
                 // those must be captured in `try { base.evaluate() } catch ()`
                 Espresso.setFailureHandler { throwable, matcher ->
-                    EspressoScreenshot.takeScreenshot(description)
+                    ScreenshotHelper.takeEspressoScreenshot(description)
                     errorHandled.set(true)
                     val targetContext = InstrumentationRegistry.getInstrumentation().targetContext
                     DefaultFailureHandler(targetContext).handle(throwable, matcher)
@@ -59,7 +59,7 @@ class ScreenshotTestRule : TestRule {
                         return
                     } catch (t: Throwable) {
                         if (!errorHandled.get()) {
-                            EspressoScreenshot.takeScreenshot(description)
+                            ScreenshotHelper.takeEspressoScreenshot(description)
                         }
                         error = t
                     }

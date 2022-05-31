@@ -21,6 +21,7 @@
  */
 package org.northwinds.app.sotachaser
 
+import android.Manifest
 import android.content.Context
 import android.content.Intent
 import android.util.Log
@@ -38,7 +39,9 @@ import androidx.test.ext.junit.rules.ActivityScenarioRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.platform.app.InstrumentationRegistry.getInstrumentation
+import androidx.test.rule.GrantPermissionRule
 import androidx.test.uiautomator.*
+import com.github.flank.utility.screenshot.UiScreenshotTestRule
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
 import org.aprsdroid.app.testing.SharedPreferencesRule
@@ -315,8 +318,14 @@ private const val LAUNCH_TIMEOUT = 5000L
 @HiltAndroidTest
 //@SdkSuppress(minSdkVersion = 18)
 class MainActivityUiTest {
-    @get:Rule
+    @get:Rule(order = 0)
     val hiltRule = HiltAndroidRule(this)
+
+    @get:Rule(order = 1)
+    val writeStorageRule = GrantPermissionRule.grant(Manifest.permission.WRITE_EXTERNAL_STORAGE)
+
+    @get:Rule(order = 2)
+    val screenshotRule = UiScreenshotTestRule()
 
     private val context = ApplicationProvider.getApplicationContext<Context>()
     private val `package` = InstrumentationRegistry.getInstrumentation().targetContext.packageName

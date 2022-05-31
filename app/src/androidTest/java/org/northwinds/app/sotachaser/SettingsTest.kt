@@ -23,6 +23,7 @@
 package org.northwinds.app.sotachaser
 
 
+import android.Manifest
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.content.edit
@@ -39,7 +40,9 @@ import androidx.test.ext.junit.rules.ActivityScenarioRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.filters.LargeTest
 import androidx.test.platform.app.InstrumentationRegistry
+import androidx.test.rule.GrantPermissionRule
 import androidx.test.uiautomator.UiDevice
+import com.github.flank.utility.screenshot.UiScreenshotTestRule
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
 import org.aprsdroid.app.testing.SharedPreferencesRule
@@ -63,6 +66,12 @@ class SettingsSimpleTest {
 
     @get:Rule(order = 1)
     var mActivityScenarioRule = ActivityScenarioRule(SettingsActivity::class.java)
+
+    @get:Rule(order = 1)
+    val writeStorageRule = GrantPermissionRule.grant(Manifest.permission.WRITE_EXTERNAL_STORAGE)
+
+    @get:Rule(order = 2)
+    val screenshotRule = UiScreenshotTestRule()
 
     @Test
     fun settingsBackButtonExitTest() {

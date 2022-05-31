@@ -17,7 +17,9 @@
 package com.github.flank.utility.screenshot
 
 import android.util.Log
+import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.runner.screenshot.Screenshot
+import androidx.test.uiautomator.UiDevice
 import java.io.BufferedOutputStream
 import java.io.File
 import java.io.FileOutputStream
@@ -28,14 +30,14 @@ import org.junit.runner.Description
 /**
  * Used to automatically capture screenshots of failed tests.
  */
-object EspressoScreenshot {
+object ScreenshotHelper {
     private val imageCounter = AtomicInteger(0)
     private val dotPNG = ".png"
     private val underscore = "_"
     // Firebase Test Lab requires screenshots to be saved to /sdcard/screenshots
     // https://github.com/firebase/firebase-testlab-instr-lib/blob/f0a21a526499f051ac5074dc382cf79e237d2f4e/firebase-testlab-instr-lib/testlab-instr-lib/src/main/java/com/google/firebase/testlab/screenshot/FirebaseScreenCaptureProcessor.java#L36
     private val screenshotFolder = File("/sdcard/screenshots")
-    private val TAG = EspressoScreenshot::class.java.simpleName
+    private val TAG = ScreenshotHelper::class.java.simpleName
 
     private fun getScreenshotName(description: Description): String {
         val className = description.className
@@ -70,14 +72,19 @@ object EspressoScreenshot {
         }
     }
 
-    fun takeScreenshot(description: Description) {
+    private fun getImageFile(description: Description): File {
         prepareScreenshotPath()
 
         val screenshotName = getScreenshotName(description)
+        return File(screenshotFolder, screenshotName)
+    }
+
+    fun takeEspressoScreenshot(description: Description) {
+        val imageFile = getImageFile(description)
+
         val capture = Screenshot.capture() // default format is PNG
 
         // based on BasicScreenCaptureProcessor#process
-        val imageFile = File(screenshotFolder, screenshotName)
         var out: BufferedOutputStream? = null
         try {
             Log.i(TAG, "Saving screenshot to " + imageFile.absolutePath)
@@ -95,6 +102,17 @@ object EspressoScreenshot {
                 Log.e(TAG, ignored.toString())
                 ignored.printStackTrace()
             }
+        }
+    }
+
+    fun takeUiScreenshot(description: Description) {
+        val imageFile = getImageFile(description)
+        val device = UiDevice.getInstance(InstrumentationRegistry.getInstrumentation())
+        try {
+            device.takeScreenshot(imageFile)
+        } catch (ignored: Exception) {
+            Log.e(TAG, ignored.toString())
+            ignored.printStackTrace()
         }
     }
 }

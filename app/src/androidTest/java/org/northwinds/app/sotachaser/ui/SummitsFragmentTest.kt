@@ -283,11 +283,14 @@ class SummitsActivityTest {
         }
     }
 
-    @get:Rule(order = 1)
-    val mScreenshotTestRule = ScreenshotTestRule()
-
     @get:Rule(order = 2)
     var mActivityScenarioRule = ActivityScenarioRule(MainActivity::class.java)
+
+    @get:Rule(order = 2)
+    val writeStorageRule = GrantPermissionRule.grant(Manifest.permission.WRITE_EXTERNAL_STORAGE)
+
+    @get:Rule(order = 3)
+    val mScreenshotTestRule = ScreenshotTestRule()
 
     @Test
     fun loadSummitDetailsFragment() {

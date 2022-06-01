@@ -7,6 +7,9 @@ import org.northwinds.app.sotachaser.room.Association
 import org.northwinds.app.sotachaser.room.Region
 import org.northwinds.app.sotachaser.room.Summit
 import org.northwinds.app.sotachaser.room.SummitDao
+import org.northwinds.app.sotachaser.util.asAssociationDatabaseModel
+import org.northwinds.app.sotachaser.util.asRegionDatabaseModel
+import org.northwinds.app.sotachaser.util.asSummitDatabaseModel
 import java.io.BufferedReader
 import java.io.InputStream
 import java.io.InputStreamReader
@@ -71,67 +74,16 @@ class SummitList(input: InputStream) {
 object SummitInterface {
     fun loadDatabase(dao: SummitDao, summitList: SummitList) {
         dao.clear()
-        val items = summitList.associations.map { association ->
-            Association(0, association.key, association.value)
-        }
+        val items = summitList.asAssociationDatabaseModel()
         val aids = dao.insertAssociation(*items.toTypedArray())
-        val assocToId = items.map { it.code }.zip(aids).toMap()
-        val items2 = summitList.regions.map { (key, value) ->
-            val (assoc, code) = key.split("/")
-            Region(0, assocToId[assoc]!!, code, value)
-        }
-        val idToAssoc = assocToId.entries.associateBy({ it.value }) { it.key }
-        val rids = dao.insertRegion(*items2.toTypedArray())
-        val regionToId = items2.map { "${idToAssoc[it.associationId]}/${it.code}" }.zip(rids).toMap()
-        val items3 = summitList.summitsByRegion.flatMap { (assoc, value) -> value.flatMap { (region, summits) -> summits.map { summit ->
-            Summit(0,
-                regionToId["${assoc}/${region}"]!!,
-                summit.summitCode.split('-')[1],
-                summit.summitName,
-                summit.altM,
-                summit.altFt,
-                summit.gridRef1,
-                summit.gridRef2,
-                summit.longitude,
-                summit.latitude,
-                summit.points,
-                summit.bonusPoints,
-                summit.validFrom,
-                summit.validTo,
-                summit.activationCount,
-                summit.activationDate,
-                summit.activationCall,
-            )
-        } } }
-        val sids = dao.insertSummit(*items3.toTypedArray())
-        //summitList.summits_by_region.flatMap { (key, value) -> Region(0, assocToId[key], value//key, value.value[0]!!.regionName) }
-        //summitList.summits_by_region[association.key]!!.forEach { region ->
-        //    val rid = dao.insertRegion()
-        //summitList.associations.forEach { association ->
-        //    val aid = dao.insertAssociation(Association(0, association.key, association.value))
-        //    summitList.summits_by_region[association.key]!!.forEach { region ->
-        //        val rid = dao.insertRegion(Region(0, aid[0], region.key, region.value[0]!!.regionName))
-        //        region.value.forEach { summit ->
-        //            dao.insertSummit(Summit(0,
-        //                rid[0],
-        //                summit.summitCode.split('-')[1],
-        //                summit.summitName,
-        //                summit.altM,
-        //                summit.altFt,
-        //                summit.gridRef1,
-        //                summit.gridRef2,
-        //                summit.longitude,
-        //                summit.latitude,
-        //                summit.points,
-        //                summit.bonusPoints,
-        //                summit.validFrom,
-        //                summit.validTo,
-        //                summit.activationCount,
-        //                summit.activationDate,
-        //                summit.activationCall,
-        //            ))
-        //        }
-        //    }
-        //}
+        val associationToId = items.map { it.code }.zip(aids).toMap()
+        val idToAssociation = associationToId.entries.associate { (k, v) -> v to k }
+        val regions = summitList.asRegionDatabaseModel(associationToId)
+        val rids = dao.insertRegion(*regions.toTypedArray())
+        val regionToId = regions.map {
+            "${idToAssociation[it.associationId]}/${it.code}"
+        }.zip(rids).toMap()
+        val summits = summitList.asSummitDatabaseModel(regionToId)
+        dao.insertSummit(*summits.toTypedArray())
     }
 }

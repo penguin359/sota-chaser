@@ -333,6 +333,7 @@ class MainActivityUiTest {
     @get:Rule
     val prefsRule = SharedPreferencesRule() {
         it.edit() {
+            clear()  // Some tests rely on starting region to be default
             putBoolean(context.getString(R.string.preference_asked_for_consent), true)
             putInt(context.getString(R.string.preference_changelog), BuildConfig.VERSION_CODE)
         }
@@ -393,7 +394,7 @@ class MainActivityUiTest {
         assertEquals("Wrong region visible", "CC", regionSpinner.getChild(UiSelector().className("android.widget.TextView")).text)
         regionSpinner.click()
         selection.getChildByText(UiSelector().text("CN"), "CN").click()
-        device.wait(Until.hasObject(By.descContains("/CN")), LAUNCH_TIMEOUT)
+        device.wait(Until.hasObject(By.descContains("/CN-100")), LAUNCH_TIMEOUT)
         expectedSummits.forEach {
             val marker1 = device.findObject(UiSelector().descriptionContains(it))
             assertTrue("Marker for summit $it should be present", marker1.exists())
@@ -418,7 +419,7 @@ class MainActivityUiTest {
         selection.getChildByText(UiSelector().text("W7O"), "W7O").click()
         regionSpinner.click()
         selection.getChildByText(UiSelector().text("CN"), "CN").click()
-        device.wait(Until.hasObject(By.descContains("CN")), LAUNCH_TIMEOUT)
+        device.wait(Until.hasObject(By.descContains("CN-100")), LAUNCH_TIMEOUT)
 
         assertTrue("Marker for summit W7O/CN-001 should be present",
             device.findObject(UiSelector().descriptionContains("W7O/CN-001")).exists())
@@ -443,7 +444,7 @@ class MainActivityUiTest {
         selection.getChildByText(UiSelector().text("W7O"), "W7O").click()
         regionSpinner.click()
         selection.getChildByText(UiSelector().text("NC"), "NC").click()
-        device.wait(Until.hasObject(By.descContains("NC")), LAUNCH_TIMEOUT)
+        device.wait(Until.hasObject(By.descContains("NC-100")), LAUNCH_TIMEOUT)
 
         assertTrue("Marker for summit W7O/NC-042 should be present",
             device.findObject(UiSelector().descriptionContains("W7O/NC-042")).exists())

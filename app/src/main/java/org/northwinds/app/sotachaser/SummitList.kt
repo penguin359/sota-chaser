@@ -50,12 +50,22 @@ class SummitList(input: InputStream) {
         }
     }
 
-    val names = summits.associateBy({ it.summitCode }, { it.summitName })
-    val summit_idx = summits.associateBy({ it.summitCode })
-    val regions = summits.associateBy({ it.summitCode.split("-")[0] }, { it.regionName })
-    val associations = summits.associateBy({ it.summitCode.split("/")[0] }, { it.associationName })
-    private val regions_by_association = summits.groupBy { it.summitCode.split("/")[0] }
-    val summits_by_region = regions_by_association.mapValues { it.value.groupBy { it.summitCode.split("-")[0].split("/")[1] } }
+    val names: Map<String, String> by lazy {
+        summits.associateBy({ it.summitCode }, { it.summitName })
+    }
+    val summitIdx: Map<String, SummitRecord> by lazy {
+        summits.associateBy { it.summitCode }
+    }
+    val regions: Map<String, String> by lazy {
+        summits.associateBy({ it.summitCode.split("-")[0] }, { it.regionName })
+    }
+    val associations by lazy {
+        summits.associateBy({ it.summitCode.split("/")[0] }, { it.associationName })
+    }
+    val summitsByRegion by lazy {
+        val regionsByAssociation = summits.groupBy { it.summitCode.split("/")[0] }
+        regionsByAssociation.mapValues { it.value.groupBy { it.summitCode.split("-")[0].split("/")[1] } }
+    }
 }
 
 object SummitInterface {
@@ -73,7 +83,7 @@ object SummitInterface {
         val idToAssoc = assocToId.entries.associateBy({ it.value }) { it.key }
         val rids = dao.insertRegion(*items2.toTypedArray())
         val regionToId = items2.map { "${idToAssoc[it.associationId]}/${it.code}" }.zip(rids).toMap()
-        val items3 = summitList.summits_by_region.flatMap { (assoc, value) -> value.flatMap { (region, summits) -> summits.map { summit ->
+        val items3 = summitList.summitsByRegion.flatMap { (assoc, value) -> value.flatMap { (region, summits) -> summits.map { summit ->
             Summit(0,
                 regionToId["${assoc}/${region}"]!!,
                 summit.summitCode.split('-')[1],

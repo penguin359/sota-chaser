@@ -9,6 +9,8 @@ import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
+import org.northwinds.app.sotachaser.repository.SummitsRepository
+import org.northwinds.app.sotachaser.repository.SummitsRepositoryImpl
 import org.northwinds.app.sotachaser.room.SummitDao
 import org.northwinds.app.sotachaser.room.SummitDatabase
 import org.robolectric.RobolectricTestRunner
@@ -41,7 +43,7 @@ class DatabaseTest {
         ).build()
         dao = db!!.summitDao()
         try {
-            SummitInterface.loadDatabase(dao, list)
+            SummitsRepositoryImpl.loadDatabase(dao, list)
         } catch (ex: Exception) {
             shutdown_database()
             throw ex

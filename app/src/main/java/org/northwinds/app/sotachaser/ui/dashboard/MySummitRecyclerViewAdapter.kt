@@ -8,7 +8,7 @@ import androidx.navigation.findNavController
 import androidx.recyclerview.widget.RecyclerView
 import org.northwinds.app.sotachaser.R
 import org.northwinds.app.sotachaser.databinding.FragmentSummitBinding
-import org.northwinds.app.sotachaser.room.Summit
+import org.northwinds.app.sotachaser.domain.models.Summit
 import org.northwinds.app.sotachaser.util.calculateDistance
 
 /**

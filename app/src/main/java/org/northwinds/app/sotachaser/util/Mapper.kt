@@ -1,31 +1,26 @@
 package org.northwinds.app.sotachaser.util
 
 import org.northwinds.app.sotachaser.SummitList
-import org.northwinds.app.sotachaser.room.Association
-import org.northwinds.app.sotachaser.room.Region
-import org.northwinds.app.sotachaser.room.Summit
+import org.northwinds.app.sotachaser.room.AssociationEntity
+import org.northwinds.app.sotachaser.room.RegionEntity
+import org.northwinds.app.sotachaser.room.SummitEntity
 
-fun SummitList.asAssociationDatabaseModel(): List<Association> {
+fun SummitList.asAssociationDatabaseModel(): List<AssociationEntity> {
     return associations.map { association ->
-        Association(0, association.key, association.value)
+        AssociationEntity(0, association.key, association.value)
     }
 }
 
-fun SummitList.asRegionDatabaseModel(associationToId: Map<String, Long>): List<Region> {
+fun SummitList.asRegionDatabaseModel(associationToId: Map<String, Long>): List<RegionEntity> {
     return regions.map { (key, value) ->
         val (assoc, code) = key.split("/")
-        Region(0, associationToId[assoc]!!, code, value)
+        RegionEntity(0, associationToId[assoc]!!, code, value)
     }
 }
 
-fun SummitList.asSummitDatabaseModel(regionToId: Map<String, Long>): List<Summit> {
-    //Room.inMemoryDatabaseBuilder(null, null)
-    //val assocToId = items.map { it.code }.zip(aids).toMap()
-    //val idToAssoc = assocToId.entries.associateBy({ it.value }) { it.key }
-    //val rids = dao.insertRegion(*items2.toTypedArray())
-    //val regionToId = items2.map { "${idToAssoc[it.associationId]}/${it.code}" }.zip(rids).toMap()
+fun SummitList.asSummitDatabaseModel(regionToId: Map<String, Long>): List<SummitEntity> {
     return summitsByRegion.flatMap { (assoc, value) -> value.flatMap { (region, summits) -> summits.map { summit ->
-        Summit(0,
+        SummitEntity(0,
             regionToId["${assoc}/${region}"]!!,
             summit.summitCode.split('-')[1],
             summit.summitName,

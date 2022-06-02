@@ -8,16 +8,13 @@ import androidx.core.content.edit
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import androidx.preference.PreferenceManager
-import androidx.room.Room
 import dagger.hilt.android.lifecycle.HiltViewModel
 import org.northwinds.app.sotachaser.R
-import org.northwinds.app.sotachaser.SummitInterface
 import org.northwinds.app.sotachaser.SummitList
+import org.northwinds.app.sotachaser.domain.models.Summit
 import org.northwinds.app.sotachaser.repository.SummitsRepository
-import org.northwinds.app.sotachaser.room.Summit
+import org.northwinds.app.sotachaser.repository.SummitsRepositoryImpl
 import org.northwinds.app.sotachaser.room.SummitDao
-import org.northwinds.app.sotachaser.room.SummitDatabase
 import java.util.concurrent.ExecutorService
 import javax.inject.Inject
 
@@ -62,16 +59,16 @@ class MapsViewModel @Inject constructor(app: Application, private val executorSe
     init {
         Log.i(Companion.TAG, "Starting new model view")
         executorService.execute {
-            var items = dao.getAssociations()
+            var items = repo.getAssociations()
             //val prefs = PreferenceManager.ge
             val prefs = context.getSharedPreferences("database", Context.MODE_PRIVATE)
             if(!prefs.getBoolean("database_loaded", false)) {
                 val input = context.resources.openRawResource(R.raw.summitslist)
                 val list = SummitList(input)
 
-                SummitInterface.loadDatabase(dao, list)
+                SummitsRepositoryImpl.loadDatabase(dao, list)
                 prefs.edit { putBoolean("database_loaded", true) }
-                items = dao.getAssociations()
+                items = repo.getAssociations()
             }
             //_associations.postValue(SummitList(context.resources.openRawResource(R.raw.summitslist)).summits_by_region.keys.toList())
             _associations.postValue(items.map { it.code })
@@ -99,7 +96,7 @@ class MapsViewModel @Inject constructor(app: Application, private val executorSe
         _regions.value = listOf()
         executorService.execute {
             //_regions.postValue(SummitList(context.resources.openRawResource(R.raw.summitslist)).summits_by_region[association]!!.keys.toList())
-            _regions.postValue(dao.getRegionsInAssociationName(association).map { it.code })
+            _regions.postValue(repo.getRegionsInAssociationName(association).map { it.code })
         }
     }
 

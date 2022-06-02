@@ -27,7 +27,9 @@ abstract class AppModule {
         @Singleton
         @Provides
         fun provideDatabase(context: Application): SummitDatabase {
-            return Room.databaseBuilder(context, SummitDatabase::class.java, "database").build()
+            return Room.databaseBuilder(context, SummitDatabase::class.java, "database")
+                .fallbackToDestructiveMigration()
+                .build()
         }
     }
 }

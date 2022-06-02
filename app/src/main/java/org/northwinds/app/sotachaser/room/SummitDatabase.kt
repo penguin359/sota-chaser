@@ -4,10 +4,10 @@ import androidx.room.Database
 import androidx.room.RoomDatabase
 
 @Database(entities = [
-    Association::class,
-    Region::class,
-    Summit::class],
-    version = 1)
+    AssociationEntity::class,
+    RegionEntity::class,
+    SummitEntity::class],
+    version = 2)
 abstract class SummitDatabase : RoomDatabase() {
     abstract fun summitDao(): SummitDao
 }

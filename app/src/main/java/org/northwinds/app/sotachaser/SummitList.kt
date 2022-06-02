@@ -3,9 +3,6 @@ package org.northwinds.app.sotachaser
 import com.univocity.parsers.common.processor.BeanListProcessor
 import com.univocity.parsers.csv.CsvParser
 import com.univocity.parsers.csv.CsvParserSettings
-import org.northwinds.app.sotachaser.room.Association
-import org.northwinds.app.sotachaser.room.Region
-import org.northwinds.app.sotachaser.room.Summit
 import org.northwinds.app.sotachaser.room.SummitDao
 import org.northwinds.app.sotachaser.util.asAssociationDatabaseModel
 import org.northwinds.app.sotachaser.util.asRegionDatabaseModel
@@ -68,22 +65,5 @@ class SummitList(input: InputStream) {
     val summitsByRegion by lazy {
         val regionsByAssociation = summits.groupBy { it.summitCode.split("/")[0] }
         regionsByAssociation.mapValues { it.value.groupBy { it.summitCode.split("-")[0].split("/")[1] } }
-    }
-}
-
-object SummitInterface {
-    fun loadDatabase(dao: SummitDao, summitList: SummitList) {
-        dao.clear()
-        val items = summitList.asAssociationDatabaseModel()
-        val aids = dao.insertAssociation(*items.toTypedArray())
-        val associationToId = items.map { it.code }.zip(aids).toMap()
-        val idToAssociation = associationToId.entries.associate { (k, v) -> v to k }
-        val regions = summitList.asRegionDatabaseModel(associationToId)
-        val rids = dao.insertRegion(*regions.toTypedArray())
-        val regionToId = regions.map {
-            "${idToAssociation[it.associationId]}/${it.code}"
-        }.zip(rids).toMap()
-        val summits = summitList.asSummitDatabaseModel(regionToId)
-        dao.insertSummit(*summits.toTypedArray())
     }
 }

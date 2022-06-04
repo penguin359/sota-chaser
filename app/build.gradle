@@ -45,6 +45,13 @@ android {
         viewBinding true
     }
     namespace 'org.northwinds.app.sotachaser'
+
+    // For some Roboelectric tests that load raw resources
+    testOptions {
+        unitTests {
+            includeAndroidResources = true
+        }
+    }
 }
 
 dependencies {

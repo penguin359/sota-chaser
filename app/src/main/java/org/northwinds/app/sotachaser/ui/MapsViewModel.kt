@@ -5,9 +5,7 @@ import android.content.Context
 import android.location.Location
 import android.util.Log
 import androidx.core.content.edit
-import androidx.lifecycle.AndroidViewModel
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.*
 import dagger.hilt.android.lifecycle.HiltViewModel
 import org.northwinds.app.sotachaser.R
 import org.northwinds.app.sotachaser.SummitList
@@ -41,7 +39,7 @@ import javax.inject.Inject
  */
 
 @HiltViewModel
-class MapsViewModel @Inject constructor(app: Application, private val executorService: ExecutorService, private val dao: SummitDao, private val repo: SummitsRepository) : AndroidViewModel(app) {
+class MapsViewModel @Inject constructor(app: Application, private val executorService: ExecutorService, private val repo: SummitsRepository) : AndroidViewModel(app) {
     private val context = getApplication<Application>().applicationContext
 
     private val _location = MutableLiveData<Location?>()
@@ -51,72 +49,71 @@ class MapsViewModel @Inject constructor(app: Application, private val executorSe
         _location.value = location
     }
 
-    private val _associations = MutableLiveData<List<String>>().apply {
-        //value = SummitList(context.resources.openRawResource(R.raw.summitslist)).summits_by_region.keys.toList()
-        value = listOf()
-    }
+    //private val _associations = repo.getAssociations()MutableLiveData<List<String>>().apply {
+    //    value = listOf()
+    //}
 
     init {
         Log.i(Companion.TAG, "Starting new model view")
-        executorService.execute {
-            var items = repo.getAssociations()
-            //val prefs = PreferenceManager.ge
-            val prefs = context.getSharedPreferences("database", Context.MODE_PRIVATE)
-            if(!prefs.getBoolean("database_loaded", false)) {
-                val input = context.resources.openRawResource(R.raw.summitslist)
-                val list = SummitList(input)
+        //executorService.execute {
+        //    _associations.postValue(repo.getAssociations().value?.map { it.code } ?: listOf())
+        //}
+    }
 
-                SummitsRepositoryImpl.loadDatabase(dao, list)
-                prefs.edit { putBoolean("database_loaded", true) }
-                items = repo.getAssociations()
-            }
-            //_associations.postValue(SummitList(context.resources.openRawResource(R.raw.summitslist)).summits_by_region.keys.toList())
-            _associations.postValue(items.map { it.code })
+    val associations: LiveData<List<String>> = Transformations.map(repo.getAssociations()) { list -> list.map { it.code }}//_associations
+
+    private val _association = MutableLiveData<String>().apply {
+        value = ""
+    }
+    private val association: LiveData<String> = _association
+
+    //private val _regions = MutableLiveData<List<String>>().apply {
+    //    value = listOf()
+    //}
+
+    //val regions: LiveData<List<String>> = _regions
+    val regions: LiveData<List<String>> = Transformations.switchMap(association) { name ->
+        Transformations.map(repo.getRegionsInAssociationName(name)) { list ->
+            list.map { it.code }
         }
     }
 
-    val associations: LiveData<List<String>> = _associations
-
-    private var association = ""
-
-    private val _regions = MutableLiveData<List<String>>().apply {
-        value = listOf()
+    private val _region = MutableLiveData<String>().apply {
     }
-
-    val regions: LiveData<List<String>> = _regions
-
-    private var region = ""
+    private val region: LiveData<String> = _region
 
     fun setAssociation(entry: Int) {
         val newAssociation = associations.value!![entry]
-        if(newAssociation == association)
+        if(newAssociation == association.value)
             return
-        association = newAssociation
+        _association.value = newAssociation
         Log.d(Companion.TAG, "Selected association: $association")
-        _regions.value = listOf()
-        executorService.execute {
-            //_regions.postValue(SummitList(context.resources.openRawResource(R.raw.summitslist)).summits_by_region[association]!!.keys.toList())
-            _regions.postValue(repo.getRegionsInAssociationName(association).map { it.code })
-        }
+        //_regions.value = listOf()
+        //executorService.execute {
+        //    _regions.postValue(repo.getRegionsInAssociationName(association.value!!).value?.map { it.code }
+        //        ?: listOf())
+        //}
     }
 
-    private val _summits = MutableLiveData<List<Summit>>().apply {
-        value = listOf()
-    }
+    //private val _summits = MutableLiveData<List<Summit>>().apply {
+    //    value = listOf()
+    //}
 
-    val summits: LiveData<List<Summit>> = _summits
+    //val summits: LiveData<List<Summit>> = _summits
+    val summits: LiveData<List<Summit>> = Transformations.switchMap(region) { name ->
+        repo.getSummits(association.value ?: "", name)
+    }
 
     fun setRegion(entry: Int) {
         val newRegion = regions.value!![entry]
-        if(newRegion == region)
+        if(newRegion == region.value)
             return
-        val region = regions.value!![entry]
+        _region.value = newRegion
         Log.d(Companion.TAG, "Selected region: $region")
-        _summits.value = listOf()
-        executorService.execute {
-            //_summits.postValue(SummitList(context.resources.openRawResource(R.raw.summitslist)).summits_by_region[association]!![region]!!.toList())
-            _summits.postValue(repo.getSummits(association, region))
-        }
+        //_summits.value = listOf()
+        //executorService.execute {
+        //    _summits.postValue(repo.getSummits(association.value!!, region.value!!).value)
+        //}
     }
 
     override fun onCleared() {

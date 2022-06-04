@@ -29,3 +29,11 @@ code analysis
 internationalize all strings
 format strings move to strings.xml
 RoboElectric
+
+use get() = on LiveData?
+LiveData() from Database to view
+
+Link to Sotlas, sota.org.uk, Google Maps, etc.
+Logging contacts with current location/time/etc.
+
+Check for database load needed after destructive migration/out of date prefs

@@ -1,6 +1,13 @@
 package org.northwinds.app.sotachaser.repository
 
 import android.app.Application
+import android.content.Context
+import androidx.core.content.edit
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.Transformations
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
+import org.northwinds.app.sotachaser.R
 import org.northwinds.app.sotachaser.SummitList
 import org.northwinds.app.sotachaser.domain.models.Association
 import org.northwinds.app.sotachaser.domain.models.Region
@@ -12,16 +19,40 @@ import org.northwinds.app.sotachaser.util.asSummitDatabaseModel
 import javax.inject.Inject
 
 class SummitsRepositoryImpl @Inject constructor(private val context: Application, private val dao: SummitDao) : SummitsRepository {
-    override fun getAssociations(): List<Association> {
-        return dao.getAssociations().asDomainModel()
+    private var hasRefreshed = false
+
+    override suspend fun checkForRefresh() {
+        if(hasRefreshed)
+            return
+        withContext(Dispatchers.IO) {
+            val prefs = context.getSharedPreferences("database", Context.MODE_PRIVATE)
+            if(!prefs.getBoolean("database_loaded", false)) {
+                val input = context.resources.openRawResource(R.raw.summitslist)
+                val list = SummitList(input)
+
+                SummitsRepositoryImpl.loadDatabase(dao, list)
+                prefs.edit { putBoolean("database_loaded", true) }
+                hasRefreshed = true
+            }
+        }
     }
 
-    override fun getRegionsInAssociationName(associationId: String): List<Region> {
-        return dao.getRegionsInAssociationName(associationId).asDomainModel()
+    override fun getAssociations(): LiveData<List<Association>> {
+        return Transformations.map(dao.getAssociations()) {
+            it.asDomainModel()
+        }
     }
 
-    override fun getSummits(associationId: String, region: String): List<Summit> {
-        return dao.getSummits(associationId, region).asDomainModel()
+    override fun getRegionsInAssociationName(associationId: String): LiveData<List<Region>> {
+        return Transformations.map(dao.getRegionsInAssociationName(associationId)) {
+            it.asDomainModel()
+        }
+    }
+
+    override fun getSummits(associationId: String, region: String): LiveData<List<Summit>> {
+        return Transformations.map(dao.getSummits(associationId, region)) {
+            it.asDomainModel()
+        }
     }
 
     companion object {

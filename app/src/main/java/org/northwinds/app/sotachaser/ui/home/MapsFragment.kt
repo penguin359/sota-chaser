@@ -149,6 +149,8 @@ class MapsFragment : Fragment(), OnMapReadyCallback {
         mMap.addMarker(MarkerOptions().position(sydney).title("Marker in Sydney"))
         mMap.moveCamera(CameraUpdateFactory.newLatLng(sydney))
         model.summits.observe(this) { summits ->
+            if(summits == null)
+                return@observe
             Log.d(Companion.Tag, "Updating Map with summit count: " + summits.count())
             mMap.clear()
             if(summits.count() == 0)

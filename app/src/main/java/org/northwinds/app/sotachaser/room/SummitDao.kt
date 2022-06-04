@@ -1,5 +1,6 @@
 package org.northwinds.app.sotachaser.room
 
+import androidx.lifecycle.LiveData
 import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.Query
@@ -7,7 +8,7 @@ import androidx.room.Query
 @Dao
 interface SummitDao {
     @Query("SELECT * FROM association")
-    fun getAssociations(): List<AssociationEntity>
+    fun getAssociations(): LiveData<List<AssociationEntity>>
 
     @Query("SELECT * FROM association WHERE code = :code")
     fun getAssociationByCode(code: String): AssociationEntity?
@@ -31,14 +32,14 @@ interface SummitDao {
     fun getRegionsInAssociation(associationId: Long): List<RegionEntity>
 
     @Query("SELECT region.* FROM region JOIN association ON (region.association_id = association.id) WHERE association.code = :associationId")
-    fun getRegionsInAssociationName(associationId: String): List<RegionEntity>
+    fun getRegionsInAssociationName(associationId: String): LiveData<List<RegionEntity>>
 
     @Query("SELECT * FROM summit WHERE region_id = :regionId")
     fun getSummitsInRegion(regionId: Long): List<SummitEntity>
 
     //@MapInfo(keyColumn = "summitCode")
     @Query("SELECT summit.*, association.code || '/' || region.code || '-' || summit.code AS code FROM summit JOIN region ON (summit.region_id = region.id) JOIN association ON (region.association_id = association.id) WHERE association.code = :associationId AND region.code = :region")
-    fun getSummits(associationId: String,  region: String): List<SummitEntity>
+    fun getSummits(associationId: String,  region: String): LiveData<List<SummitEntity>>
 
     @Query("DELETE FROM association")
     fun clear()

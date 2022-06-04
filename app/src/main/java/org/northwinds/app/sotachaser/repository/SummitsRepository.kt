@@ -1,5 +1,9 @@
 package org.northwinds.app.sotachaser.repository
 
+import android.content.Context
+import androidx.core.content.edit
+import androidx.lifecycle.LiveData
+import org.northwinds.app.sotachaser.R
 import org.northwinds.app.sotachaser.SummitList
 import org.northwinds.app.sotachaser.domain.models.Association
 import org.northwinds.app.sotachaser.domain.models.Region
@@ -10,9 +14,11 @@ import org.northwinds.app.sotachaser.util.asRegionDatabaseModel
 import org.northwinds.app.sotachaser.util.asSummitDatabaseModel
 
 interface SummitsRepository {
-    fun getAssociations(): List<Association>
-    fun getRegionsInAssociationName(associationId: String): List<Region>
-    fun getSummits(associationId: String,  region: String): List<Summit>
+    suspend fun checkForRefresh()
+
+    fun getAssociations(): LiveData<List<Association>>
+    fun getRegionsInAssociationName(associationId: String): LiveData<List<Region>>
+    fun getSummits(associationId: String,  region: String): LiveData<List<Summit>>
 
     //fun loadDatabase(dao: SummitDao, summitList: SummitList)
 }

@@ -55,6 +55,7 @@ import org.junit.runner.RunWith
 import org.northwinds.app.sotachaser.testing.HiltFragmentScenario
 import org.northwinds.app.sotachaser.ui.MainActivity
 import org.northwinds.app.sotachaser.ui.home.MapsFragment
+import java.lang.Thread.sleep
 
 @RunWith(AndroidJUnit4::class)
 @HiltAndroidTest
@@ -131,6 +132,7 @@ class MapsFragmentTest {
     @Test
     fun load_map_viewmodel() {
         Espresso.onIdle()
+        sleep(1000)
         frag.onFragment {
             val associations = it.model.associations.value
             assertNotNull("No associations found", associations)
@@ -143,6 +145,7 @@ class MapsFragmentTest {
             it.model.setAssociation(associationIndex)
         }
         Espresso.onIdle()
+        sleep(1000)
         frag.onFragment {
             assertEquals(
                 "Incorrect number of regions for association",
@@ -153,6 +156,7 @@ class MapsFragmentTest {
             it.model.setRegion(regionIndex)
         }
         Espresso.onIdle()
+        sleep(1000)
         frag.onFragment {
             assertEquals(
                 "Incorrect number of summits for region",
@@ -163,6 +167,7 @@ class MapsFragmentTest {
             it.model.setAssociation(associationIndex2)
         }
         Espresso.onIdle()
+        sleep(1000)
         frag.onFragment {
             assertEquals(
                 "Incorrect number of regions for association",
@@ -173,6 +178,7 @@ class MapsFragmentTest {
             it.model.setRegion(regionIndex2)
         }
         Espresso.onIdle()
+        sleep(1000)
         frag.onFragment {
             assertEquals(
                 "Incorrect number of summits for region",

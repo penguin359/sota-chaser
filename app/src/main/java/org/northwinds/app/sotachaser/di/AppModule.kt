@@ -11,6 +11,7 @@ import org.northwinds.app.sotachaser.repository.SummitsRepository
 import org.northwinds.app.sotachaser.repository.SummitsRepositoryImpl
 import org.northwinds.app.sotachaser.room.SummitDao
 import org.northwinds.app.sotachaser.room.SummitDatabase
+import java.util.concurrent.ExecutorService
 import javax.inject.Singleton
 
 @Module
@@ -26,9 +27,10 @@ abstract class AppModule {
 
         @Singleton
         @Provides
-        fun provideDatabase(context: Application): SummitDatabase {
+        fun provideDatabase(context: Application, executor: ExecutorService): SummitDatabase {
             return Room.databaseBuilder(context, SummitDatabase::class.java, "database")
                 .fallbackToDestructiveMigration()
+                //.setQueryExecutor(executor)
                 .build()
         }
     }

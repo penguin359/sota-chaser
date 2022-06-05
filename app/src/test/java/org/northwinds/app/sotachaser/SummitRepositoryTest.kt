@@ -17,6 +17,7 @@ import javax.inject.Inject
 import org.junit.Assert.assertTrue
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNotNull
+import org.junit.Before
 import org.junit.Rule
 import org.junit.runner.RunWith
 import org.northwinds.app.sotachaser.domain.models.Association
@@ -40,17 +41,19 @@ class SummitRepositoryTest {
 
     @Inject lateinit var repo: SummitsRepository
 
-    @Test
-    fun testCanOpenRepositiry() {
+    @Before
+    fun setUp() {
         hiltRule.inject()
+    }
+
+    @Test
+    fun testCanOpenRepository() {
         assertTrue("Repository is null", this::repo.isInitialized)
     }
 
     @Test
     @LooperMode(LooperMode.Mode.LEGACY)
-    //@BackgroundTestRule.BackgroundTest
     fun testCanLoadAssociations() {
-        hiltRule.inject()
         runBlocking {
             repo.checkForRefresh()
         }

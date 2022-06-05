@@ -6,17 +6,19 @@ import dagger.Module
 import dagger.Provides
 import dagger.hilt.android.components.ViewModelComponent
 import dagger.hilt.android.scopes.ViewModelScoped
+import dagger.hilt.components.SingletonComponent
 import dagger.hilt.testing.TestInstallIn
 import java.util.concurrent.*
+import javax.inject.Singleton
 
 @Module
 @TestInstallIn(
-    components = [ViewModelComponent::class],
+    components = [SingletonComponent::class],
     replaces = [ThreadModule::class]
 )
 class EspressoThreadModule {
     @Provides
-    @ViewModelScoped
+    @Singleton
     fun provideThreadExecutor(): ExecutorService {
         Log.d(Companion.TAG, "Creating idling thread pool")
         return IdlingThreadPoolExecutor("EspressoTestPool", 1, 1, 50, TimeUnit.MILLISECONDS, LinkedBlockingDeque<Runnable>(), Executors.defaultThreadFactory())

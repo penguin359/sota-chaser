@@ -10,6 +10,11 @@
     <string name="title_changelog">Changelog</string>
     <string name="changelog_text">Updates in this release:\n
 \n
+<b>Version 0.5 Alpha</b>\n
+• Added a details view of each summit with a map for it\n
+• Optionally, show distance to summit from current location\n
+• Include links to SOTA and SOTLAS websites for a summit\n
+\n
 <b>Version 0.4 Alpha</b>\n
 • Added screen for showing detailed summit info\n
 \n

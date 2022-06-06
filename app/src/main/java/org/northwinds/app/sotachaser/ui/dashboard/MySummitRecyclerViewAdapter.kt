@@ -35,6 +35,7 @@ class MySummitRecyclerViewAdapter(
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val item = values[position]
         holder.idView.text = item.code
+        holder.idView.contentDescription = item.code
         holder.contentView.text = item.name
         holder.altView.text = "${item.altFt} ft"
         holder.pointsView.text = "${item.points} points"

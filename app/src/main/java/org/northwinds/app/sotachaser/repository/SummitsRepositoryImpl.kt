@@ -39,7 +39,7 @@ class SummitsRepositoryImpl @Inject constructor(private val context: Application
 
     override fun getAssociations(): LiveData<List<Association>> {
         return Transformations.map(dao.getAssociations()) {
-            it.asDomainModel()
+                it.asDomainModel()
         }
     }
 

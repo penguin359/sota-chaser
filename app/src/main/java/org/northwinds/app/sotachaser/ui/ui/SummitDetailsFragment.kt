@@ -1,14 +1,23 @@
 package org.northwinds.app.sotachaser.ui.ui
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import com.google.android.gms.maps.CameraUpdateFactory
+import com.google.android.gms.maps.GoogleMap
+import com.google.android.gms.maps.OnMapReadyCallback
+import com.google.android.gms.maps.SupportMapFragment
+import com.google.android.gms.maps.model.LatLng
+import com.google.android.gms.maps.model.MarkerOptions
 import dagger.hilt.android.AndroidEntryPoint
+import org.northwinds.app.sotachaser.R
 import org.northwinds.app.sotachaser.databinding.FragmentSummitDetailsBinding
 import org.northwinds.app.sotachaser.ui.MapsViewModel
+import org.northwinds.app.sotachaser.ui.home.MapsFragment
 
 const val TAG = "SOTAChaser-SummitDetailsFragment"
 
@@ -16,13 +25,15 @@ const val TAG = "SOTAChaser-SummitDetailsFragment"
  * A fragment representing a list of Items.
  */
 @AndroidEntryPoint
-class SummitDetailsFragment : Fragment() {
+class SummitDetailsFragment : Fragment(), OnMapReadyCallback {
     private val model: MapsViewModel by viewModels()
     private lateinit var binding: FragmentSummitDetailsBinding
 
     private var association: String? = null
     private var region: String? = null
     private var summit: String? = null
+
+    private lateinit var mMap: GoogleMap
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -39,6 +50,10 @@ class SummitDetailsFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         binding = FragmentSummitDetailsBinding.inflate(inflater)
+
+        val mapFragment = childFragmentManager
+            .findFragmentById(R.id.map) as SupportMapFragment
+        mapFragment.getMapAsync(this)
 
         model.associations.observe(viewLifecycleOwner) {
             if(association == null)
@@ -101,5 +116,22 @@ class SummitDetailsFragment : Fragment() {
         //}
 
         return binding.root
+    }
+
+    override fun onMapReady(googleMap: GoogleMap) {
+        mMap = googleMap
+
+        //Log.d(MapsFragment.Tag, "Google Maps ready")
+        model.summits.observe(this) { summits ->
+            if(summits == null)
+                return@observe
+            val summitInfo = summits.find { summit2 -> summit2.code.split("-")[1] == summit }
+                ?: return@observe
+            val location = LatLng(summitInfo.latitude, summitInfo.longitude)
+            mMap.clear()
+            mMap.addMarker(MarkerOptions().position(location).title(summitInfo.code))
+            mMap.moveCamera(CameraUpdateFactory.newLatLng(location))
+            //Log.d(MapsFragment.Tag, "Updating Map with summit count: " + summits.count())
+        }
     }
 }

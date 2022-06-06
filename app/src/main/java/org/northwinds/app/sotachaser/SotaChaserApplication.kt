@@ -10,8 +10,8 @@ import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.google.firebase.ktx.Firebase
 
 import dagger.hilt.android.HiltAndroidApp
-
-
+import java.util.concurrent.ExecutorService
+import javax.inject.Inject
 
 
 /*
@@ -42,6 +42,9 @@ open class SotaChaserBaseApplication : Application() {
     companion object {
         private const val TAG = "SOTAChaser-App"
     }
+
+    //@Inject
+    //lateinit var executorService: ExecutorService
 
     private lateinit var pref_enable_analytics: String
     private lateinit var pref_enable_crash_reports: String
@@ -83,4 +86,9 @@ open class SotaChaserBaseApplication : Application() {
         firebaseAnalytics.setAnalyticsCollectionEnabled(analyticsEnabled)
         FirebaseCrashlytics.getInstance().setCrashlyticsCollectionEnabled(crashReportsEnabled)
     }
+
+    //override fun onTerminate() {
+    //    executorService.shutdown()
+    //    super.onTerminate()
+    //}
 }

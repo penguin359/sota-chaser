@@ -120,11 +120,6 @@ class MapsViewModel @Inject constructor(app: Application, private val executorSe
         //}
     }
 
-    override fun onCleared() {
-        super.onCleared()
-        executorService.shutdown()
-    }
-
     companion object {
         private const val TAG = "SOTAChaser-MapsViewModel"
     }

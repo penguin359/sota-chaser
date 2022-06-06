@@ -1,5 +1,7 @@
 package org.northwinds.app.sotachaser.ui.ui
 
+import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -82,6 +84,12 @@ class SummitDetailsFragment : Fragment(), OnMapReadyCallback {
                 binding.activationDate.text = info.activationDate
                 binding.activationCallsign.text = info.activationCall
                 //binding.distance.text = location?.run { "${"%.2f".format(calculateDistance(latitude, longitude, item.latitude, item.longitude))} miles" } ?: ""
+                binding.sotaBtn.setOnClickListener {
+                    startActivity(Intent(Intent.ACTION_VIEW, Uri.parse("https://summits.sota.org.uk/summit/${summitInfo.code}")))
+                }
+                binding.sotlasBtn.setOnClickListener {
+                    startActivity(Intent(Intent.ACTION_VIEW, Uri.parse("https://sotl.as/summits/${summitInfo.code}")))
+                }
             }
         }
 

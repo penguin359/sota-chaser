@@ -80,6 +80,21 @@
         app:layout_constraintStart_toStartOf="parent"
         tools:text="2022-02-15" />
 
+    <Button
+        android:id="@+id/sota_btn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="SOTA"
+        app:layout_constraintTop_toBottomOf="@+id/activation_date" />
+
+    <Button
+        android:id="@+id/sotlas_btn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="SOTL.AS"
+        app:layout_constraintStart_toEndOf="@+id/sota_btn"
+        app:layout_constraintTop_toBottomOf="@+id/activation_date" />
+
     <fragment xmlns:map="http://schemas.android.com/apk/res-auto"
         android:id="@+id/map"
         android:name="com.google.android.gms.maps.SupportMapFragment"

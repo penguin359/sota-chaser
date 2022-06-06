@@ -7,6 +7,7 @@ import android.util.Log
 import androidx.core.content.edit
 import androidx.lifecycle.*
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.runBlocking
 import org.northwinds.app.sotachaser.R
 import org.northwinds.app.sotachaser.SummitList
 import org.northwinds.app.sotachaser.domain.models.Summit
@@ -55,9 +56,12 @@ class MapsViewModel @Inject constructor(app: Application, private val executorSe
 
     init {
         Log.i(Companion.TAG, "Starting new model view")
-        //executorService.execute {
-        //    _associations.postValue(repo.getAssociations().value?.map { it.code } ?: listOf())
-        //}
+        executorService.execute {
+            //_associations.postValue(repo.getAssociations().value?.map { it.code } ?: listOf())
+            runBlocking {
+                repo.checkForRefresh()
+            }
+        }
     }
 
     val associations: LiveData<List<String>> = Transformations.map(repo.getAssociations()) { list -> list.map { it.code }}//_associations

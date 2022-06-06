@@ -87,6 +87,7 @@ class MapsViewModel @Inject constructor(app: Application, private val executorSe
     private val region: LiveData<String> = _region
 
     fun setAssociation(entry: Int) {
+        // TODO replace the !!
         val newAssociation = associations.value!![entry]
         if(newAssociation == association.value)
             return

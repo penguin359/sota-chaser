@@ -4,7 +4,8 @@ import android.location.Location
 import androidx.lifecycle.*
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
-import org.northwinds.app.sotachaser.domain.models.Summit
+import org.northwinds.app.sotachaser.domain.models.asDetailModel
+import org.northwinds.app.sotachaser.domain.models.SummitDetail
 import org.northwinds.app.sotachaser.repository.SummitsRepository
 import org.northwinds.app.sotachaser.ui.abstraction.AbstractViewModel
 import java.util.concurrent.ExecutorService
@@ -33,7 +34,7 @@ import javax.inject.Inject
  */
 
 @HiltViewModel
-class SummitViewModel @Inject constructor(executorService: ExecutorService, private val repo: SummitsRepository) : AbstractViewModel<Summit>(executorService, repo) {
+class SummitViewModel @Inject constructor(executorService: ExecutorService, private val repo: SummitsRepository) : AbstractViewModel<SummitDetail>(executorService, repo) {
     private val _location = MutableLiveData<Location?>()
     val location: LiveData<Location?> = _location
 
@@ -61,15 +62,16 @@ class SummitViewModel @Inject constructor(executorService: ExecutorService, priv
     override val list_items = filter.switchMap { f ->
         association.switchMap { a ->
             region.switchMap { r ->
-                val map = repo.getSummits(a, r).map { items ->
-                    items.filter {
-                        it.code.contains(f, ignoreCase = true) || it.name.contains(
-                            f,
-                            ignoreCase = true
-                        )
-                    }
+                location.switchMap { l ->
+                    repo.getSummits(a, r).map { items ->
+                        items.filter {
+                            it.code.contains(f, ignoreCase = true) || it.name.contains(
+                                f,
+                                ignoreCase = true
+                            )
+                        }
+                    }.map { it.asDetailModel(l) }
                 }
-                map
             }
         }
     }

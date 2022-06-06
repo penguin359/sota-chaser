@@ -1,7 +1,6 @@
 package org.northwinds.app.sotachaser.ui.summits
 
 import android.Manifest
-import android.app.Activity
 import android.app.Dialog
 import android.content.pm.PackageManager
 import android.os.Bundle
@@ -20,12 +19,12 @@ import com.google.android.gms.common.GoogleApiAvailability
 import com.google.android.gms.location.LocationServices
 import dagger.hilt.android.AndroidEntryPoint
 import org.northwinds.app.sotachaser.databinding.FragmentSummitListBinding
-import org.northwinds.app.sotachaser.domain.models.Summit
+import org.northwinds.app.sotachaser.domain.models.SummitDetail
 import org.northwinds.app.sotachaser.ui.abstraction.AbstractFilterListFragment
 
 
 @AndroidEntryPoint
-class SummitFragment : AbstractFilterListFragment<Summit, FragmentSummitListBinding, SummitRecyclerViewAdapter, SummitViewModel>() {
+class SummitFragment : AbstractFilterListFragment<SummitDetail, FragmentSummitListBinding, SummitRecyclerViewAdapter, SummitViewModel>() {
     override val TAG = "SOTAChaser-SummitFragment"
     override val vmc = SummitViewModel::class.java
     override val bindingInflater: (LayoutInflater) -> FragmentSummitListBinding
@@ -35,7 +34,7 @@ class SummitFragment : AbstractFilterListFragment<Summit, FragmentSummitListBind
 
     val args: SummitFragmentArgs by navArgs()
 
-    override fun adapterFactory(value: List<Summit>) = SummitRecyclerViewAdapter(value, model.location.value)
+    override fun adapterFactory(value: List<SummitDetail>) = SummitRecyclerViewAdapter(value)
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -49,7 +48,7 @@ class SummitFragment : AbstractFilterListFragment<Summit, FragmentSummitListBind
         with(binding.list) {
             model.location.observe(viewLifecycleOwner) { location ->
                 if(model.list_items.value != null) {
-                    adapter = SummitRecyclerViewAdapter(model.list_items.value!!, location)
+                    adapter = SummitRecyclerViewAdapter(model.list_items.value!!)
                 }
             }
         }

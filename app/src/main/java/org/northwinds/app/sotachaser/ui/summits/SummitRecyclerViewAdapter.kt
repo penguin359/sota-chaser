@@ -7,15 +7,15 @@ import androidx.navigation.findNavController
 import androidx.recyclerview.widget.RecyclerView
 import org.northwinds.app.sotachaser.databinding.ListSummitEntryBinding
 import org.northwinds.app.sotachaser.domain.models.Summit
+import org.northwinds.app.sotachaser.domain.models.SummitDetail
 import org.northwinds.app.sotachaser.util.calculateDistance
 import org.northwinds.app.sotachaser.ui.abstraction.AbstractRecyclerViewAdapter
 
 typealias SummitRecyclerViewAdapterVH = AbstractRecyclerViewAdapter.ViewHolder<ListSummitEntryBinding>
 
 class SummitRecyclerViewAdapter(
-    private val values: List<Summit>,
-    private val location: Location?
-) : AbstractRecyclerViewAdapter<Summit, ListSummitEntryBinding>(values) {
+    private val values: List<SummitDetail>
+) : AbstractRecyclerViewAdapter<SummitDetail, ListSummitEntryBinding>(values) {
     override val bindingInflater: (LayoutInflater, ViewGroup?, Boolean) -> ListSummitEntryBinding
         = ListSummitEntryBinding::inflate
 
@@ -29,7 +29,7 @@ class SummitRecyclerViewAdapter(
         binding.activationCount.text = "Activations: ${item.activationCount}"
         binding.activationDate.text = item.activationDate
         binding.activationCallsign.text = item.activationCall
-        binding.distance.text = location?.run { "${"%.2f".format(calculateDistance(latitude, longitude, item.latitude, item.longitude))} miles" } ?: ""
+        binding.distance.text = item.distance?.run { "${"%.2f".format(this)} miles" } ?: ""
         binding.details.setOnClickListener {
             val a = item.code.split("/")[0]
             val r = item.code.split("/")[1].split("-")[0]

@@ -12,7 +12,7 @@ import java.nio.file.Paths
 class SummitDataTest {
     @Test
     fun testCanQueryData() {
-        val summitList = getSummitData(OkHttpClient())
+        val summitList = SummitData(OkHttpClient()).getSummitData()
     }
 
     @Test
@@ -32,7 +32,7 @@ class SummitDataTest {
                 respond { throw IllegalStateException("I/O Error") }
             }
         }
-        val list = getSummitData(OkHttpClient.Builder().addInterceptor(interceptor).build())
+        val list = SummitData(OkHttpClient.Builder().addInterceptor(interceptor).build()).getSummitData()
         assertEquals(164345, list.summits.count(), "Incorrect number of summits")
         assertEquals(164345, list.names.count(), "Incorrect number of summit designators")
         assertEquals(1422, list.regions.count(), "Incorrect number of summit regions")

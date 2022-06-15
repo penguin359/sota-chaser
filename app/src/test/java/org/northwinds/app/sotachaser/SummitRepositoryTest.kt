@@ -11,12 +11,11 @@ import dagger.hilt.android.testing.HiltTestApplication
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withContext
+import okhttp3.mock.MockInterceptor
+import org.junit.Assert.*
 import org.junit.Test
 import org.northwinds.app.sotachaser.repository.SummitsRepository
 import javax.inject.Inject
-import org.junit.Assert.assertTrue
-import org.junit.Assert.assertEquals
-import org.junit.Assert.assertNotNull
 import org.junit.Before
 import org.junit.Rule
 import org.junit.runner.RunWith
@@ -71,6 +70,17 @@ class SummitRepositoryTest {
         shadowOf(getMainLooper()).idle()
         assertNotNull("Association result is null", result)
         assertEquals("Incorrect number of associations", 194, result!!.count())
+    }
+
+    @Inject lateinit var interceptor: MockInterceptor
+
+    @Test
+    fun testWillLoadRefreshFromNetwork() {
+        assertFalse(interceptor.rules[0].isConsumed)
+        runBlocking {
+            repo.checkForRefresh()
+        }
+        assertTrue("HTTP request not made", interceptor.rules[0].isConsumed)
     }
 }
 

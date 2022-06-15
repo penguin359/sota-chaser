@@ -7,18 +7,20 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.Transformations
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+import okhttp3.OkHttpClient
 import org.northwinds.app.sotachaser.R
 import org.northwinds.app.sotachaser.SummitList
 import org.northwinds.app.sotachaser.domain.models.Association
 import org.northwinds.app.sotachaser.domain.models.Region
 import org.northwinds.app.sotachaser.domain.models.Summit
+import org.northwinds.app.sotachaser.network.SummitData
 import org.northwinds.app.sotachaser.room.*
 import org.northwinds.app.sotachaser.util.asAssociationDatabaseModel
 import org.northwinds.app.sotachaser.util.asRegionDatabaseModel
 import org.northwinds.app.sotachaser.util.asSummitDatabaseModel
 import javax.inject.Inject
 
-class SummitsRepositoryImpl @Inject constructor(private val context: Application, private val dao: SummitDao) : SummitsRepository {
+class SummitsRepositoryImpl @Inject constructor(private val context: Application, private val dao: SummitDao, private val client: OkHttpClient) : SummitsRepository {
     private var hasRefreshed = false
 
     override suspend fun checkForRefresh() {
@@ -27,8 +29,7 @@ class SummitsRepositoryImpl @Inject constructor(private val context: Application
         withContext(Dispatchers.IO) {
             val prefs = context.getSharedPreferences("database", Context.MODE_PRIVATE)
             if(!prefs.getBoolean("database_loaded", false)) {
-                val input = context.resources.openRawResource(R.raw.summitslist)
-                val list = SummitList(input)
+                val list = SummitData(client).getSummitData()
 
                 SummitsRepositoryImpl.loadDatabase(dao, list)
                 prefs.edit { putBoolean("database_loaded", true) }

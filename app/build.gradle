@@ -161,6 +161,9 @@ dependencies {
     }
 
     implementation 'com.google.android.gms:play-services-location:19.0.1'
+
+    implementation 'com.squareup.retrofit2:retrofit:2.9.0'
+    testImplementation 'com.github.gmazzo:okhttp-mock:1.5.0'
 }
 
 // Added for supporting Hilt with Kapt

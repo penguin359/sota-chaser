@@ -2,6 +2,8 @@ package org.northwinds.app.sotachaser.repository
 
 import android.app.Application
 import android.content.Context
+import android.util.Log
+import android.widget.Toast
 import androidx.core.content.edit
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Transformations
@@ -18,6 +20,7 @@ import org.northwinds.app.sotachaser.room.*
 import org.northwinds.app.sotachaser.util.asAssociationDatabaseModel
 import org.northwinds.app.sotachaser.util.asRegionDatabaseModel
 import org.northwinds.app.sotachaser.util.asSummitDatabaseModel
+import java.io.IOException
 import javax.inject.Inject
 
 class SummitsRepositoryImpl @Inject constructor(private val context: Application, private val dao: SummitDao, private val client: OkHttpClient) : SummitsRepository {
@@ -29,9 +32,21 @@ class SummitsRepositoryImpl @Inject constructor(private val context: Application
         withContext(Dispatchers.IO) {
             val prefs = context.getSharedPreferences("database", Context.MODE_PRIVATE)
             if(!prefs.getBoolean("database_loaded", false)) {
-                val list = SummitData(client).getSummitData()
+                Log.v(TAG, "Downloading summit list")
+                val list = try {
+                    SummitData(client).getSummitData()
+                } catch (ex: IOException) {
+                    // TODO Can't Toast on non-UI thread
+                    //Toast.makeText(context, "Network error downloading summits", Toast.LENGTH_LONG).show()
+                    Log.e(TAG, "Network Error downloading summits", ex)
+                    return@withContext
+                } catch (ex: IllegalStateException) {
+                    Log.e(TAG, "Illegal state while downloading summits", ex)
+                    return@withContext
+                }
 
-                SummitsRepositoryImpl.loadDatabase(dao, list)
+                Log.v(TAG, "Loading database with summit list")
+                loadDatabase(dao, list)
                 prefs.edit { putBoolean("database_loaded", true) }
                 hasRefreshed = true
             }
@@ -57,6 +72,7 @@ class SummitsRepositoryImpl @Inject constructor(private val context: Application
     }
 
     companion object {
+        const val TAG = "SOTAChaser-SummitRepository"
         fun loadDatabase(dao: SummitDao, summitList: SummitList) {
             dao.clear()
             val items = summitList.asAssociationDatabaseModel()

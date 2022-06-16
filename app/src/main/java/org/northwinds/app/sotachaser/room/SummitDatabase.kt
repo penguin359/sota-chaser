@@ -7,7 +7,7 @@ import androidx.room.RoomDatabase
     AssociationEntity::class,
     RegionEntity::class,
     SummitEntity::class],
-    version = 2)
+    version = 3)
 abstract class SummitDatabase : RoomDatabase() {
     abstract fun summitDao(): SummitDao
 }

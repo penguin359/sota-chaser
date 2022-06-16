@@ -39,3 +39,4 @@ Logging contacts with current location/time/etc.
 Check for database load needed after destructive migration/out of date prefs
 
 Implment more tests for network errors and badly formed data
+Show local and summit locators

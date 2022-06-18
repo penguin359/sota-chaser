@@ -22,6 +22,8 @@
 package org.northwinds.app.sotachaser
 
 import android.Manifest
+import android.app.Activity
+import android.app.Instrumentation
 import android.content.Context
 import android.content.Intent
 import android.util.Log
@@ -33,6 +35,7 @@ import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.intent.Intents
+import androidx.test.espresso.intent.Intents.intending
 import androidx.test.espresso.intent.matcher.IntentMatchers.*
 import androidx.test.espresso.matcher.ViewMatchers.*
 import androidx.test.ext.junit.rules.ActivityScenarioRule
@@ -79,6 +82,12 @@ class MainActivityTest {
     @Test
     fun willSendFeedback() {
         Intents.init()
+        intending(hasAction(Intent.ACTION_CHOOSER)).respondWith(
+            Instrumentation.ActivityResult(
+                Activity.RESULT_OK,
+                Intent()
+            )
+        )
         Espresso.openActionBarOverflowOrOptionsMenu(context)
 
         val appCompatTextView = onView(

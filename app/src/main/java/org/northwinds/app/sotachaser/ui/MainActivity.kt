@@ -121,7 +121,7 @@ class MainActivity : AppCompatActivity() {
                 //intent.type = "text/html"
                 intent.putExtra(Intent.EXTRA_EMAIL, arrayOf("penguin359@gmail.com"))
                 intent.putExtra(Intent.EXTRA_SUBJECT, "Feedback for SOTA Chaser")
-                intent.putExtra(Intent.EXTRA_TEXT, "Version 0.1")
+                intent.putExtra(Intent.EXTRA_TEXT, "Version ${BuildConfig.VERSION_NAME}\n\n")
                 startActivity(Intent.createChooser(intent, "Send Feedback"))
                 true
             }

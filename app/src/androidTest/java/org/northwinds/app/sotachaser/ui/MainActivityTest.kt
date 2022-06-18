@@ -110,7 +110,8 @@ class MainActivityTest {
                     containsStringIgnoringCase("SOTA Chaser"),
                 )),
                 hasExtra(`is`(Intent.EXTRA_TEXT), allOf(
-                    containsStringIgnoringCase("Version")
+                    containsStringIgnoringCase("Version"),
+                    containsString(BuildConfig.VERSION_NAME),
                 )),
             )),
         ))

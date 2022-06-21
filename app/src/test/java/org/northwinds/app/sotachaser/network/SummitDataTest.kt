@@ -6,6 +6,8 @@ import okhttp3.mock.MediaTypes.MEDIATYPE_TEXT
 import org.junit.Test
 import kotlin.test.assertEquals
 import org.northwinds.app.sotachaser.R
+import org.northwinds.app.sotachaser.testing.SummitValues.TOTAL_REGIONS_IN_CSV
+import org.northwinds.app.sotachaser.testing.SummitValues.TOTAL_SUMMITS_IN_CSV
 import java.nio.file.Files
 import java.nio.file.Paths
 
@@ -33,9 +35,9 @@ class SummitDataTest {
             }
         }
         val list = SummitData(OkHttpClient.Builder().addInterceptor(interceptor).build()).getSummitData()
-        assertEquals(164345, list.summits.count(), "Incorrect number of summits")
-        assertEquals(164345, list.names.count(), "Incorrect number of summit designators")
-        assertEquals(1422, list.regions.count(), "Incorrect number of summit regions")
+        assertEquals(TOTAL_SUMMITS_IN_CSV, list.summits.count(), "Incorrect number of summits")
+        assertEquals(TOTAL_SUMMITS_IN_CSV, list.names.count(), "Incorrect number of summit designators")
+        assertEquals(TOTAL_REGIONS_IN_CSV, list.regions.count(), "Incorrect number of summit regions")
         assertEquals(194, list.associations.count(), "Incorrect number of summit associations")
     }
 }

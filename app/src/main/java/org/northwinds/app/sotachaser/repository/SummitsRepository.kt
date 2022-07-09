@@ -15,8 +15,10 @@ import org.northwinds.app.sotachaser.util.asSummitDatabaseModel
 
 interface SummitsRepository {
     suspend fun checkForRefresh()
+    suspend fun updateAssociation(code: String)
 
     fun getAssociations(): LiveData<List<Association>>
+    fun getAssociationByCode(code: String): LiveData<Association>
     fun getRegionsInAssociationName(associationId: String): LiveData<List<Region>>
     fun getSummits(associationId: String,  region: String): LiveData<List<Summit>>
 

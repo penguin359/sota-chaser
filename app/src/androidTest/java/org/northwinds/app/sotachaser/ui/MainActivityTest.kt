@@ -201,6 +201,7 @@ class MapsFragmentTest {
     fun update_map_viewmodel() {
         Espresso.onIdle()
         frag.onFragment {
+            // TODO This can be called before data is loaded
             it.model.setAssociation(0)
         }
         Espresso.onIdle()

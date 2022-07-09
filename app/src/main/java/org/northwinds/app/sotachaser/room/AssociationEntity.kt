@@ -27,10 +27,22 @@ data class AssociationEntity(
     @ColumnInfo(name = "updated_at") val updatedAt: Long? = null,
 )
 
+fun AssociationEntity.asDomainModel() = Association(
+    id = id,
+    code = code,
+    name = code,
+    manager = manager,
+    managerCallsign = managerCallsign,
+    activeFrom = activeFrom,
+    dxcc = dxcc,
+    regionsCount = regionsCount ?: 0,
+    summitsCount = summitsCount ?: 0,
+    maxLat = maxLat,
+    maxLong = maxLong,
+    minLat = minLat,
+    minLong = minLong,
+)
+
 fun List<AssociationEntity>.asDomainModel(): List<Association> = map {
-    Association(
-        id = it.id,
-        code = it.code,
-        name = it.code,
-    )
+    it.asDomainModel()
 }

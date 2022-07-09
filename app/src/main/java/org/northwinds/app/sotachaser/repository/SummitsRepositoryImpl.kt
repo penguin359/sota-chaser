@@ -6,6 +6,7 @@ import android.util.Log
 import android.widget.Toast
 import androidx.core.content.edit
 import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Transformations
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -15,6 +16,7 @@ import org.northwinds.app.sotachaser.SummitList
 import org.northwinds.app.sotachaser.domain.models.Association
 import org.northwinds.app.sotachaser.domain.models.Region
 import org.northwinds.app.sotachaser.domain.models.Summit
+import org.northwinds.app.sotachaser.network.SotaApiService
 import org.northwinds.app.sotachaser.network.SummitData
 import org.northwinds.app.sotachaser.room.*
 import org.northwinds.app.sotachaser.util.asAssociationDatabaseModel
@@ -23,7 +25,7 @@ import org.northwinds.app.sotachaser.util.asSummitDatabaseModel
 import java.io.IOException
 import javax.inject.Inject
 
-class SummitsRepositoryImpl @Inject constructor(private val context: Application, private val dao: SummitDao, private val client: OkHttpClient) : SummitsRepository {
+class SummitsRepositoryImpl @Inject constructor(private val context: Application, private val dao: SummitDao, private val client: OkHttpClient, private val api: SotaApiService) : SummitsRepository {
     private var hasRefreshed = false
 
     override suspend fun checkForRefresh() {
@@ -53,9 +55,23 @@ class SummitsRepositoryImpl @Inject constructor(private val context: Application
         }
     }
 
+    override suspend fun updateAssociation(code: String) {
+        withContext(Dispatchers.IO) {
+            val assoc = api.getAssociation(code)
+            val old = dao.getAssociationByCode(code)!!
+            dao.updateAssociation(AssociationEntity(id = old.id, code = assoc.associationCode, name = assoc.associationName, manager = assoc.manager, assoc.associationManagerCallsign))
+        }
+    }
+
     override fun getAssociations(): LiveData<List<Association>> {
         return Transformations.map(dao.getAssociations()) {
                 it.asDomainModel()
+        }
+    }
+
+    override fun getAssociationByCode(code: String): LiveData<Association> {
+        return Transformations.map(dao.getAssociationByCode2(code)) {
+            it.asDomainModel()
         }
     }
 

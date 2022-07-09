@@ -12,6 +12,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withContext
 import okhttp3.mock.MockInterceptor
+import org.junit.After
 import org.junit.Assert.*
 import org.junit.Test
 import org.northwinds.app.sotachaser.repository.SummitsRepository
@@ -20,6 +21,7 @@ import org.junit.Before
 import org.junit.Rule
 import org.junit.runner.RunWith
 import org.northwinds.app.sotachaser.domain.models.Association
+import org.northwinds.app.sotachaser.room.SummitDatabase
 import org.robolectric.Robolectric
 import org.robolectric.RobolectricTestRunner
 import org.robolectric.Shadows.shadowOf
@@ -39,10 +41,17 @@ class SummitRepositoryTest {
     @get:Rule val backgroundRule = BackgroundTestRule()
 
     @Inject lateinit var repo: SummitsRepository
+    @Inject lateinit var db: SummitDatabase
 
     @Before
     fun setUp() {
         hiltRule.inject()
+    }
+
+    @After
+    fun tearDown() {
+        if(this::db.isInitialized)
+            db.close()
     }
 
     @Test
@@ -81,6 +90,24 @@ class SummitRepositoryTest {
             repo.checkForRefresh()
         }
         assertTrue("HTTP request not made", interceptor.rules[0].isConsumed)
+    }
+
+    @Test
+    @LooperMode(LooperMode.Mode.LEGACY)
+    fun testWillLoadAssociationExtraDetails() {
+        runBlocking {
+            repo.checkForRefresh()
+            repo.updateAssociation("W7O")
+        }
+        shadowOf(getMainLooper()).idle()
+        assertTrue("HTTP request not made", interceptor.rules[0].isConsumed)
+        val association = repo.getAssociationByCode("W7O")
+        shadowOf(getMainLooper()).idle()
+        assertTrue("HTTP request not made", interceptor.rules[2].isConsumed)
+        assertNotNull("No value returned", association.blockingObserve())
+        val value = association.value!!
+        assertEquals("Etienne", value.manager)
+        assertEquals("K7ATN", value.managerCallsign)
     }
 }
 

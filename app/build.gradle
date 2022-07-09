@@ -54,11 +54,16 @@ android {
     }
 
     sourceSets {
+	String sharedTestDir = 'src/sharedTest/'
+	String sharedTestSourceDir = sharedTestDir + 'java'
+	String sharedTestResourceDir = sharedTestDir + 'resources'
         androidTest {
-            java.srcDirs += "src/sharedTest/java"
+	    java.srcDirs += sharedTestSourceDir
+	    resources.srcDirs += sharedTestResourceDir
         }
         test {
-            java.srcDirs += "src/sharedTest/java"
+	    java.srcDirs += sharedTestSourceDir
+	    resources.srcDirs += sharedTestResourceDir
         }
     }
 }
@@ -172,6 +177,7 @@ dependencies {
     implementation 'com.google.android.gms:play-services-location:19.0.1'
 
     implementation 'com.squareup.retrofit2:retrofit:2.9.0'
+    androidTestImplementation 'com.github.gmazzo:okhttp-mock:1.5.0'
     testImplementation 'com.github.gmazzo:okhttp-mock:1.5.0'
 
     //implementation 'com.jakewharton.retrofit:retrofit2-kotlin-coroutines-adapter:0.9.2'

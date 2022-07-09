@@ -16,8 +16,8 @@ class ThreadModule {
     @Provides
     @Singleton
     fun provideThreadExecutor(): ExecutorService {
-        Log.d(TAG, "Creating single thread executor")
-        return Executors.newSingleThreadExecutor()
+        Log.d(TAG, "Creating cached thread executor")
+        return Executors.newCachedThreadPool()
     }
 
     companion object {

@@ -16,7 +16,7 @@ object RobolectricHttpModule {
     @Provides
     fun provideInterceptor(): MockInterceptor {
         val interceptor = MockInterceptor().apply {
-            rule(url eq "http://www.sotadata.org.uk/summitslist.csv") {
+            rule(url eq "https://www.sotadata.org.uk/summitslist.csv") {
                 val input = RoboResources.rawRes(R.raw.summitslist)
                 respond(input)
             }

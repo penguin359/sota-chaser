@@ -8,7 +8,7 @@ import javax.inject.Inject
 
 class SummitData @Inject constructor(private val client: OkHttpClient) {
     fun getSummitData(): SummitList {
-        val request = Request.Builder().url("http://www.sotadata.org.uk/summitslist.csv").build()
+        val request = Request.Builder().url("https://www.sotadata.org.uk/summitslist.csv").build()
         val data = client.newCall(request).execute().body()!!.byteStream()
         return SummitList(data)
     }

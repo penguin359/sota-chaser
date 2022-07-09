@@ -20,7 +20,7 @@ class SummitDataTest {
     @Test
     fun testCanDecodeTestData() {
         val interceptor = MockInterceptor().apply {
-            rule(url eq "http://www.sotadata.org.uk/summitslist.csv") {
+            rule(url eq "https://www.sotadata.org.uk/summitslist.csv") {
                 //AndroidResources.rawRes(R.raw.summitslist)
                 //val input = ClasspathResources.resource("summitslist.csv")
                 val fileName = "src/main/res/raw/summitslist.csv"

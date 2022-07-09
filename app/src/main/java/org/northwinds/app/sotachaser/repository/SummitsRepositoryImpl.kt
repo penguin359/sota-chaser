@@ -9,6 +9,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Transformations
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.asCoroutineDispatcher
 import kotlinx.coroutines.withContext
 import okhttp3.OkHttpClient
 import org.northwinds.app.sotachaser.R
@@ -23,15 +24,16 @@ import org.northwinds.app.sotachaser.util.asAssociationDatabaseModel
 import org.northwinds.app.sotachaser.util.asRegionDatabaseModel
 import org.northwinds.app.sotachaser.util.asSummitDatabaseModel
 import java.io.IOException
+import java.util.concurrent.ExecutorService
 import javax.inject.Inject
 
-class SummitsRepositoryImpl @Inject constructor(private val context: Application, private val dao: SummitDao, private val client: OkHttpClient, private val api: SotaApiService) : SummitsRepository {
+class SummitsRepositoryImpl @Inject constructor(private val context: Application, private val dao: SummitDao, private val client: OkHttpClient, private val api: SotaApiService, private val executor: ExecutorService) : SummitsRepository {
     private var hasRefreshed = false
 
     override suspend fun checkForRefresh() {
         if(hasRefreshed)
             return
-        withContext(Dispatchers.IO) {
+        withContext(executor.asCoroutineDispatcher()) {
             val prefs = context.getSharedPreferences("database", Context.MODE_PRIVATE)
             if(!prefs.getBoolean("database_loaded", false)) {
                 Log.v(TAG, "Downloading summit list")
@@ -56,7 +58,7 @@ class SummitsRepositoryImpl @Inject constructor(private val context: Application
     }
 
     override suspend fun updateAssociation(code: String) {
-        withContext(Dispatchers.IO) {
+        withContext(executor.asCoroutineDispatcher()) {
             val assoc = api.getAssociation(code)
             val old = dao.getAssociationByCode(code)!!
             dao.updateAssociation(AssociationEntity(id = old.id, code = assoc.associationCode, name = assoc.associationName, manager = assoc.manager, assoc.associationManagerCallsign))

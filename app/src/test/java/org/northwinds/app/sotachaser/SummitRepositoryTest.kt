@@ -22,12 +22,9 @@ import org.junit.Rule
 import org.junit.runner.RunWith
 import org.northwinds.app.sotachaser.domain.models.Association
 import org.northwinds.app.sotachaser.room.SummitDatabase
-import org.robolectric.Robolectric
 import org.robolectric.RobolectricTestRunner
 import org.robolectric.Shadows.shadowOf
 import org.robolectric.annotation.Config
-import org.robolectric.annotation.LooperMode
-import org.robolectric.junit.rules.BackgroundTestRule
 import java.util.concurrent.CountDownLatch
 import java.util.concurrent.TimeUnit
 
@@ -37,8 +34,6 @@ import java.util.concurrent.TimeUnit
 class SummitRepositoryTest {
     @get:Rule
     val hiltRule = HiltAndroidRule(this)
-
-    @get:Rule val backgroundRule = BackgroundTestRule()
 
     @Inject lateinit var repo: SummitsRepository
     @Inject lateinit var db: SummitDatabase
@@ -60,12 +55,10 @@ class SummitRepositoryTest {
     }
 
     @Test
-    @LooperMode(LooperMode.Mode.LEGACY)
     fun testCanLoadAssociations() {
         runBlocking {
             repo.checkForRefresh()
         }
-        //Robolectric.getBackgroundThreadScheduler().unPause()
         val result2 = /*liveData<List<Association>> {
             withContext(Dispatchers.IO) {*/
                 repo.getAssociations()
@@ -76,7 +69,7 @@ class SummitRepositoryTest {
         val result = result2.blockingObserve()
         //assertEquals("Looper queued up", true, Looper.myLooper()!!.queue.isIdle)
         //val result = .blockingObserve()
-        shadowOf(getMainLooper()).idle()
+        //shadowOf(getMainLooper()).idle()
         assertNotNull("Association result is null", result)
         assertEquals("Incorrect number of associations", 194, result!!.count())
     }
@@ -93,18 +86,17 @@ class SummitRepositoryTest {
     }
 
     @Test
-    @LooperMode(LooperMode.Mode.LEGACY)
     fun testWillLoadAssociationExtraDetails() {
         runBlocking {
             repo.checkForRefresh()
             repo.updateAssociation("W7O")
         }
-        shadowOf(getMainLooper()).idle()
         assertTrue("HTTP request not made", interceptor.rules[0].isConsumed)
         val association = repo.getAssociationByCode("W7O")
+        association.observeForever {  }
         shadowOf(getMainLooper()).idle()
         assertTrue("HTTP request not made", interceptor.rules[2].isConsumed)
-        assertNotNull("No value returned", association.blockingObserve())
+        assertNotNull("No value returned", association.value)
         val value = association.value!!
         assertEquals("Etienne", value.manager)
         assertEquals("K7ATN", value.managerCallsign)
@@ -124,9 +116,8 @@ private fun <T> LiveData<T>.blockingObserve(): T? {
     observeForever(observer)
     //assertEquals("Looper queued up", true, Looper.myLooper()!!.queue.isIdle)
 
-    latch.await(35, TimeUnit.SECONDS)
-    Robolectric.flushBackgroundThreadScheduler()
-    Robolectric.flushForegroundThreadScheduler()
+    shadowOf(getMainLooper()).idle()
+    //latch.await(35, TimeUnit.SECONDS)
     //assertEquals("Looper queued up", true, Looper.myLooper()!!.queue.isIdle)
     return value
 }

@@ -36,7 +36,8 @@ abstract class AppModule {
         fun provideDatabase(context: Application, executor: ExecutorService): SummitDatabase {
             return Room.databaseBuilder(context, SummitDatabase::class.java, "database")
                 .fallbackToDestructiveMigration()
-                //.setQueryExecutor(executor)
+                .setQueryExecutor(executor)
+                //.setTransactionExecutor(executor)
                 .build()
         }
 

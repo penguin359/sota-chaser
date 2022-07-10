@@ -1,19 +1,14 @@
 package org.northwinds.app.sotachaser.ui
 
 import android.app.Application
-import android.content.Context
 import android.location.Location
 import android.util.Log
-import androidx.core.content.edit
 import androidx.lifecycle.*
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.runBlocking
-import org.northwinds.app.sotachaser.R
-import org.northwinds.app.sotachaser.SummitList
+import org.northwinds.app.sotachaser.domain.models.Region
 import org.northwinds.app.sotachaser.domain.models.Summit
 import org.northwinds.app.sotachaser.repository.SummitsRepository
-import org.northwinds.app.sotachaser.repository.SummitsRepositoryImpl
-import org.northwinds.app.sotachaser.room.SummitDao
 import java.util.concurrent.ExecutorService
 import javax.inject.Inject
 
@@ -64,7 +59,7 @@ class MapsViewModel @Inject constructor(app: Application, private val executorSe
         }
     }
 
-    val associations: LiveData<List<String>> = Transformations.map(repo.getAssociations()) { list -> list.map { it.code }}//_associations
+    val associations = repo.getAssociations()
 
     private val _association = MutableLiveData<String>().apply {
         value = ""
@@ -76,10 +71,8 @@ class MapsViewModel @Inject constructor(app: Application, private val executorSe
     //}
 
     //val regions: LiveData<List<String>> = _regions
-    val regions: LiveData<List<String>> = Transformations.switchMap(association) { name ->
-        Transformations.map(repo.getRegionsInAssociationName(name)) { list ->
-            list.map { it.code }
-        }
+    val regions: LiveData<List<Region>> = Transformations.switchMap(association) { name ->
+        repo.getRegionsInAssociationName(name)
     }
 
     private val _region = MutableLiveData<String>().apply {
@@ -88,7 +81,7 @@ class MapsViewModel @Inject constructor(app: Application, private val executorSe
 
     fun setAssociation(entry: Int) {
         // TODO replace the !!
-        val newAssociation = associations.value!![entry]
+        val newAssociation = associations.value!![entry].code
         if(newAssociation == association.value)
             return
         _association.value = newAssociation
@@ -110,7 +103,7 @@ class MapsViewModel @Inject constructor(app: Application, private val executorSe
     }
 
     fun setRegion(entry: Int) {
-        val newRegion = regions.value!![entry]
+        val newRegion = regions.value!![entry].code
         if(newRegion == region.value)
             return
         _region.value = newRegion

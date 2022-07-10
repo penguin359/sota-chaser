@@ -72,6 +72,28 @@ class SummitRepositoryTest {
         //shadowOf(getMainLooper()).idle()
         assertNotNull("Association result is null", result)
         assertEquals("Incorrect number of associations", 194, result!!.count())
+        val associationMatches = result.filter { it.code == "3Y" }
+        assertEquals("Failed to find association 3Y", 1, associationMatches.count())
+        val association = associationMatches[0]
+        assertEquals("3Y", association.code)
+        assertEquals("Bouvet Island", association.name)
+    }
+
+    @Test
+    fun testCanLoadRegions() {
+        runBlocking {
+            repo.checkForRefresh()
+        }
+        val result2 = repo.getRegionsInAssociationName("W7W")
+
+        val result = result2.blockingObserve()
+        assertNotNull("Region result is null", result)
+        assertEquals("Incorrect number of regions", 17, result!!.count())
+        val regionMatches = result.filter { it.code == "LC" }
+        assertEquals("Failed to one association 3Y", 1, regionMatches.count())
+        val region = regionMatches[0]
+        assertEquals("LC", region.code)
+        assertEquals("WA-Lower Columbia", region.name)
     }
 
     @Inject lateinit var interceptor: MockInterceptor

@@ -48,7 +48,6 @@ import com.github.flank.utility.screenshot.UiScreenshotTestRule
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
 import org.aprsdroid.app.testing.SharedPreferencesRule
-import org.hamcrest.Matchers
 import org.hamcrest.Matchers.*
 import org.junit.Assert.*
 import org.junit.Before
@@ -91,7 +90,7 @@ class MainActivityTest {
         Espresso.openActionBarOverflowOrOptionsMenu(context)
 
         val appCompatTextView = onView(
-            Matchers.allOf(
+            allOf(
                 withText("Feedback"),
                 isDisplayed()
             )
@@ -150,7 +149,7 @@ class MapsFragmentTest {
                 "Incorrect number of associations",
                 194, associations!!.count()
             )
-            val associationIndex = associations.indexOf("W7O")
+            val associationIndex = associations.indexOfFirst { it.code == "W7O" }
             assertNotNull("Can't find W7O association", associationIndex)
             it.model.setAssociation(associationIndex)
         }
@@ -161,7 +160,7 @@ class MapsFragmentTest {
                 "Incorrect number of regions for association",
                 10, it.model.regions.value!!.count()
             )
-            val regionIndex = it.model.regions.value!!.indexOf("WV")
+            val regionIndex = it.model.regions.value!!.indexOfFirst { it.code == "WV" }
             assertNotNull("Can't find WV region", regionIndex)
             it.model.setRegion(regionIndex)
         }
@@ -172,7 +171,7 @@ class MapsFragmentTest {
                 "Incorrect number of summits for region",
                 138, it.model.summits.value!!.count()
             )
-            val associationIndex2 = it.model.associations.value!!.indexOf("W7W")
+            val associationIndex2 = it.model.associations.value!!.indexOfFirst { it.code == "W7W" }
             assertNotNull("Can't find W7W association", associationIndex2)
             it.model.setAssociation(associationIndex2)
         }
@@ -183,7 +182,7 @@ class MapsFragmentTest {
                 "Incorrect number of regions for association",
                 17, it.model.regions.value!!.count()
             )
-            val regionIndex2 = it.model.regions.value!!.indexOf("LC")
+            val regionIndex2 = it.model.regions.value!!.indexOfFirst { it.code == "LC" }
             assertNotNull("Can't find LC region", regionIndex2)
             it.model.setRegion(regionIndex2)
         }
@@ -269,16 +268,13 @@ class MapsFragmentTest {
                 throw noViewException
             assertEquals(194, (view as Spinner).count)
         }
-        onView(withId(R.id.association)).check(matches(withSpinnerText(Matchers.containsString("3Y"))))
+        onView(withId(R.id.association)).check(matches(withSpinnerText(containsString("3Y"))))
         onView(withId(R.id.association)).perform(ViewActions.click())
         Espresso.onData(
-            Matchers.allOf(
-                Matchers.`is`(Matchers.instanceOf(String::class.java)),
-                Matchers.`is`("W7O")
-            )
+            allOf(`is`(instanceOf(Map::class.java)), hasEntry("code", "W7O"))
         ).perform(ViewActions.click())
-        onView(withId(R.id.association)).check(matches(withSpinnerText(Matchers.containsString("W7O"))))
-        onView(withId(R.id.region)).check(matches(withSpinnerText(Matchers.containsString("CC"))))
+        onView(withId(R.id.association)).check(matches(withSpinnerText(containsString("W7O"))))
+        onView(withId(R.id.region)).check(matches(withSpinnerText(containsString("CC"))))
         onView(withId(R.id.region)).check { view, noViewException ->
             if (view == null)
                 throw noViewException
@@ -286,13 +282,10 @@ class MapsFragmentTest {
         }
         onView(withId(R.id.association)).perform(ViewActions.click())
         Espresso.onData(
-            Matchers.allOf(
-                Matchers.`is`(Matchers.instanceOf(String::class.java)),
-                Matchers.`is`("W7W")
-            )
+            allOf(`is`(instanceOf(Map::class.java)), hasEntry("code", "W7W"))
         ).perform(ViewActions.click())
-        onView(withId(R.id.association)).check(matches(withSpinnerText(Matchers.containsString("W7W"))))
-        onView(withId(R.id.region)).check(matches(withSpinnerText(Matchers.containsString("CH"))))
+        onView(withId(R.id.association)).check(matches(withSpinnerText(containsString("W7W"))))
+        onView(withId(R.id.region)).check(matches(withSpinnerText(containsString("CH"))))
         onView(withId(R.id.region)).check { view, noViewException ->
             if (view == null)
                 throw noViewException
@@ -304,23 +297,17 @@ class MapsFragmentTest {
     fun will_preserve_last_region() {
         onView(withId(R.id.association)).perform(ViewActions.click())
         Espresso.onData(
-            Matchers.allOf(
-                Matchers.`is`(Matchers.instanceOf(String::class.java)),
-                Matchers.`is`("W7O")
-            )
+            allOf(`is`(instanceOf(Map::class.java)), hasEntry("code", "W7O"))
         ).perform(ViewActions.click())
-        onView(withId(R.id.association)).check(matches(withSpinnerText(Matchers.containsString("W7O"))))
+        onView(withId(R.id.association)).check(matches(withSpinnerText(containsString("W7O"))))
         onView(withId(R.id.region)).perform(ViewActions.click())
         Espresso.onData(
-            Matchers.allOf(
-                Matchers.`is`(Matchers.instanceOf(String::class.java)),
-                Matchers.`is`("WV")
-            )
+            allOf(`is`(instanceOf(Map::class.java)), hasEntry("code", "WV"))
         ).perform(ViewActions.click())
-        onView(withId(R.id.region)).check(matches(withSpinnerText(Matchers.containsString("WV"))))
+        onView(withId(R.id.region)).check(matches(withSpinnerText(containsString("WV"))))
         frag.recreate()
-        onView(withId(R.id.association)).check(matches(withSpinnerText(Matchers.containsString("W7O"))))
-        onView(withId(R.id.region)).check(matches(withSpinnerText(Matchers.containsString("WV"))))
+        onView(withId(R.id.association)).check(matches(withSpinnerText(containsString("W7O"))))
+        onView(withId(R.id.region)).check(matches(withSpinnerText(containsString("WV"))))
     }
 
     companion object {

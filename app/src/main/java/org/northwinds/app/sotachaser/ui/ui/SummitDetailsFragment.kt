@@ -3,7 +3,6 @@ package org.northwinds.app.sotachaser.ui.ui
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -19,7 +18,6 @@ import dagger.hilt.android.AndroidEntryPoint
 import org.northwinds.app.sotachaser.R
 import org.northwinds.app.sotachaser.databinding.FragmentSummitDetailsBinding
 import org.northwinds.app.sotachaser.ui.MapsViewModel
-import org.northwinds.app.sotachaser.ui.home.MapsFragment
 
 const val TAG = "SOTAChaser-SummitDetailsFragment"
 
@@ -60,14 +58,14 @@ class SummitDetailsFragment : Fragment(), OnMapReadyCallback {
         model.associations.observe(viewLifecycleOwner) {
             if(association == null)
                 return@observe
-            val index = it.indexOf(association)
+            val index = it.indexOfFirst { it.code == association }
             if(index >= 0)
                 model.setAssociation(index)
         }
         model.regions.observe(viewLifecycleOwner) {
             if(region == null)
                 return@observe
-            val index = it.indexOf(region)
+            val index = it.indexOfFirst { it.code == region }
             if(index >= 0)
                 model.setRegion(index)
         }

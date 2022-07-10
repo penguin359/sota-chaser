@@ -40,3 +40,19 @@ Check for database load needed after destructive migration/out of date prefs
 
 Implment more tests for network errors and badly formed data
 Show local and summit locators
+
+Show region/association rectangles
+Show marker snippet
+Click marker to go to details
+Show tracks
+Show day/night
+Colorize marker
+Make it a flat dot
+Make it configurable
+UTC/local
+Imperial/metric
+DM/DMS/DD
+Localize dates/times
+Filter boxes
+Search page
+Back/Up buttons

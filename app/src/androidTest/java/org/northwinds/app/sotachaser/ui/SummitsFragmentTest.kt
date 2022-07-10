@@ -51,7 +51,7 @@ class SummitsFragmentTest {
         val frag = HiltFragmentScenario.launchInHiltContainer(SummitFragment::class.java)
         onView(withId(R.id.association)).perform(click())
         onData(
-            allOf(`is`(instanceOf(String::class.java)), `is`(equalTo("W7O")))
+            allOf(`is`(instanceOf(Map::class.java)), hasEntry("code", "W7O"))
         ).perform(click())
         onView(withId(R.id.association)).check(
             matches(
@@ -60,7 +60,7 @@ class SummitsFragmentTest {
         )
         onView(withId(R.id.region)).perform(click())
         onData(
-            allOf(`is`(instanceOf(String::class.java)), `is`(equalTo("NC")))
+            allOf(`is`(instanceOf(Map::class.java)), hasEntry("code", "NC"))
         ).perform(click())
         onView(withId(R.id.region)).check(
             matches(
@@ -80,7 +80,7 @@ class SummitsFragmentTest {
         val frag = HiltFragmentScenario.launchInHiltContainer(SummitFragment::class.java)
         onView(withId(R.id.association)).perform(click())
         onData(
-            allOf(`is`(instanceOf(String::class.java)), `is`(equalTo("W7O")))
+            allOf(`is`(instanceOf(Map::class.java)), hasEntry("code", "W7O"))
         ).perform(click())
         onView(withId(R.id.association)).check(
             matches(
@@ -89,7 +89,7 @@ class SummitsFragmentTest {
         )
         onView(withId(R.id.region)).perform(click())
         onData(
-            allOf(`is`(instanceOf(String::class.java)), `is`(equalTo("NC")))
+            allOf(`is`(instanceOf(Map::class.java)), hasEntry("code", "NC"))
         ).perform(click())
         onView(withId(R.id.region)).check(
             matches(
@@ -105,7 +105,7 @@ class SummitsFragmentTest {
 
         onView(withId(R.id.association)).perform(click())
         onData(
-            allOf(`is`(instanceOf(String::class.java)), `is`(equalTo("BV")))
+            allOf(`is`(instanceOf(Map::class.java)), hasEntry("code", "BV"))
         ).perform(click())
         onView(withId(R.id.association)).check(
             matches(
@@ -114,7 +114,7 @@ class SummitsFragmentTest {
         )
         onView(withId(R.id.region)).perform(click())
         onData(
-            allOf(`is`(instanceOf(String::class.java)), `is`(equalTo("HL")))
+            allOf(`is`(instanceOf(Map::class.java)), hasEntry("code", "HL"))
         ).perform(click())
         onView(withId(R.id.region)).check(
             matches(
@@ -134,11 +134,11 @@ class SummitsFragmentTest {
         val frag = HiltFragmentScenario.launchInHiltContainer(SummitFragment::class.java)
         onView(withId(R.id.association)).perform(click())
         onData(
-            allOf(`is`(instanceOf(String::class.java)), `is`(equalTo("HL")))
+            allOf(`is`(instanceOf(Map::class.java)), hasEntry("code", "HL"))
         ).perform(click())
         onView(withId(R.id.region)).perform(click())
         onData(
-            allOf(`is`(instanceOf(String::class.java)), `is`(equalTo("GN")))
+            allOf(`is`(instanceOf(Map::class.java)), hasEntry("code", "GN"))
         ).perform(click())
         onView(RecyclerViewMatcher(R.id.list).atPosition(0)).check(
             matches(
@@ -193,11 +193,11 @@ class SummitsFragmentTest {
         val frag = HiltFragmentScenario.launchInHiltContainer(SummitFragment::class.java)
         onView(withId(R.id.association)).perform(click())
         onData(
-            allOf(`is`(instanceOf(String::class.java)), `is`(equalTo("HL")))
+            allOf(`is`(instanceOf(Map::class.java)), hasEntry("code", "HL"))
         ).perform(click())
         onView(withId(R.id.region)).perform(click())
         onData(
-            allOf(`is`(instanceOf(String::class.java)), `is`(equalTo("GN")))
+            allOf(`is`(instanceOf(Map::class.java)), hasEntry("code", "GN"))
         ).perform(click())
         onView(withId(R.id.list)).perform(
             scrollToPosition<MySummitRecyclerViewAdapter.ViewHolder>(summitPosition)
@@ -297,11 +297,11 @@ class SummitsActivityTest {
         onView(withId(R.id.navigation_dashboard)).perform(click())
         onView(withId(R.id.association)).perform(click())
         onData(
-            allOf(`is`(instanceOf(String::class.java)), `is`(equalTo("W7O")))
+            allOf(`is`(instanceOf(Map::class.java)), hasEntry("code", "W7O"))
         ).perform(click())
         onView(withId(R.id.region)).perform(click())
         onData(
-            allOf(`is`(instanceOf(String::class.java)), `is`(equalTo("CN")))
+            allOf(`is`(instanceOf(Map::class.java)), hasEntry("code", "CN"))
         ).perform(click())
         onView(withText(containsString("W7O/CN-001"))).perform(click())
         onView(withId(R.id.map)).check(matches(isDisplayed()))
@@ -312,11 +312,11 @@ class SummitsActivityTest {
         onView(withId(R.id.navigation_dashboard)).perform(click())
         onView(withId(R.id.association)).perform(click())
         onData(
-            allOf(`is`(instanceOf(String::class.java)), `is`(equalTo("W7O")))
+            allOf(`is`(instanceOf(Map::class.java)), hasEntry("code", "W7O"))
         ).perform(click())
         onView(withId(R.id.region)).perform(click())
         onData(
-            allOf(`is`(instanceOf(String::class.java)), `is`(equalTo("CN")))
+            allOf(`is`(instanceOf(Map::class.java)), hasEntry("code", "CN"))
         ).perform(click())
         onView(withText(containsString("W7O/CN-001"))).perform(click())
         onView(withId(R.id.map)).check(matches(isDisplayed()))
@@ -333,11 +333,11 @@ class SummitsActivityTest {
         onView(withId(R.id.navigation_dashboard)).perform(click())
         onView(withId(R.id.association)).perform(click())
         onData(
-            allOf(`is`(instanceOf(String::class.java)), `is`(equalTo("HL")))
+            allOf(`is`(instanceOf(Map::class.java)), hasEntry("code", "HL"))
         ).perform(click())
         onView(withId(R.id.region)).perform(click())
         onData(
-            allOf(`is`(instanceOf(String::class.java)), `is`(equalTo("GN")))
+            allOf(`is`(instanceOf(Map::class.java)), hasEntry("code", "GN"))
         ).perform(click())
         onView(withId(R.id.list)).perform(
             scrollToPosition<MySummitRecyclerViewAdapter.ViewHolder>(44))

@@ -37,6 +37,6 @@ fun List<RegionEntity>.asDomainModel(): List<Region> = map {
         id = it.id,
         associationId = it.associationId,
         code = it.code,
-        name = it.code,
+        name = it.name,
     )
 }

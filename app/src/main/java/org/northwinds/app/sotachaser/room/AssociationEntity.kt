@@ -30,7 +30,7 @@ data class AssociationEntity(
 fun AssociationEntity.asDomainModel() = Association(
     id = id,
     code = code,
-    name = code,
+    name = name,
     manager = manager,
     managerCallsign = managerCallsign,
     activeFrom = activeFrom,

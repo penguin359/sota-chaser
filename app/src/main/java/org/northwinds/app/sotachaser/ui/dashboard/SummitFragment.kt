@@ -11,7 +11,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.AdapterView
-import android.widget.ArrayAdapter
+import android.widget.SimpleAdapter
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
@@ -22,11 +22,10 @@ import com.google.android.gms.common.ConnectionResult
 import com.google.android.gms.common.GoogleApiAvailability
 import com.google.android.gms.location.LocationServices
 import dagger.hilt.android.AndroidEntryPoint
+import org.northwinds.app.sotachaser.R
 import org.northwinds.app.sotachaser.databinding.FragmentSummitListBinding
 import org.northwinds.app.sotachaser.ui.MapsViewModel
-import org.northwinds.app.sotachaser.ui.dashboard.MySummitRecyclerViewAdapter
 
-const val TAG = "SOTAChaser-SummitFragment"
 
 /**
  * A fragment representing a list of Items.
@@ -58,7 +57,7 @@ class SummitFragment : Fragment() {
                 Log.d(TAG, "Selecting association: $position")
                 model.setAssociation(position)
                 PreferenceManager.getDefaultSharedPreferences(requireContext()).edit {
-                    putString("association", model.associations.value!![position])
+                    putString("association", model.associations.value!![position].code)
                     //putString("region", "")
                 }
             }
@@ -71,29 +70,37 @@ class SummitFragment : Fragment() {
                 Log.d(TAG, "Selecting region: $position")
                 model.setRegion(position)
                 PreferenceManager.getDefaultSharedPreferences(requireContext()).edit {
-                    putString("region", model.regions.value!![position])
+                    putString("region", model.regions.value!![position].code)
                 }
             }
 
             override fun onNothingSelected(_adapter: AdapterView<*>?) {
             }
         }
-        model.associations.observe(viewLifecycleOwner) {
-            binding.association.adapter =
-                ArrayAdapter(requireContext(), android.R.layout.simple_spinner_item, it)
+
+        model.associations.observe(viewLifecycleOwner) { value ->
+            val adapter = SimpleAdapter(requireContext(), value.map {
+                mapOf("code" to it.code, "name" to it.name)
+            }, R.layout.spinner_entry, arrayOf("code", "name"), intArrayOf(R.id.code, R.id.name))
+            adapter.setDropDownViewResource(R.layout.spinner_dropdown)
+            binding.association.adapter = adapter
             val last = PreferenceManager.getDefaultSharedPreferences(requireContext()).getString("association", "")
             if(last != "") {
-                val index = model.associations.value?.indexOf(last) ?: -1
+                val index = model.associations.value?.indexOfFirst { it.code == last } ?: -1
                 if(index >= 0) {
                     binding.association.setSelection(index)
                 }
             }
         }
-        model.regions.observe(viewLifecycleOwner) {
-            binding.region.adapter = ArrayAdapter(requireContext(), android.R.layout.simple_spinner_item, it)
+        model.regions.observe(viewLifecycleOwner) { value ->
+            val adapter = SimpleAdapter(requireContext(), value.map {
+                mapOf("code" to it.code, "name" to it.name)
+            }, R.layout.spinner_entry, arrayOf("code", "name"), intArrayOf(R.id.code, R.id.name))
+            adapter.setDropDownViewResource(R.layout.spinner_dropdown)
+            binding.region.adapter = adapter
             val last = PreferenceManager.getDefaultSharedPreferences(requireContext()).getString("region", "")
             if(last != "") {
-                val index = model.regions.value?.indexOf(last) ?: -1
+                val index = model.regions.value?.indexOfFirst { it.code == last } ?: -1
                 if(index >= 0) {
                     binding.region.setSelection(index)
                 }
@@ -150,6 +157,7 @@ class SummitFragment : Fragment() {
     }
 
     companion object {
+        const val TAG = "SOTAChaser-SummitFragment"
 
         // TODO: Customize parameter argument names
         const val ARG_COLUMN_COUNT = "column-count"

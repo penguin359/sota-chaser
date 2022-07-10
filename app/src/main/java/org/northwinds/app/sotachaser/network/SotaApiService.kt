@@ -17,7 +17,7 @@ interface SotaApiService {
     suspend fun deleteAlert(@Path("id") id: Long)
 
     @GET("api/associations")
-    suspend fun getAssociations(): AssociationList
+    suspend fun getAssociations(): List<AssociationEntity>
 
     @GET("api/associations/{assocCode}")
     suspend fun getAssociation(@Path("assocCode") association: String): AssociationWithRegionsEntity

@@ -27,6 +27,25 @@ data class AssociationEntity(
     @ColumnInfo(name = "updated_at") val updatedAt: Long? = null,
 )
 
+fun org.northwinds.app.sotachaser.network.model.AssociationWithRegionsEntity.asDatabaseModel(dao: SummitDao): AssociationEntity {
+    val old = associationCode?.let { dao.getAssociationByCode(it) }
+    return AssociationEntity(
+        id = old?.id ?: 0,
+        code = associationCode ?: "",
+        name = associationName ?: "",
+        manager = manager,
+        managerCallsign = associationManagerCallsign,
+        activeFrom = activeFrom,
+        dxcc = dxcc,
+        regionsCount = regionsCount,
+        summitsCount = summitsCount,
+        maxLat = maxLat,
+        maxLong = maxLong,
+        minLat = minLat,
+        minLong = minLong,
+    )
+}
+
 fun AssociationEntity.asDomainModel() = Association(
     id = id,
     code = code,

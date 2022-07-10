@@ -26,11 +26,17 @@ interface SummitDao {
     @Insert
     fun insertRegion(vararg users: RegionEntity): List<Long>
 
+    @Update
+    fun updateRegion(vararg users: RegionEntity): Int
+
     @Insert
     fun insertSummit(vararg users: SummitEntity): List<Long>
 
     @Query("SELECT * FROM region WHERE association_id = :associationId AND code = :code")
     fun getRegionByCode(associationId: Long, code: String): RegionEntity?
+
+    @Query("SELECT * FROM region WHERE association_id = :associationId AND code = :code")
+    fun getRegionByCode2(associationId: Long, code: String): LiveData<RegionEntity>
 
     @Query("SELECT * FROM summit WHERE region_id = :regionId AND code = :code")
     fun getSummitByCode(regionId: Long, code: String): SummitEntity?

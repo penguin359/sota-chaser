@@ -3,16 +3,12 @@ package org.northwinds.app.sotachaser.repository
 import android.app.Application
 import android.content.Context
 import android.util.Log
-import android.widget.Toast
 import androidx.core.content.edit
 import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Transformations
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.asCoroutineDispatcher
 import kotlinx.coroutines.withContext
 import okhttp3.OkHttpClient
-import org.northwinds.app.sotachaser.R
 import org.northwinds.app.sotachaser.SummitList
 import org.northwinds.app.sotachaser.domain.models.Association
 import org.northwinds.app.sotachaser.domain.models.Region
@@ -59,9 +55,13 @@ class SummitsRepositoryImpl @Inject constructor(private val context: Application
 
     override suspend fun updateAssociation(code: String) {
         withContext(executor.asCoroutineDispatcher()) {
-            val assoc = api.getAssociation(code)
-            val old = dao.getAssociationByCode(code)!!
-            dao.updateAssociation(AssociationEntity(id = old.id, code = assoc.associationCode ?: "", name = assoc.associationName ?: "", manager = assoc.manager, assoc.associationManagerCallsign))
+            dao.updateAssociation(api.getAssociation(code).asDatabaseModel(dao))
+        }
+    }
+
+    override suspend fun updateRegion(association: String, region: String) {
+        withContext(executor.asCoroutineDispatcher()) {
+            dao.updateRegion(api.getRegion(association, region).region.asDatabaseModel(dao))
         }
     }
 
@@ -79,6 +79,12 @@ class SummitsRepositoryImpl @Inject constructor(private val context: Application
 
     override fun getRegionsInAssociationName(associationId: String): LiveData<List<Region>> {
         return Transformations.map(dao.getRegionsInAssociationName(associationId)) {
+            it.asDomainModel()
+        }
+    }
+
+    override fun getRegionByCode(association: Association, code: String): LiveData<Region> {
+        return Transformations.map(dao.getRegionByCode2(association.id, code)) {
             it.asDomainModel()
         }
     }

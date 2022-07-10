@@ -56,3 +56,6 @@ Localize dates/times
 Filter boxes
 Search page
 Back/Up buttons
+Use real date/time objects
+Implement clean architecture
+Update out of date rows automatically in background

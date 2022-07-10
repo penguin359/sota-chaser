@@ -4,6 +4,7 @@ import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.ForeignKey
 import androidx.room.PrimaryKey
+import org.northwinds.app.sotachaser.domain.models.Association
 import org.northwinds.app.sotachaser.domain.models.Region
 
 
@@ -32,11 +33,41 @@ data class RegionEntity(
     @ColumnInfo(name = "updated_at") val updatedAt: Long? = null,
 )
 
-fun List<RegionEntity>.asDomainModel(): List<Region> = map {
-    Region(
-        id = it.id,
-        associationId = it.associationId,
-        code = it.code,
-        name = it.name,
+fun org.northwinds.app.sotachaser.network.model.RegionEntity.asDatabaseModel(dao: SummitDao): RegionEntity {
+    val association = associationCode?.let { dao.getAssociationByCode(it) }
+    val old = association?.let { aid -> regionCode?.let { dao.getRegionByCode(aid.id, it) } }
+    return RegionEntity(
+        id = old?.id ?: 0,
+        associationId = association?.id ?: 0,
+        code = regionCode ?: "",
+        name = regionName ?: "",
+        manager = manager,
+        managerCallsign = regionManagerCallsign,
+        notes = notes,
+        //activeFrom = activeFrom,
+        summitsCount = summits,
+        maxLat = maxLat,
+        maxLong = maxLong,
+        minLat = minLat,
+        minLong = minLong,
     )
+}
+
+fun RegionEntity.asDomainModel(): Region = Region(
+    id = id,
+    associationId = associationId,
+    code = code,
+    name = name,
+    manager = manager,
+    managerCallsign = managerCallsign,
+    notes = notes,
+    summitsCount = summitsCount ?: 0,
+    maxLat = maxLat,
+    maxLong = maxLong,
+    minLat = minLat,
+    minLong = minLong,
+)
+
+fun List<RegionEntity>.asDomainModel(): List<Region> = map {
+    it.asDomainModel()
 }

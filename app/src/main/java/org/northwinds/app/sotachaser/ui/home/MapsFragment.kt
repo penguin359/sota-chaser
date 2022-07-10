@@ -176,7 +176,7 @@ class MapsFragment : Fragment(), OnMapReadyCallback {
                 if(it.longitude > maxLongitude)
                     maxLongitude = it.longitude
                 mMap.addMarker(
-                    MarkerOptions().position(LatLng(it.latitude, it.longitude)).title(it.code)
+                    MarkerOptions().position(LatLng(it.latitude, it.longitude)).title(it.code).snippet(it.name)
                 )
             }
             mMap.moveCamera(

@@ -1,5 +1,8 @@
 package org.northwinds.app.sotachaser
 
+import org.northwinds.app.sotachaser.testing.SummitValues.TOTAL_ASSOCIATIONS_IN_CSV
+import org.northwinds.app.sotachaser.testing.SummitValues.TOTAL_REGIONS_IN_CSV
+import org.northwinds.app.sotachaser.testing.SummitValues.TOTAL_SUMMITS_IN_CSV
 import java.nio.file.Files
 import java.nio.file.Paths
 import kotlin.test.Test
@@ -17,10 +20,10 @@ class SummitListTest {
 
         //list.summits[0].setName("داۇد ")
         list.summits.forEach(System.err::println)
-        assertEquals(164345, list.summits.count(), "Incorrect number of summits")
-        assertEquals(164345, list.names.count(), "Incorrect number of summit designators")
-        assertEquals(1422, list.regions.count(), "Incorrect number of summit regions")
-        assertEquals(194, list.associations.count(), "Incorrect number of summit associations")
+        assertEquals(TOTAL_SUMMITS_IN_CSV, list.summits.count(), "Incorrect number of summits")
+        assertEquals(TOTAL_SUMMITS_IN_CSV, list.names.count(), "Incorrect number of summit designators")
+        assertEquals(TOTAL_REGIONS_IN_CSV, list.regions.count(), "Incorrect number of summit regions")
+        assertEquals(TOTAL_ASSOCIATIONS_IN_CSV, list.associations.count(), "Incorrect number of summit associations")
         assertEquals("Mount Saint Helens", list.names["W7W/LC-001"])
         assertEquals("Ófæruhöfði", list.names["TF/SL-089"])
         assertEquals("Ajman - عجمان", list.regions["A6/AJ"])

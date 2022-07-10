@@ -4,6 +4,7 @@ import androidx.lifecycle.LiveData
 import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.Query
+import androidx.room.Update
 
 @Dao
 interface SummitDao {
@@ -13,8 +14,14 @@ interface SummitDao {
     @Query("SELECT * FROM association WHERE code = :code")
     fun getAssociationByCode(code: String): AssociationEntity?
 
+    @Query("SELECT * FROM association WHERE code = :code")
+    fun getAssociationByCode2(code: String): LiveData<AssociationEntity>
+
     @Insert
     fun insertAssociation(vararg users: AssociationEntity): List<Long>
+
+    @Update
+    fun updateAssociation(vararg users: AssociationEntity): Int
 
     @Insert
     fun insertRegion(vararg users: RegionEntity): List<Long>

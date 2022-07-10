@@ -36,6 +36,7 @@ import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
+import com.google.android.gms.maps.model.BitmapDescriptorFactory
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.LatLngBounds
 import com.google.android.gms.maps.model.MarkerOptions
@@ -175,8 +176,23 @@ class MapsFragment : Fragment(), OnMapReadyCallback {
                     minLongitude = it.longitude
                 if(it.longitude > maxLongitude)
                     maxLongitude = it.longitude
+                val hue = when(it.points) {
+                    1 -> BitmapDescriptorFactory.HUE_BLUE
+                    2 -> BitmapDescriptorFactory.HUE_AZURE
+                    3 -> BitmapDescriptorFactory.HUE_GREEN
+                    4 -> BitmapDescriptorFactory.HUE_GREEN
+                    5 -> BitmapDescriptorFactory.HUE_YELLOW
+                    6 -> BitmapDescriptorFactory.HUE_YELLOW
+                    7 -> BitmapDescriptorFactory.HUE_ORANGE
+                    8 -> BitmapDescriptorFactory.HUE_ORANGE
+                    else -> BitmapDescriptorFactory.HUE_RED
+                }
                 mMap.addMarker(
-                    MarkerOptions().position(LatLng(it.latitude, it.longitude)).title(it.code).snippet(it.name)
+                    MarkerOptions()
+                        .position(LatLng(it.latitude, it.longitude))
+                        .title(it.code)
+                        .snippet(it.name)
+                        .icon(BitmapDescriptorFactory.defaultMarker(hue))
                 )
             }
             mMap.moveCamera(

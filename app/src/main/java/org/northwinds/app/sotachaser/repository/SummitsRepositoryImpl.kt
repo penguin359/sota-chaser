@@ -61,7 +61,7 @@ class SummitsRepositoryImpl @Inject constructor(private val context: Application
         withContext(executor.asCoroutineDispatcher()) {
             val assoc = api.getAssociation(code)
             val old = dao.getAssociationByCode(code)!!
-            dao.updateAssociation(AssociationEntity(id = old.id, code = assoc.associationCode, name = assoc.associationName, manager = assoc.manager, assoc.associationManagerCallsign))
+            dao.updateAssociation(AssociationEntity(id = old.id, code = assoc.associationCode ?: "", name = assoc.associationName ?: "", manager = assoc.manager, assoc.associationManagerCallsign))
         }
     }
 

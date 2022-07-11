@@ -36,10 +36,7 @@ import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
-import com.google.android.gms.maps.model.BitmapDescriptorFactory
-import com.google.android.gms.maps.model.LatLng
-import com.google.android.gms.maps.model.LatLngBounds
-import com.google.android.gms.maps.model.MarkerOptions
+import com.google.android.gms.maps.model.*
 import dagger.hilt.android.AndroidEntryPoint
 import org.northwinds.app.sotachaser.R
 import org.northwinds.app.sotachaser.databinding.FragmentMapsBinding
@@ -156,6 +153,13 @@ class MapsFragment : Fragment(), OnMapReadyCallback {
         val sydney = LatLng(-34.0, 151.0)
         mMap.addMarker(MarkerOptions().position(sydney).title("Marker in Sydney"))
         mMap.moveCamera(CameraUpdateFactory.newLatLng(sydney))
+        model.regionDetails.observe(this) { region ->
+            //mMap.addPolygon(PolygonOptions().add(
+            //    LatLng(region.minLat!!, region.minLong!!),
+            //    LatLng(region.minLat, region.maxLong!!),
+            //    LatLng(region.maxLat!!, region.maxLong),
+            //    LatLng(region.maxLat, region.minLong)))
+        }
         model.summits.observe(this) { summits ->
             if(summits == null)
                 return@observe
@@ -163,6 +167,19 @@ class MapsFragment : Fragment(), OnMapReadyCallback {
             mMap.clear()
             if(summits.count() == 0)
                 return@observe
+            val region = model.regionDetails.value!!
+            if(region.minLat != null && region.maxLat != null && region.minLong != null && region.maxLong != null) {
+                mMap.addPolygon(
+                    PolygonOptions().add(
+                        LatLng(region.minLat, region.minLong),
+                        LatLng(region.minLat, region.maxLong),
+                        LatLng(region.maxLat, region.maxLong),
+                        LatLng(region.maxLat, region.minLong)
+                    )
+                        .fillColor(0x400000ff.toInt())
+                        .strokeColor(0x800000ff.toInt())
+                )
+            }
             var minLatitude = summits[0].latitude
             var maxLatitude = summits[0].latitude
             var minLongitude = summits[0].longitude

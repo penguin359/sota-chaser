@@ -5,7 +5,9 @@ import android.location.Location
 import android.util.Log
 import androidx.lifecycle.*
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
+import org.northwinds.app.sotachaser.domain.models.Association
 import org.northwinds.app.sotachaser.domain.models.Region
 import org.northwinds.app.sotachaser.domain.models.Summit
 import org.northwinds.app.sotachaser.repository.SummitsRepository
@@ -45,12 +47,8 @@ class MapsViewModel @Inject constructor(app: Application, private val executorSe
         _location.value = location
     }
 
-    //private val _associations = repo.getAssociations()MutableLiveData<List<String>>().apply {
-    //    value = listOf()
-    //}
-
     init {
-        Log.i(Companion.TAG, "Starting new model view")
+        Log.i(TAG, "Starting new model view")
         executorService.execute {
             //_associations.postValue(repo.getAssociations().value?.map { it.code } ?: listOf())
             runBlocking {
@@ -66,11 +64,9 @@ class MapsViewModel @Inject constructor(app: Application, private val executorSe
     }
     private val association: LiveData<String> = _association
 
-    //private val _regions = MutableLiveData<List<String>>().apply {
-    //    value = listOf()
-    //}
+    private val _associationDetails = MutableLiveData<Association>()
+    private val associationDetails: LiveData<Association> = _associationDetails
 
-    //val regions: LiveData<List<String>> = _regions
     val regions: LiveData<List<Region>> = Transformations.switchMap(association) { name ->
         repo.getRegionsInAssociationName(name)
     }
@@ -79,13 +75,17 @@ class MapsViewModel @Inject constructor(app: Application, private val executorSe
     }
     private val region: LiveData<String> = _region
 
+    private val _regionDetails = MutableLiveData<Region>()
+    val regionDetails: LiveData<Region> = _regionDetails
+
     fun setAssociation(entry: Int) {
         // TODO replace the !!
         val newAssociation = associations.value!![entry].code
         if(newAssociation == association.value)
             return
         _association.value = newAssociation
-        Log.d(Companion.TAG, "Selected association: $association")
+        _associationDetails.value = associations.value!![entry]
+        Log.d(TAG, "Selected association: $association")
         //_regions.value = listOf()
         //executorService.execute {
         //    _regions.postValue(repo.getRegionsInAssociationName(association.value!!).value?.map { it.code }
@@ -93,11 +93,6 @@ class MapsViewModel @Inject constructor(app: Application, private val executorSe
         //}
     }
 
-    //private val _summits = MutableLiveData<List<Summit>>().apply {
-    //    value = listOf()
-    //}
-
-    //val summits: LiveData<List<Summit>> = _summits
     val summits: LiveData<List<Summit>> = Transformations.switchMap(region) { name ->
         repo.getSummits(association.value ?: "", name)
     }
@@ -107,11 +102,15 @@ class MapsViewModel @Inject constructor(app: Application, private val executorSe
         if(newRegion == region.value)
             return
         _region.value = newRegion
-        Log.d(Companion.TAG, "Selected region: $region")
+        _regionDetails.value = regions.value!![entry]
+        Log.d(TAG, "Selected region: $region")
         //_summits.value = listOf()
         //executorService.execute {
         //    _summits.postValue(repo.getSummits(association.value!!, region.value!!).value)
         //}
+        viewModelScope.launch {
+            repo.updateRegion(association.value!!, region.value!!)
+        }
     }
 
     companion object {

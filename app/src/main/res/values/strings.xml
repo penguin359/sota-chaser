@@ -10,6 +10,15 @@
     <string name="title_changelog">Changelog</string>
     <string name="changelog_text">Updates in this release:\n
 \n
+<b>Version 0.6 Alpha</b>\n
+• Fixed possible crash when changing tabs\n
+• Automatically downloads latest summit data\n
+• SOTA region colorized on map\n
+• Markers are now colorized by point scale\n
+• Markers show summit name\n
+• Older Android phones are now supported\n
+• Fixed spinners layout and include assocation/region names\n
+\n
 <b>Version 0.5 Alpha</b>\n
 • Added a details view of each summit with a map for it\n
 • Optionally, show distance to summit from current location\n

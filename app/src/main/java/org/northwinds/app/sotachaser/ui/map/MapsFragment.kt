@@ -19,7 +19,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package org.northwinds.app.sotachaser.ui.home
+package org.northwinds.app.sotachaser.ui.map
 
 import android.os.Bundle
 import android.util.Log
@@ -40,7 +40,6 @@ import com.google.android.gms.maps.model.*
 import dagger.hilt.android.AndroidEntryPoint
 import org.northwinds.app.sotachaser.R
 import org.northwinds.app.sotachaser.databinding.FragmentMapsBinding
-import org.northwinds.app.sotachaser.ui.MapsViewModel
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER

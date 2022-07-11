@@ -1,4 +1,4 @@
-package org.northwinds.app.sotachaser.ui.ui
+package org.northwinds.app.sotachaser.ui
 
 import android.content.Intent
 import android.net.Uri
@@ -18,7 +18,7 @@ import com.google.android.gms.maps.model.MarkerOptions
 import dagger.hilt.android.AndroidEntryPoint
 import org.northwinds.app.sotachaser.R
 import org.northwinds.app.sotachaser.databinding.FragmentSummitDetailsBinding
-import org.northwinds.app.sotachaser.ui.MapsViewModel
+import org.northwinds.app.sotachaser.ui.map.MapsViewModel
 
 const val TAG = "SOTAChaser-SummitDetailsFragment"
 

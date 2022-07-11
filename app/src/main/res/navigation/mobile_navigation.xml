@@ -7,22 +7,22 @@
 
     <fragment
         android:id="@+id/navigation_home"
-        android:name="org.northwinds.app.sotachaser.ui.home.MapsFragment"
+        android:name="org.northwinds.app.sotachaser.ui.map.MapsFragment"
         android:label="@string/title_home"
         tools:layout="@layout/fragment_maps" />
 
     <fragment
         android:id="@+id/navigation_dashboard"
-        android:name="org.northwinds.app.sotachaser.ui.dashboard.SummitFragment"
+        android:name="org.northwinds.app.sotachaser.ui.summits.SummitFragment"
         android:label="@string/title_dashboard"
-        tools:layout="@layout/fragment_dashboard" >
+        tools:layout="@layout/fragment_summit" >
         <action
             android:id="@+id/action_navigation_dashboard_to_summitDetailsFragment"
             app:destination="@id/summitDetailsFragment" />
     </fragment>
     <fragment
         android:id="@+id/summitDetailsFragment"
-        android:name="org.northwinds.app.sotachaser.ui.ui.SummitDetailsFragment"
+        android:name="org.northwinds.app.sotachaser.ui.SummitDetailsFragment"
         android:label="SummitDetailsFragment" >
         <argument
             android:name="region"

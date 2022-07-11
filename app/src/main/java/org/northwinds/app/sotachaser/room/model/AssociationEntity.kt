@@ -1,9 +1,10 @@
-package org.northwinds.app.sotachaser.room
+package org.northwinds.app.sotachaser.room.model
 
 import androidx.room.*
 import androidx.room.ForeignKey.CASCADE
 import org.northwinds.app.sotachaser.domain.models.Association
 import org.northwinds.app.sotachaser.domain.models.Region
+import org.northwinds.app.sotachaser.room.SummitDao
 
 @Entity(
     tableName = "association",

@@ -64,8 +64,8 @@ import org.junit.runner.RunWith
 import org.northwinds.app.sotachaser.repository.SummitsRepository
 import org.northwinds.app.sotachaser.testing.HiltFragmentScenario
 import org.northwinds.app.sotachaser.ui.MainActivity
-import org.northwinds.app.sotachaser.ui.MapsViewModel
-import org.northwinds.app.sotachaser.ui.home.MapsFragment
+import org.northwinds.app.sotachaser.ui.map.MapsViewModel
+import org.northwinds.app.sotachaser.ui.map.MapsFragment
 import java.util.concurrent.CountDownLatch
 import java.util.concurrent.ExecutorService
 import java.util.concurrent.TimeUnit

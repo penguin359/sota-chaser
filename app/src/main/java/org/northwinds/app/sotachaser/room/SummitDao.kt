@@ -5,6 +5,9 @@ import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.Query
 import androidx.room.Update
+import org.northwinds.app.sotachaser.room.model.AssociationEntity
+import org.northwinds.app.sotachaser.room.model.RegionEntity
+import org.northwinds.app.sotachaser.room.model.SummitEntity
 
 @Dao
 interface SummitDao {

@@ -22,7 +22,6 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import org.northwinds.app.sotachaser.R
 import org.northwinds.app.sotachaser.testing.HiltFragmentScenario
-import org.northwinds.app.sotachaser.ui.ui.SummitDetailsFragment
 
 @RunWith(AndroidJUnit4::class)
 @HiltAndroidTest
@@ -32,7 +31,8 @@ class SummitDetailsFragmentTest {
 
     @Test
     fun canOpenFragment() {
-        HiltFragmentScenario.launchInHiltContainer(SummitDetailsFragment::class.java, bundleOf(
+        HiltFragmentScenario.launchInHiltContainer(
+            SummitDetailsFragment::class.java, bundleOf(
             "association" to "HL",
             "region" to "GN",
             "summit" to "001",
@@ -41,7 +41,8 @@ class SummitDetailsFragmentTest {
 
     @Test
     fun canOpenSpecificSummit() {
-        HiltFragmentScenario.launchInHiltContainer(SummitDetailsFragment::class.java, bundleOf(
+        HiltFragmentScenario.launchInHiltContainer(
+            SummitDetailsFragment::class.java, bundleOf(
             "association" to "HL",
             "region" to "GN",
             "summit" to "001",
@@ -64,7 +65,8 @@ class SummitDetailsFragmentTest {
 
     @Test
     fun canOpenDifferentSummit() {
-        HiltFragmentScenario.launchInHiltContainer(SummitDetailsFragment::class.java, bundleOf(
+        HiltFragmentScenario.launchInHiltContainer(
+            SummitDetailsFragment::class.java, bundleOf(
             "association" to "W7W",
             "region" to "LC",
             "summit" to "052",

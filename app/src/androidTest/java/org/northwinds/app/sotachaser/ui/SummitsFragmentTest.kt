@@ -28,8 +28,8 @@ import org.northwinds.app.sotachaser.R
 import org.northwinds.app.sotachaser.SotaChaserBaseApplication
 import org.northwinds.app.sotachaser.testing.HiltFragmentScenario
 import org.northwinds.app.sotachaser.testing.Matcher.atPosition
-import org.northwinds.app.sotachaser.ui.dashboard.MySummitRecyclerViewAdapter
-import org.northwinds.app.sotachaser.ui.dashboard.SummitFragment
+import org.northwinds.app.sotachaser.ui.summits.MySummitRecyclerViewAdapter
+import org.northwinds.app.sotachaser.ui.summits.SummitFragment
 
 @RunWith(AndroidJUnit4::class)
 @HiltAndroidTest

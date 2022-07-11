@@ -16,6 +16,8 @@ import org.northwinds.app.sotachaser.domain.models.Summit
 import org.northwinds.app.sotachaser.network.SotaApiService
 import org.northwinds.app.sotachaser.network.SummitData
 import org.northwinds.app.sotachaser.room.*
+import org.northwinds.app.sotachaser.room.model.asDatabaseModel
+import org.northwinds.app.sotachaser.room.model.asDomainModel
 import org.northwinds.app.sotachaser.util.asAssociationDatabaseModel
 import org.northwinds.app.sotachaser.util.asRegionDatabaseModel
 import org.northwinds.app.sotachaser.util.asSummitDatabaseModel

@@ -1,4 +1,4 @@
-package org.northwinds.app.sotachaser.room
+package org.northwinds.app.sotachaser.room.model
 
 import androidx.room.ColumnInfo
 import androidx.room.Entity
@@ -6,6 +6,7 @@ import androidx.room.ForeignKey
 import androidx.room.PrimaryKey
 import org.northwinds.app.sotachaser.domain.models.Association
 import org.northwinds.app.sotachaser.domain.models.Region
+import org.northwinds.app.sotachaser.room.SummitDao
 
 
 @Entity(

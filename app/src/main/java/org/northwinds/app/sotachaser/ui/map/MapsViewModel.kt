@@ -1,4 +1,4 @@
-package org.northwinds.app.sotachaser.ui
+package org.northwinds.app.sotachaser.ui.map
 
 import android.app.Application
 import android.location.Location

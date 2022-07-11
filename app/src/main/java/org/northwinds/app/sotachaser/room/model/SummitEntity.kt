@@ -1,4 +1,4 @@
-package org.northwinds.app.sotachaser.room
+package org.northwinds.app.sotachaser.room.model
 
 import androidx.room.ColumnInfo
 import androidx.room.Entity

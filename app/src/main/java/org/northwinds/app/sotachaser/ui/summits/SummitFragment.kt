@@ -1,4 +1,4 @@
-package org.northwinds.app.sotachaser.ui.dashboard
+package org.northwinds.app.sotachaser.ui.summits
 
 import android.Manifest
 import android.content.pm.PackageManager
@@ -24,7 +24,7 @@ import com.google.android.gms.location.LocationServices
 import dagger.hilt.android.AndroidEntryPoint
 import org.northwinds.app.sotachaser.R
 import org.northwinds.app.sotachaser.databinding.FragmentSummitListBinding
-import org.northwinds.app.sotachaser.ui.MapsViewModel
+import org.northwinds.app.sotachaser.ui.map.MapsViewModel
 
 
 /**

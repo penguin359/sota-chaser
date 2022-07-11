@@ -1,28 +1,21 @@
-package org.northwinds.app.sotachaser.ui.dashboard
+package org.northwinds.app.sotachaser.ui.summits
 
 import android.location.Location
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import androidx.core.os.bundleOf
 import androidx.navigation.findNavController
 import androidx.recyclerview.widget.RecyclerView
-import org.northwinds.app.sotachaser.R
 import org.northwinds.app.sotachaser.databinding.FragmentSummitBinding
 import org.northwinds.app.sotachaser.domain.models.Summit
-import org.northwinds.app.sotachaser.ui.ui.SummitDetailsFragment
+import org.northwinds.app.sotachaser.ui.SummitDetailsFragment
 import org.northwinds.app.sotachaser.util.calculateDistance
 
-/**
- * [RecyclerView.Adapter] that can display a [PlaceholderItem].
- * TODO: Replace the implementation with code for your data type.
- */
 class MySummitRecyclerViewAdapter(
     private val values: List<Summit>,
     private val location: Location?
 ) : RecyclerView.Adapter<MySummitRecyclerViewAdapter.ViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-
         return ViewHolder(
             FragmentSummitBinding.inflate(
                 LayoutInflater.from(parent.context),
@@ -30,7 +23,6 @@ class MySummitRecyclerViewAdapter(
                 false
             )
         )
-
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
@@ -69,5 +61,4 @@ class MySummitRecyclerViewAdapter(
             return super.toString() + " '" + contentView.text + "'"
         }
     }
-
 }

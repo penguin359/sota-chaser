@@ -35,6 +35,19 @@ object MockHttpModule {
                 val input = ClasspathResources.resource("CN.json")
                 respond(input)
             }
+            rule(path matches "/api/regions/(\\w+)/(\\w+)".toRegex(), times = anyTimes) {
+                respond {
+                    val association = it.url.pathSegments[2]
+                    val region = it.url.pathSegments[3]
+                    body("""
+                    |{
+                    |    "region": {
+                    |        "associationCode": "$association",
+                    |        "regionCode": "$region",
+                    |        "summits": 0
+                    |    }
+                    |}""".trimMargin(), MediaTypes.MEDIATYPE_JSON) }
+            }
             rule(get) {
                 respond { throw IllegalStateException("I/O Error") }
             }

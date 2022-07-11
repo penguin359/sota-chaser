@@ -58,6 +58,8 @@ import org.northwinds.app.sotachaser.testing.HiltFragmentScenario
 import org.northwinds.app.sotachaser.ui.MainActivity
 import org.northwinds.app.sotachaser.ui.home.MapsFragment
 import java.lang.Thread.sleep
+import org.hamcrest.MatcherAssert.assertThat
+import org.junit.Ignore
 
 @RunWith(AndroidJUnit4::class)
 @HiltAndroidTest
@@ -129,40 +131,39 @@ class MapsFragmentTest {
     @get:Rule
     val hiltRule = HiltAndroidRule(this)
 
-    //private val context = ApplicationProvider.getApplicationContext<Context>()
-
     private lateinit var frag: HiltFragmentScenario<MapsFragment>
 
     @Before
-    fun load_fragment() {
+    fun setup() {
         frag = HiltFragmentScenario.launchInHiltContainer(MapsFragment::class.java)
     }
 
     @Test
+    @Ignore("Need to refactor ModelView test to not use a fragment")
     fun load_map_viewmodel() {
         Espresso.onIdle()
         sleep(1000)
-        frag.onFragment {
-            val associations = it.model.associations.value
+        frag.onFragment { fragment ->
+            val associations = fragment.model.associations.value
             assertNotNull("No associations found", associations)
             assertEquals(
                 "Incorrect number of associations",
                 194, associations!!.count()
             )
             val associationIndex = associations.indexOfFirst { it.code == "W7O" }
-            assertNotNull("Can't find W7O association", associationIndex)
-            it.model.setAssociation(associationIndex)
+            assertThat("Can't find W7O association", associationIndex, greaterThanOrEqualTo(0))
+            fragment.model.setAssociation(associationIndex)
         }
         Espresso.onIdle()
         sleep(1000)
-        frag.onFragment {
+        frag.onFragment { fragment ->
             assertEquals(
                 "Incorrect number of regions for association",
-                10, it.model.regions.value!!.count()
+                10, fragment.model.regions.value!!.count()
             )
-            val regionIndex = it.model.regions.value!!.indexOfFirst { it.code == "WV" }
-            assertNotNull("Can't find WV region", regionIndex)
-            it.model.setRegion(regionIndex)
+            val regionIndex = fragment.model.regions.value!!.indexOfFirst { it.code == "WV" }
+            assertThat("Can't find WV region", regionIndex, greaterThanOrEqualTo(0))
+            fragment.model.setRegion(regionIndex)
         }
         Espresso.onIdle()
         sleep(1000)
@@ -172,7 +173,7 @@ class MapsFragmentTest {
                 138, it.model.summits.value!!.count()
             )
             val associationIndex2 = it.model.associations.value!!.indexOfFirst { it.code == "W7W" }
-            assertNotNull("Can't find W7W association", associationIndex2)
+            assertThat("Can't find W7W association", associationIndex2, greaterThanOrEqualTo(0))
             it.model.setAssociation(associationIndex2)
         }
         Espresso.onIdle()
@@ -184,6 +185,7 @@ class MapsFragmentTest {
             )
             val regionIndex2 = it.model.regions.value!!.indexOfFirst { it.code == "LC" }
             assertNotNull("Can't find LC region", regionIndex2)
+            assertThat("Can't find LC region", regionIndex2, greaterThanOrEqualTo(0))
             it.model.setRegion(regionIndex2)
         }
         Espresso.onIdle()

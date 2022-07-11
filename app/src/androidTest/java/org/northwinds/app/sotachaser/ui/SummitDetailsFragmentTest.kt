@@ -23,7 +23,6 @@ import org.junit.runner.RunWith
 import org.northwinds.app.sotachaser.R
 import org.northwinds.app.sotachaser.testing.HiltFragmentScenario
 import org.northwinds.app.sotachaser.ui.ui.SummitDetailsFragment
-import java.lang.Thread.sleep
 
 @RunWith(AndroidJUnit4::class)
 @HiltAndroidTest
@@ -43,7 +42,6 @@ class SummitDetailsFragmentTest {
             "region" to "GN",
             "summit" to "001",
         ))
-        sleep(1000)
         Espresso.onView(withId(R.id.summit_id))
             .check(matches(withText(containsString("HL/GN-001"))))
         Espresso.onView(withId(R.id.name))
@@ -67,7 +65,6 @@ class SummitDetailsFragmentTest {
             "region" to "LC",
             "summit" to "052",
         ))
-        sleep(1000)
         Espresso.onView(withId(R.id.summit_id))
             .check(matches(withText(containsString("W7W/LC-052"))))
         Espresso.onView(withId(R.id.name))
@@ -97,7 +94,6 @@ class SummitDetailsFragmentTest {
                 "summit" to "001",
             )
         )
-        sleep(1000)
         Espresso.onView(withId(R.id.sota_btn)).perform(click())
         Intents.intended(
             allOf(
@@ -121,7 +117,6 @@ class SummitDetailsFragmentTest {
                 "summit" to "001",
             )
         )
-        sleep(1000)
         Espresso.onView(withId(R.id.sotlas_btn)).perform(click())
         Intents.intended(
             allOf(

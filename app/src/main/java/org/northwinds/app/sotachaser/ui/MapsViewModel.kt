@@ -85,7 +85,7 @@ class MapsViewModel @Inject constructor(app: Application, private val executorSe
             return
         _association.value = newAssociation
         _associationDetails.value = associations.value!![entry]
-        Log.d(TAG, "Selected association: $association")
+        Log.d(TAG, "Selected association: $newAssociation")
         //_regions.value = listOf()
         //executorService.execute {
         //    _regions.postValue(repo.getRegionsInAssociationName(association.value!!).value?.map { it.code }
@@ -103,7 +103,7 @@ class MapsViewModel @Inject constructor(app: Application, private val executorSe
             return
         _region.value = newRegion
         _regionDetails.value = regions.value!![entry]
-        Log.d(TAG, "Selected region: $region")
+        Log.d(TAG, "Selected region: $newRegion")
         //_summits.value = listOf()
         //executorService.execute {
         //    _summits.postValue(repo.getSummits(association.value!!, region.value!!).value)

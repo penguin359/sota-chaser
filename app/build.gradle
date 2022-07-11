@@ -189,6 +189,9 @@ dependencies {
     implementation "com.squareup.moshi:moshi:$moshi_version"
     implementation "com.squareup.moshi:moshi-kotlin:$moshi_version"
     kapt "com.squareup.moshi:moshi-kotlin-codegen:$moshi_version"
+
+    // For InstantTaskExecutorRule
+    androidTestImplementation "androidx.arch.core:core-testing:2.1.0"
 }
 
 // Added for supporting Hilt with Kapt

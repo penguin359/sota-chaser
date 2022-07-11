@@ -9,6 +9,7 @@ import androidx.recyclerview.widget.RecyclerView
 import org.northwinds.app.sotachaser.R
 import org.northwinds.app.sotachaser.databinding.FragmentSummitBinding
 import org.northwinds.app.sotachaser.domain.models.Summit
+import org.northwinds.app.sotachaser.ui.ui.SummitDetailsFragment
 import org.northwinds.app.sotachaser.util.calculateDistance
 
 /**
@@ -47,11 +48,7 @@ class MySummitRecyclerViewAdapter(
             val a = item.code.split("/")[0]
             val r = item.code.split("/")[1].split("-")[0]
             val s = item.code.split("-")[1]
-            it.findNavController().navigate(R.id.action_navigation_dashboard_to_summitDetailsFragment, bundleOf(
-                "association" to a,
-                "region" to r,
-                "summit" to s,
-            ))
+            it.findNavController().navigate(SummitFragmentDirections.actionNavigationDashboardToSummitDetailsFragment(association = a, region = r, summit = s))
         }
     }
 

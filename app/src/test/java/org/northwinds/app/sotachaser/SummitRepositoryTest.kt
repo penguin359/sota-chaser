@@ -137,6 +137,7 @@ class SummitRepositoryTest {
         val association = repo.getAssociationByCode("W7O")
         association.observeForever {  }
         shadowOf(getMainLooper()).idle()
+        // TODO Change to getOrAwaitValue()???
         val region = repo.getRegionByCode(association.value!!, "CN")
         region.observeForever {  }
         shadowOf(getMainLooper()).idle()

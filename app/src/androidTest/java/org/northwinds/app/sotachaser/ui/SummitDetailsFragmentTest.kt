@@ -32,7 +32,11 @@ class SummitDetailsFragmentTest {
 
     @Test
     fun canOpenFragment() {
-        HiltFragmentScenario.launchInHiltContainer(SummitDetailsFragment::class.java)
+        HiltFragmentScenario.launchInHiltContainer(SummitDetailsFragment::class.java, bundleOf(
+            "association" to "HL",
+            "region" to "GN",
+            "summit" to "001",
+        ))
     }
 
     @Test

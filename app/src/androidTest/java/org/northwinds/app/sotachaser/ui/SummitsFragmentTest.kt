@@ -28,8 +28,11 @@ import org.northwinds.app.sotachaser.R
 import org.northwinds.app.sotachaser.SotaChaserBaseApplication
 import org.northwinds.app.sotachaser.testing.HiltFragmentScenario
 import org.northwinds.app.sotachaser.testing.Matcher.atPosition
+import org.northwinds.app.sotachaser.ui.regions.RegionFragmentDirections
 import org.northwinds.app.sotachaser.ui.summits.MySummitRecyclerViewAdapter
 import org.northwinds.app.sotachaser.ui.summits.SummitFragment
+import org.northwinds.app.sotachaser.ui.summits.SummitFragmentArgs
+import org.northwinds.app.sotachaser.ui.summits.SummitFragmentDirections
 
 @RunWith(AndroidJUnit4::class)
 @HiltAndroidTest
@@ -42,31 +45,15 @@ class SummitsFragmentTest {
 
     @Test
     fun loadSummit() {
-        val frag = HiltFragmentScenario.launchInHiltContainer(SummitFragment::class.java)
+        val frag = HiltFragmentScenario.launchInHiltContainer(SummitFragment::class.java,
+            RegionFragmentDirections.actionRegionFragmentToNavigationDashboard("HL", "GN").arguments)
         onView(withId(R.id.list)).check(matches(isDisplayed()))
     }
 
     @Test
     fun loadSpecificSummitList() {
-        val frag = HiltFragmentScenario.launchInHiltContainer(SummitFragment::class.java)
-        onView(withId(R.id.association)).perform(click())
-        onData(
-            allOf(`is`(instanceOf(Map::class.java)), hasEntry("code", "W7O"))
-        ).perform(click())
-        onView(withId(R.id.association)).check(
-            matches(
-                withSpinnerText(containsString("W7O"))
-            )
-        )
-        onView(withId(R.id.region)).perform(click())
-        onData(
-            allOf(`is`(instanceOf(Map::class.java)), hasEntry("code", "NC"))
-        ).perform(click())
-        onView(withId(R.id.region)).check(
-            matches(
-                withSpinnerText(containsString("NC"))
-            )
-        )
+        val frag = HiltFragmentScenario.launchInHiltContainer(SummitFragment::class.java,
+            RegionFragmentDirections.actionRegionFragmentToNavigationDashboard("W7O", "NC").arguments)
         onView(withId(R.id.list)).check { view, noMatchingViewException ->
             if (view == null)
                 throw noMatchingViewException
@@ -77,69 +64,31 @@ class SummitsFragmentTest {
 
     @Test
     fun loadMultipleSummitLists() {
-        val frag = HiltFragmentScenario.launchInHiltContainer(SummitFragment::class.java)
-        onView(withId(R.id.association)).perform(click())
-        onData(
-            allOf(`is`(instanceOf(Map::class.java)), hasEntry("code", "W7O"))
-        ).perform(click())
-        onView(withId(R.id.association)).check(
-            matches(
-                withSpinnerText(containsString("W7O"))
-            )
-        )
-        onView(withId(R.id.region)).perform(click())
-        onData(
-            allOf(`is`(instanceOf(Map::class.java)), hasEntry("code", "NC"))
-        ).perform(click())
-        onView(withId(R.id.region)).check(
-            matches(
-                withSpinnerText(containsString("NC"))
-            )
-        )
+        var frag = HiltFragmentScenario.launchInHiltContainer(SummitFragment::class.java,
+            RegionFragmentDirections.actionRegionFragmentToNavigationDashboard("W7O", "NC").arguments)
         onView(withId(R.id.list)).check { view, noMatchingViewException ->
             if (view == null)
                 throw noMatchingViewException
             val recyclerView = view as RecyclerView
             assertEquals(127, recyclerView.adapter?.itemCount)
         }
+        frag.close()
 
-        onView(withId(R.id.association)).perform(click())
-        onData(
-            allOf(`is`(instanceOf(Map::class.java)), hasEntry("code", "BV"))
-        ).perform(click())
-        onView(withId(R.id.association)).check(
-            matches(
-                withSpinnerText(containsString("BV"))
-            )
-        )
-        onView(withId(R.id.region)).perform(click())
-        onData(
-            allOf(`is`(instanceOf(Map::class.java)), hasEntry("code", "HL"))
-        ).perform(click())
-        onView(withId(R.id.region)).check(
-            matches(
-                withSpinnerText(containsString("HL"))
-            )
-        )
+        frag = HiltFragmentScenario.launchInHiltContainer(SummitFragment::class.java,
+            RegionFragmentDirections.actionRegionFragmentToNavigationDashboard("BV", "HL").arguments)
         onView(withId(R.id.list)).check { view, noMatchingViewException ->
             if (view == null)
                 throw noMatchingViewException
             val recyclerView = view as RecyclerView
             assertEquals(76, recyclerView.adapter?.itemCount)
         }
+        frag.close()
     }
 
     @Test
     fun loadSummitSummary() {
-        val frag = HiltFragmentScenario.launchInHiltContainer(SummitFragment::class.java)
-        onView(withId(R.id.association)).perform(click())
-        onData(
-            allOf(`is`(instanceOf(Map::class.java)), hasEntry("code", "HL"))
-        ).perform(click())
-        onView(withId(R.id.region)).perform(click())
-        onData(
-            allOf(`is`(instanceOf(Map::class.java)), hasEntry("code", "GN"))
-        ).perform(click())
+        val frag = HiltFragmentScenario.launchInHiltContainer(SummitFragment::class.java,
+            RegionFragmentDirections.actionRegionFragmentToNavigationDashboard("HL", "GN").arguments)
         onView(RecyclerViewMatcher(R.id.list).atPosition(0)).check(
             matches(
                 hasDescendant(
@@ -190,15 +139,8 @@ class SummitsFragmentTest {
     fun loadSummitSummaryAtBottomOfList() {
         // Position for summit HL/GN-046
         val summitPosition = 44  // Zero-indexed and summit HL/GN-011 doesn't exist
-        val frag = HiltFragmentScenario.launchInHiltContainer(SummitFragment::class.java)
-        onView(withId(R.id.association)).perform(click())
-        onData(
-            allOf(`is`(instanceOf(Map::class.java)), hasEntry("code", "HL"))
-        ).perform(click())
-        onView(withId(R.id.region)).perform(click())
-        onData(
-            allOf(`is`(instanceOf(Map::class.java)), hasEntry("code", "GN"))
-        ).perform(click())
+        val frag = HiltFragmentScenario.launchInHiltContainer(SummitFragment::class.java,
+            RegionFragmentDirections.actionRegionFragmentToNavigationDashboard("HL", "GN").arguments)
         onView(withId(R.id.list)).perform(
             scrollToPosition<MySummitRecyclerViewAdapter.ViewHolder>(summitPosition)
         )

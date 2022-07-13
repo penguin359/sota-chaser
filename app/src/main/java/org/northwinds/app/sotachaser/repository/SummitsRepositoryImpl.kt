@@ -55,6 +55,14 @@ class SummitsRepositoryImpl @Inject constructor(private val context: Application
         }
     }
 
+    override suspend fun refreshAssociations() {
+        withContext(executor.asCoroutineDispatcher()) {
+            api.getAssociations().forEach { associationEntity ->
+                dao.updateAssociation(associationEntity.asDatabaseModel(dao))
+            }
+        }
+    }
+
     override suspend fun updateAssociation(code: String) {
         withContext(executor.asCoroutineDispatcher()) {
             dao.updateAssociation(api.getAssociation(code).asDatabaseModel(dao))

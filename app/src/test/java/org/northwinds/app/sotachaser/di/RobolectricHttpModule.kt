@@ -1,10 +1,12 @@
 package org.northwinds.app.sotachaser.di
 
+import android.util.Log
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.components.SingletonComponent
 import dagger.hilt.testing.TestInstallIn
 import okhttp3.OkHttpClient
+import okhttp3.logging.HttpLoggingInterceptor
 import okhttp3.mock.*
 import org.northwinds.app.sotachaser.R
 import javax.inject.Singleton
@@ -43,6 +45,12 @@ object RobolectricHttpModule {
     @Singleton
     @Provides
     fun provideHttpClient(interceptor: MockInterceptor): OkHttpClient {
-        return OkHttpClient.Builder().addInterceptor(interceptor).build()
+        val logging = HttpLoggingInterceptor(object : HttpLoggingInterceptor.Logger {
+            override fun log(message: String) {
+                Log.d("SOTAChaser-OkHttp", message)
+            }
+        })
+        logging.level = HttpLoggingInterceptor.Level.BASIC
+        return OkHttpClient.Builder().addInterceptor(logging).addInterceptor(interceptor).build()
     }
 }

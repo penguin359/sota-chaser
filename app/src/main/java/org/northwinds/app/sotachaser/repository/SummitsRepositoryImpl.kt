@@ -65,7 +65,11 @@ class SummitsRepositoryImpl @Inject constructor(private val context: Application
 
     override suspend fun updateAssociation(code: String) {
         withContext(executor.asCoroutineDispatcher()) {
-            dao.updateAssociation(api.getAssociation(code).asDatabaseModel(dao))
+            val result = api.getAssociation(code)
+            dao.updateAssociation(result.asDatabaseModel(dao))
+            result.regions?.forEach {
+                dao.updateRegion(it.asDatabaseModel(dao))
+            }
         }
     }
 
@@ -81,9 +85,9 @@ class SummitsRepositoryImpl @Inject constructor(private val context: Application
         }
     }
 
-    override fun getAssociationByCode(code: String): LiveData<Association> {
+    override fun getAssociationByCode(code: String): LiveData<Association?> {
         return Transformations.map(dao.getAssociationByCode2(code)) {
-            it.asDomainModel()
+            it?.asDomainModel()
         }
     }
 
@@ -93,9 +97,9 @@ class SummitsRepositoryImpl @Inject constructor(private val context: Application
         }
     }
 
-    override fun getRegionByCode(association: Association, code: String): LiveData<Region> {
+    override fun getRegionByCode(association: Association, code: String): LiveData<Region?> {
         return Transformations.map(dao.getRegionByCode2(association.id, code)) {
-            it.asDomainModel()
+            it?.asDomainModel()
         }
     }
 

@@ -28,13 +28,13 @@ import org.northwinds.app.sotachaser.R
 import org.northwinds.app.sotachaser.SotaChaserBaseApplication
 import org.northwinds.app.sotachaser.testing.HiltFragmentScenario
 import org.northwinds.app.sotachaser.testing.Matcher.atPosition
-import org.northwinds.app.sotachaser.ui.associations.AssociationFragment
-import org.northwinds.app.sotachaser.ui.associations.AssociationRecyclerViewAdapter
-import java.lang.Thread.sleep
+import org.northwinds.app.sotachaser.ui.associations.AssociationFragmentDirections
+import org.northwinds.app.sotachaser.ui.regions.RegionFragment
+import org.northwinds.app.sotachaser.ui.regions.RegionRecyclerViewAdapter
 
 @RunWith(AndroidJUnit4::class)
 @HiltAndroidTest
-class AssociationFragmentTest {
+class RegionFragmentTest {
     @get:Rule
     val hiltRule = HiltAndroidRule(this)
 
@@ -42,30 +42,56 @@ class AssociationFragmentTest {
     val permissionRule = GrantPermissionRule.grant(Manifest.permission.ACCESS_COARSE_LOCATION)
 
     @Test
-    fun loadAssociation() {
-        val frag = HiltFragmentScenario.launchInHiltContainer(AssociationFragment::class.java)
+    fun loadRegion() {
+        val frag = HiltFragmentScenario.launchInHiltContainer(RegionFragment::class.java,
+            AssociationFragmentDirections.actionAssociationFragmentToRegionFragment("HL").arguments)
         onView(withId(R.id.list)).check(matches(isDisplayed()))
     }
 
     @Test
-    fun loadFullAssociationList() {
-        val frag = HiltFragmentScenario.launchInHiltContainer(AssociationFragment::class.java)
+    fun loadSpecificRegionList() {
+        val frag = HiltFragmentScenario.launchInHiltContainer(RegionFragment::class.java,
+            AssociationFragmentDirections.actionAssociationFragmentToRegionFragment("W7O").arguments)
         onView(withId(R.id.list)).check { view, noMatchingViewException ->
             if (view == null)
                 throw noMatchingViewException
             val recyclerView = view as RecyclerView
-            assertEquals(194, recyclerView.adapter?.itemCount)
+            assertEquals(10, recyclerView.adapter?.itemCount)
         }
     }
 
     @Test
-    fun loadAssociationSummary() {
-        val frag = HiltFragmentScenario.launchInHiltContainer(AssociationFragment::class.java)
+    fun loadMultipleRegionLists() {
+        var frag = HiltFragmentScenario.launchInHiltContainer(RegionFragment::class.java,
+            AssociationFragmentDirections.actionAssociationFragmentToRegionFragment("W7O").arguments)
+        onView(withId(R.id.list)).check { view, noMatchingViewException ->
+            if (view == null)
+                throw noMatchingViewException
+            val recyclerView = view as RecyclerView
+            assertEquals(10, recyclerView.adapter?.itemCount)
+        }
+        frag.close()
+
+        frag = HiltFragmentScenario.launchInHiltContainer(RegionFragment::class.java,
+            AssociationFragmentDirections.actionAssociationFragmentToRegionFragment("BV").arguments)
+        onView(withId(R.id.list)).check { view, noMatchingViewException ->
+            if (view == null)
+                throw noMatchingViewException
+            val recyclerView = view as RecyclerView
+            assertEquals(18, recyclerView.adapter?.itemCount)
+        }
+        frag.close()
+    }
+
+    @Test
+    fun loadRegionSummary() {
+        val frag = HiltFragmentScenario.launchInHiltContainer(RegionFragment::class.java,
+            AssociationFragmentDirections.actionAssociationFragmentToRegionFragment("W7O").arguments)
         onView(RecyclerViewMatcher(R.id.list).atPosition(0)).check(
             matches(
                 hasDescendant(
                     withText(
-                        containsString("3Y")
+                        containsString("CC")
                     )
                 )
             )
@@ -74,23 +100,24 @@ class AssociationFragmentTest {
             matches(
                 atPosition(
                     0,
-                    hasDescendant(allOf(withId(R.id.name), withText(containsString("Bouvet Island"))))
+                    hasDescendant(allOf(withId(R.id.name), withText(containsString("OR-Central Coast"))))
                 )
             )
         )
     }
 
     @Test
-    fun loadAssociationSummaryAtBottomOfList() {
-        // Position for association W7O
-        val summitPosition = 167  // Zero-indexed
-        val frag = HiltFragmentScenario.launchInHiltContainer(AssociationFragment::class.java)
+    fun loadRegionSummaryAtBottomOfList() {
+        // Position for region YU
+        val summitPosition = 17  // Zero-indexed
+        val frag = HiltFragmentScenario.launchInHiltContainer(RegionFragment::class.java,
+            AssociationFragmentDirections.actionAssociationFragmentToRegionFragment("BV").arguments)
         onView(withId(R.id.list)).perform(
-            scrollToPosition<AssociationRecyclerViewAdapter.ViewHolder>(summitPosition)
+            scrollToPosition<RegionRecyclerViewAdapter.ViewHolder>(summitPosition)
         )
         onView(RecyclerViewMatcher(R.id.list).atPosition(summitPosition)).check(
             matches(
-                hasDescendant(withText(containsString("Oregon")))
+                hasDescendant(withText(containsString("Huawei")))
             )
         )
         onView(
@@ -98,43 +125,31 @@ class AssociationFragmentTest {
                 summitPosition,
                 R.id.code
             )
-        ).check(matches(withText(containsString("W7O"))))
+        ).check(matches(withText(containsString("YU"))))
         onView(RecyclerViewMatcher(R.id.list).atPositionOnView(summitPosition, R.id.name)).check(
-            matches(withText(containsString("USA - Oregon")))
+            matches(withText(containsString("Yulin")))
         )
         onView(RecyclerViewMatcher(R.id.list).atPositionOnView(summitPosition, R.id.manager)).check(
-            matches(withText(containsString("Etienne")))
+            matches(withText(containsString("Huawei Su")))
         )
         onView(
             RecyclerViewMatcher(R.id.list).atPositionOnView(
                 summitPosition,
                 R.id.manager_callsign
             )
-        ).check(matches(withText(containsString("K7ATN"))))
-        onView(
-            RecyclerViewMatcher(R.id.list).atPositionOnView(
-                summitPosition,
-                R.id.active_from
-            )
-        ).check(matches(withText(containsString("2010-07-01T00:00:00"))))
-        onView(
-            RecyclerViewMatcher(R.id.list).atPositionOnView(
-                summitPosition,
-                R.id.region_count
-            )
-        ).check(matches(withText(containsString("10"))))
+        ).check(matches(withText(containsString("BX2AI"))))
         onView(
             RecyclerViewMatcher(R.id.list).atPositionOnView(
                 summitPosition,
                 R.id.summit_count
             )
-        ).check(matches(withText(containsString("1990"))))
+        ).check(matches(withText(containsString("3"))))
     }
 }
 
 @RunWith(AndroidJUnit4::class)
 @HiltAndroidTest
-class AssociationActivityTest {
+class RegionActivityTest {
     @get:Rule(order = 0)
     val hiltRule = HiltAndroidRule(this)
 
@@ -163,17 +178,14 @@ class AssociationActivityTest {
 
     @Test
     fun loadRegionFragment() {
-        sleep(5000)
-        onView(withId(R.id.associationFragment)).perform(click())
-        sleep(5000)
+        onView(withId(R.id.regionFragment)).perform(click())
         onView(withText(containsString("3Y"))).perform(click())
-        sleep(5000)
         onView(withId(R.id.points)).check(matches(isDisplayed()))
     }
 
     @Test
-    fun loadCorrectAssociationDetailsFragment() {
-        onView(withId(R.id.associationFragment)).perform(click())
+    fun loadCorrectRegionDetailsFragment() {
+        onView(withId(R.id.navigation_dashboard)).perform(click())
         onView(withText(containsString("W7O"))).perform(click())
         onView(withId(R.id.points)).check(matches(isDisplayed()))
         onView(allOf(withId(R.id.code)))
@@ -185,9 +197,9 @@ class AssociationActivityTest {
     }
 
     @Test
-    fun loadDifferentAssociationDetailsFragment() {
-        onView(withId(R.id.associationFragment)).perform(click())
-        onView(withId(R.id.association)).perform(click())
+    fun loadDifferentRegionDetailsFragment() {
+        onView(withId(R.id.navigation_dashboard)).perform(click())
+        onView(withId(R.id.region)).perform(click())
         onData(
             allOf(`is`(instanceOf(Map::class.java)), hasEntry("code", "HL"))
         ).perform(click())
@@ -196,7 +208,7 @@ class AssociationActivityTest {
             allOf(`is`(instanceOf(Map::class.java)), hasEntry("code", "GN"))
         ).perform(click())
         onView(withId(R.id.list)).perform(
-            scrollToPosition<AssociationRecyclerViewAdapter.ViewHolder>(44))
+            scrollToPosition<RegionRecyclerViewAdapter.ViewHolder>(44))
         onView(withText(containsString("HL/GN-046"))).perform(click())
         onView(withId(R.id.map)).check(matches(isDisplayed()))
         onView(withId(R.id.summit_id))

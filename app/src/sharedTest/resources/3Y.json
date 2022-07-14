@@ -1,0 +1,30 @@
+{
+  "associationCode": "3Y",
+  "associationName": "Bouvet Island",
+  "manager": "Aage",
+  "associationManagerCallsign": "LA1ENA",
+  "activeFrom": "2018-03-01T00:00:00",
+  "dxcc": "024",
+  "maxLat": -54.4104,
+  "maxLong": 3.3565,
+  "minLat": -54.4104,
+  "minLong": 3.3565,
+  "regionsCount": 1,
+  "summitsCount": 1,
+  "regions": [
+    {
+      "associationCode": "3Y",
+      "regionCode": "BV",
+      "regionManagerCallsign": "LA1ENA",
+      "regionName": "Bouvetøya (Bouvet Island)",
+      "manager": "Aage Grøseth",
+      "summits": 1,
+      "notes": "# Notes",
+      "maxLat": -54.4104,
+      "maxLong": 3.3565,
+      "minLat": -54.4104,
+      "minLong": 3.3565
+    }
+  ],
+  "arm": []
+}

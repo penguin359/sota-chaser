@@ -10,7 +10,7 @@ import org.northwinds.app.sotachaser.room.model.SummitEntity
     AssociationEntity::class,
     RegionEntity::class,
     SummitEntity::class],
-    version = 3)
+    version = 4)
 abstract class SummitDatabase : RoomDatabase() {
     abstract fun summitDao(): SummitDao
 }

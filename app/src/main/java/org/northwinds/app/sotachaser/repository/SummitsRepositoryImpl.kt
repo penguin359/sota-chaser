@@ -58,7 +58,7 @@ class SummitsRepositoryImpl @Inject constructor(private val context: Application
     override suspend fun refreshAssociations() {
         withContext(executor.asCoroutineDispatcher()) {
             api.getAssociations().forEach { associationEntity ->
-                dao.updateAssociation(associationEntity.asDatabaseModel(/*dao*/))
+                dao.upsertAssociation(associationEntity.asDatabaseModel(dao))
             }
         }
     }
@@ -66,16 +66,16 @@ class SummitsRepositoryImpl @Inject constructor(private val context: Application
     override suspend fun updateAssociation(code: String) {
         withContext(executor.asCoroutineDispatcher()) {
             val result = api.getAssociation(code)
-            dao.upsertAssociation(result.asDatabaseModel(/*dao*/))
+            dao.upsertAssociation(result.asDatabaseModel(dao))
             result.regions?.forEach {
-                dao.updateRegion(it.asDatabaseModel(dao))
+                dao.upsertRegion(it.asDatabaseModel(dao))
             }
         }
     }
 
     override suspend fun updateRegion(association: String, region: String) {
         withContext(executor.asCoroutineDispatcher()) {
-            dao.updateRegion(api.getRegion(association, region).region.asDatabaseModel(dao))
+            dao.upsertRegion(api.getRegion(association, region).region.asDatabaseModel(dao))
         }
     }
 

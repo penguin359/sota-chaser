@@ -60,3 +60,5 @@ Use real date/time objects
 Implement clean architecture
 Update out of date rows automatically in background
 SSL trust anchors for older APIs
+Test real network traffic and fix SSL trust errors
+SMS submit spot

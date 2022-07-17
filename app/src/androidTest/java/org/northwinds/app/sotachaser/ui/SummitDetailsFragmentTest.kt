@@ -47,7 +47,7 @@ class SummitDetailsFragmentTest {
             "region" to "GN",
             "summit" to "001",
         ))
-        Espresso.onView(withId(R.id.summit_id))
+        Espresso.onView(withId(R.id.code))
             .check(matches(withText(containsString("HL/GN-001"))))
         Espresso.onView(withId(R.id.name))
             .check(matches(withText(containsString("지리산"))))
@@ -71,7 +71,7 @@ class SummitDetailsFragmentTest {
             "region" to "LC",
             "summit" to "052",
         ))
-        Espresso.onView(withId(R.id.summit_id))
+        Espresso.onView(withId(R.id.code))
             .check(matches(withText(containsString("W7W/LC-052"))))
         Espresso.onView(withId(R.id.name))
             .check(matches(withText(containsString("West Soda Peaks"))))

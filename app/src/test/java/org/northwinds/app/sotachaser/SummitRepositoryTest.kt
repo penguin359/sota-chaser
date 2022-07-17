@@ -6,7 +6,9 @@ import androidx.lifecycle.Observer
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
 import dagger.hilt.android.testing.HiltTestApplication
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.withContext
 import okhttp3.mock.MockInterceptor
 import org.junit.After
 import org.junit.Assert.*
@@ -16,6 +18,7 @@ import javax.inject.Inject
 import org.junit.Before
 import org.junit.Rule
 import org.junit.runner.RunWith
+import org.northwinds.app.sotachaser.room.SummitDao
 import org.northwinds.app.sotachaser.room.SummitDatabase
 import org.robolectric.RobolectricTestRunner
 import org.robolectric.Shadows.shadowOf
@@ -29,6 +32,7 @@ class SummitRepositoryTest {
     @get:Rule
     val hiltRule = HiltAndroidRule(this)
 
+    @Inject lateinit var dao: SummitDao
     @Inject lateinit var repo: SummitsRepository
     @Inject lateinit var db: SummitDatabase
 
@@ -99,6 +103,35 @@ class SummitRepositoryTest {
             repo.checkForRefresh()
         }
         assertTrue("HTTP request not made", interceptor.rules[0].isConsumed)
+    }
+
+    @Test
+    fun testWillLoadAllAssociationExtraDetails() {
+        runBlocking {
+            withContext(Dispatchers.IO) {
+                dao.clear()
+            }
+            repo.refreshAssociations()
+        }
+        //assertTrue("HTTP request not made", interceptor.rules[0].isConsumed)
+        val association = repo.getAssociationByCode("W7O")
+        association.observeForever {  }
+        shadowOf(getMainLooper()).idle()
+        assertTrue("HTTP request not made", interceptor.rules[1].isConsumed)
+        assertNotNull("No value returned", association.value)
+        val value = association.value!!
+        assertEquals("W7O", value.code)
+        assertEquals("USA - Oregon", value.name)
+        assertEquals("Etienne", value.manager)
+        assertEquals("K7ATN", value.managerCallsign)
+        assertEquals("2010-07-01T00:00:00", value.activeFrom)
+        assertEquals("291", value.dxcc)
+        assertEquals(46.105, value.maxLat)
+        assertEquals(-116.6597, value.maxLong)
+        assertEquals(41.9951, value.minLat)
+        assertEquals(-124.436, value.minLong)
+        assertEquals(10, value.regionsCount)
+        assertEquals(1990, value.summitsCount)
     }
 
     @Test

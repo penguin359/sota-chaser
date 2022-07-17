@@ -55,15 +55,27 @@ class SummitsRepositoryImpl @Inject constructor(private val context: Application
         }
     }
 
+    override suspend fun refreshAssociations() {
+        withContext(executor.asCoroutineDispatcher()) {
+            api.getAssociations().forEach { associationEntity ->
+                dao.upsertAssociation(associationEntity.asDatabaseModel(dao))
+            }
+        }
+    }
+
     override suspend fun updateAssociation(code: String) {
         withContext(executor.asCoroutineDispatcher()) {
-            dao.updateAssociation(api.getAssociation(code).asDatabaseModel(dao))
+            val result = api.getAssociation(code)
+            dao.upsertAssociation(result.asDatabaseModel(dao))
+            result.regions?.forEach {
+                dao.upsertRegion(it.asDatabaseModel(dao))
+            }
         }
     }
 
     override suspend fun updateRegion(association: String, region: String) {
         withContext(executor.asCoroutineDispatcher()) {
-            dao.updateRegion(api.getRegion(association, region).region.asDatabaseModel(dao))
+            dao.upsertRegion(api.getRegion(association, region).region.asDatabaseModel(dao))
         }
     }
 
@@ -73,9 +85,9 @@ class SummitsRepositoryImpl @Inject constructor(private val context: Application
         }
     }
 
-    override fun getAssociationByCode(code: String): LiveData<Association> {
+    override fun getAssociationByCode(code: String): LiveData<Association?> {
         return Transformations.map(dao.getAssociationByCode2(code)) {
-            it.asDomainModel()
+            it?.asDomainModel()
         }
     }
 
@@ -85,9 +97,9 @@ class SummitsRepositoryImpl @Inject constructor(private val context: Application
         }
     }
 
-    override fun getRegionByCode(association: Association, code: String): LiveData<Region> {
+    override fun getRegionByCode(association: Association, code: String): LiveData<Region?> {
         return Transformations.map(dao.getRegionByCode2(association.id, code)) {
-            it.asDomainModel()
+            it?.asDomainModel()
         }
     }
 

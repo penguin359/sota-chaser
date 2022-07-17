@@ -5,19 +5,18 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.navigation.findNavController
 import androidx.recyclerview.widget.RecyclerView
-import org.northwinds.app.sotachaser.databinding.FragmentSummitBinding
+import org.northwinds.app.sotachaser.databinding.ListSummitEntryBinding
 import org.northwinds.app.sotachaser.domain.models.Summit
-import org.northwinds.app.sotachaser.ui.SummitDetailsFragment
 import org.northwinds.app.sotachaser.util.calculateDistance
 
-class MySummitRecyclerViewAdapter(
+class SummitRecyclerViewAdapter(
     private val values: List<Summit>,
     private val location: Location?
-) : RecyclerView.Adapter<MySummitRecyclerViewAdapter.ViewHolder>() {
+) : RecyclerView.Adapter<SummitRecyclerViewAdapter.ViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         return ViewHolder(
-            FragmentSummitBinding.inflate(
+            ListSummitEntryBinding.inflate(
                 LayoutInflater.from(parent.context),
                 parent,
                 false
@@ -46,9 +45,9 @@ class MySummitRecyclerViewAdapter(
 
     override fun getItemCount(): Int = values.size
 
-    inner class ViewHolder(binding: FragmentSummitBinding) : RecyclerView.ViewHolder(binding.root) {
-        val topView = binding.summitDetails
-        val idView = binding.summitId
+    inner class ViewHolder(binding: ListSummitEntryBinding) : RecyclerView.ViewHolder(binding.root) {
+        val topView = binding.details
+        val idView = binding.code
         val contentView = binding.name
         val altView = binding.altitude
         val pointsView = binding.points

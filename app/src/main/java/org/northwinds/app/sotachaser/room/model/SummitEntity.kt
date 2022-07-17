@@ -1,9 +1,6 @@
 package org.northwinds.app.sotachaser.room.model
 
-import androidx.room.ColumnInfo
-import androidx.room.Entity
-import androidx.room.ForeignKey
-import androidx.room.PrimaryKey
+import androidx.room.*
 import org.northwinds.app.sotachaser.domain.models.Region
 import org.northwinds.app.sotachaser.domain.models.Summit
 
@@ -16,10 +13,14 @@ import org.northwinds.app.sotachaser.domain.models.Summit
             childColumns = ["region_id"],
             onDelete = ForeignKey.CASCADE
         )
-    ])
+    ],
+    indices = [
+        Index(value = ["region_id", "code"], unique = true)
+    ]
+)
 data class SummitEntity(
     @PrimaryKey(autoGenerate = true) val id: Long,
-    @ColumnInfo(name = "region_id") val regionId: Long,
+    @ColumnInfo(name = "region_id", index = true) val regionId: Long,
     @ColumnInfo(name = "code") val code: String,
     @ColumnInfo(name = "name") val name: String,
     @ColumnInfo(name = "alt_m") val altM: Int,

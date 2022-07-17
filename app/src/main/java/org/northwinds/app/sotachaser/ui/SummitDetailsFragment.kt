@@ -75,7 +75,7 @@ class SummitDetailsFragment : Fragment(), OnMapReadyCallback {
                 return@observe
             val summitInfo = it.find { summit2 -> summit2.code.split("-")[1] == summit }
             summitInfo?.let { info ->
-                binding.summitId.text = info.code.toString()
+                binding.code.text = info.code.toString()
                 binding.name.text = info.name
                 binding.altitude.text = "${info.altFt} ft"
                 binding.points.text = "${info.points} points"

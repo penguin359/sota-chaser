@@ -62,7 +62,7 @@ class MapsViewModel @Inject constructor(app: Application, private val executorSe
     private val _association = MutableLiveData<String>().apply {
         value = ""
     }
-    private val association: LiveData<String> = _association
+    internal val association: LiveData<String> = _association
 
     private val _associationDetails = MutableLiveData<Association>()
     private val associationDetails: LiveData<Association> = _associationDetails
@@ -91,6 +91,9 @@ class MapsViewModel @Inject constructor(app: Application, private val executorSe
         //    _regions.postValue(repo.getRegionsInAssociationName(association.value!!).value?.map { it.code }
         //        ?: listOf())
         //}
+        viewModelScope.launch {
+            repo.updateAssociation(newAssociation)
+        }
     }
 
     val summits: LiveData<List<Summit>> = Transformations.switchMap(region) { name ->
@@ -111,6 +114,10 @@ class MapsViewModel @Inject constructor(app: Application, private val executorSe
         viewModelScope.launch {
             repo.updateRegion(association.value!!, region.value!!)
         }
+    }
+
+    fun refreshAssociations() = viewModelScope.launch {
+        repo.refreshAssociations()
     }
 
     companion object {

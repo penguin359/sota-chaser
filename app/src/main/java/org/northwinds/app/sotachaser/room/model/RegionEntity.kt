@@ -1,9 +1,6 @@
 package org.northwinds.app.sotachaser.room.model
 
-import androidx.room.ColumnInfo
-import androidx.room.Entity
-import androidx.room.ForeignKey
-import androidx.room.PrimaryKey
+import androidx.room.*
 import org.northwinds.app.sotachaser.domain.models.Association
 import org.northwinds.app.sotachaser.domain.models.Region
 import org.northwinds.app.sotachaser.room.SummitDao
@@ -17,10 +14,14 @@ import org.northwinds.app.sotachaser.room.SummitDao
             childColumns = ["association_id"],
             onDelete = ForeignKey.CASCADE
         )
-    ])
+    ],
+    indices = [
+        Index(value = ["association_id", "code"], unique = true)
+    ]
+)
 data class RegionEntity(
     @PrimaryKey(autoGenerate = true) val id: Long,
-    @ColumnInfo(name = "association_id") val associationId: Long,
+    @ColumnInfo(name = "association_id", index = true) val associationId: Long,
     @ColumnInfo(name = "code") val code: String,
     @ColumnInfo(name = "name") val name: String,
     @ColumnInfo(name = "manager") val manager: String? = null,

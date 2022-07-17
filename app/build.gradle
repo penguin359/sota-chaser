@@ -17,6 +17,23 @@ android {
         versionName "0.1 Alpha"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+
+        //javaCompileOptions {
+        //    annotationProcessorOptions {
+        //        arguments += ["room.schemaLocation": "$projectDir/schemas".toString()]
+        //    }
+        //}
+        kapt {
+            arguments {
+                arg("room.schemaLocation", "$projectDir/schemas")
+                arg("room.incremental", "true")
+                arg("room.expandProjection", "true")
+            }
+        }
+    }
+
+    sourceSets {
+        androidTest.assets.srcDirs += files("$projectDir/schemas".toString())
     }
 
     buildTypes {

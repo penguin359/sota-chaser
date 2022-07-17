@@ -29,6 +29,7 @@ import org.northwinds.app.sotachaser.SotaChaserBaseApplication
 import org.northwinds.app.sotachaser.testing.HiltFragmentScenario
 import org.northwinds.app.sotachaser.testing.Matcher.atPosition
 import org.northwinds.app.sotachaser.ui.associations.AssociationFragmentDirections
+import org.northwinds.app.sotachaser.ui.associations.AssociationRecyclerViewAdapter
 import org.northwinds.app.sotachaser.ui.regions.RegionFragment
 import org.northwinds.app.sotachaser.ui.regions.RegionRecyclerViewAdapter
 
@@ -177,43 +178,37 @@ class RegionActivityTest {
     val mScreenshotTestRule = ScreenshotTestRule()
 
     @Test
-    fun loadRegionFragment() {
-        onView(withId(R.id.regionFragment)).perform(click())
+    fun loadSummitFragment() {
+        onView(withId(R.id.associationFragment)).perform(click())
         onView(withText(containsString("3Y"))).perform(click())
-        onView(withId(R.id.points)).check(matches(isDisplayed()))
+        onView(withText(containsString("BV"))).perform(click())
+        onView(withId(R.id.name)).check(matches(allOf(isDisplayed(), withText(containsString("Olavtoppen")))))
     }
 
     @Test
     fun loadCorrectRegionDetailsFragment() {
-        onView(withId(R.id.navigation_dashboard)).perform(click())
-        onView(withText(containsString("W7O"))).perform(click())
-        onView(withId(R.id.points)).check(matches(isDisplayed()))
-        onView(allOf(withId(R.id.code)))
-            .check(matches(withText(containsString("W7O/CN-001"))))
-        onView(withId(R.id.name))
-            .check(matches(withText(containsString("Mount Hood"))))
-        //onView(withId(R.id.name))
-        //    .check(matches(withText(containsString("지리산"))))
+        onView(withId(R.id.associationFragment)).perform(click())
+        onView(withText(containsString("3Y"))).perform(click())
+        onView(withText(containsString("BV"))).perform(click())
+        onView(allOf(withId(R.id.code), withText(containsString("001"))))
+            .check(matches(isDisplayed()))
+        onView(allOf(withId(R.id.name), withText(containsString("Olavtoppen"))))
+            .check(matches(isDisplayed()))
     }
 
     @Test
     fun loadDifferentRegionDetailsFragment() {
-        onView(withId(R.id.navigation_dashboard)).perform(click())
-        onView(withId(R.id.region)).perform(click())
-        onData(
-            allOf(`is`(instanceOf(Map::class.java)), hasEntry("code", "HL"))
-        ).perform(click())
-        onView(withId(R.id.region)).perform(click())
-        onData(
-            allOf(`is`(instanceOf(Map::class.java)), hasEntry("code", "GN"))
-        ).perform(click())
+        // Position for association W7O
+        val summitPosition = 169  // Zero-indexed
+        onView(withId(R.id.associationFragment)).perform(click())
         onView(withId(R.id.list)).perform(
-            scrollToPosition<RegionRecyclerViewAdapter.ViewHolder>(44))
-        onView(withText(containsString("HL/GN-046"))).perform(click())
-        onView(withId(R.id.map)).check(matches(isDisplayed()))
-        onView(withId(R.id.summit_id))
-            .check(matches(withText(containsString("HL/GN-046"))))
-        onView(withId(R.id.name))
-            .check(matches(withText(containsString("뒷삐알산"))))
+            scrollToPosition<AssociationRecyclerViewAdapter.ViewHolder>(summitPosition)
+        )
+        onView(withText(containsString("W7O"))).perform(click())
+        onView(withText(containsString("CN"))).perform(click())
+        onView(allOf(withId(R.id.code), withText(containsString("003"))))
+            .check(matches(isDisplayed()))
+        onView(allOf(withId(R.id.name), withText(containsString("Mount Hood"))))
+            .check(matches(isDisplayed()))
     }
 }

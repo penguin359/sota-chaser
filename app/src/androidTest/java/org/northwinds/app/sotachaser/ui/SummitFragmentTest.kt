@@ -28,15 +28,14 @@ import org.northwinds.app.sotachaser.R
 import org.northwinds.app.sotachaser.SotaChaserBaseApplication
 import org.northwinds.app.sotachaser.testing.HiltFragmentScenario
 import org.northwinds.app.sotachaser.testing.Matcher.atPosition
+import org.northwinds.app.sotachaser.ui.associations.AssociationRecyclerViewAdapter
 import org.northwinds.app.sotachaser.ui.regions.RegionFragmentDirections
-import org.northwinds.app.sotachaser.ui.summits.MySummitRecyclerViewAdapter
+import org.northwinds.app.sotachaser.ui.summits.SummitRecyclerViewAdapter
 import org.northwinds.app.sotachaser.ui.summits.SummitFragment
-import org.northwinds.app.sotachaser.ui.summits.SummitFragmentArgs
-import org.northwinds.app.sotachaser.ui.summits.SummitFragmentDirections
 
 @RunWith(AndroidJUnit4::class)
 @HiltAndroidTest
-class SummitsFragmentTest {
+class SummitFragmentTest {
     @get:Rule
     val hiltRule = HiltAndroidRule(this)
 
@@ -142,7 +141,7 @@ class SummitsFragmentTest {
         val frag = HiltFragmentScenario.launchInHiltContainer(SummitFragment::class.java,
             RegionFragmentDirections.actionRegionFragmentToNavigationDashboard("HL", "GN").arguments)
         onView(withId(R.id.list)).perform(
-            scrollToPosition<MySummitRecyclerViewAdapter.ViewHolder>(summitPosition)
+            scrollToPosition<SummitRecyclerViewAdapter.ViewHolder>(summitPosition)
         )
         onView(RecyclerViewMatcher(R.id.list).atPosition(summitPosition)).check(
             matches(
@@ -152,7 +151,7 @@ class SummitsFragmentTest {
         onView(
             RecyclerViewMatcher(R.id.list).atPositionOnView(
                 summitPosition,
-                R.id.summit_id
+                R.id.code
             )
         ).check(matches(withText(containsString("046"))))
         onView(RecyclerViewMatcher(R.id.list).atPositionOnView(summitPosition, R.id.name)).check(
@@ -207,7 +206,7 @@ class SummitsFragmentTest {
 
 @RunWith(AndroidJUnit4::class)
 @HiltAndroidTest
-class SummitsActivityTest {
+class SummitActivityTest {
     @get:Rule(order = 0)
     val hiltRule = HiltAndroidRule(this)
 
@@ -236,33 +235,31 @@ class SummitsActivityTest {
 
     @Test
     fun loadSummitDetailsFragment() {
-        onView(withId(R.id.navigation_dashboard)).perform(click())
-        onView(withId(R.id.association)).perform(click())
-        onData(
-            allOf(`is`(instanceOf(Map::class.java)), hasEntry("code", "W7O"))
-        ).perform(click())
-        onView(withId(R.id.region)).perform(click())
-        onData(
-            allOf(`is`(instanceOf(Map::class.java)), hasEntry("code", "CN"))
-        ).perform(click())
+        // Position for association W7O
+        val summitPosition = 169  // Zero-indexed
+        onView(withId(R.id.associationFragment)).perform(click())
+        onView(withId(R.id.list)).perform(
+            scrollToPosition<AssociationRecyclerViewAdapter.ViewHolder>(summitPosition)
+        )
+        onView(withText(containsString("W7O"))).perform(click())
+        onView(withText(containsString("CN"))).perform(click())
         onView(withText(containsString("W7O/CN-001"))).perform(click())
         onView(withId(R.id.map)).check(matches(isDisplayed()))
     }
 
     @Test
     fun loadCorrectSummitDetailsFragment() {
-        onView(withId(R.id.navigation_dashboard)).perform(click())
-        onView(withId(R.id.association)).perform(click())
-        onData(
-            allOf(`is`(instanceOf(Map::class.java)), hasEntry("code", "W7O"))
-        ).perform(click())
-        onView(withId(R.id.region)).perform(click())
-        onData(
-            allOf(`is`(instanceOf(Map::class.java)), hasEntry("code", "CN"))
-        ).perform(click())
+        // Position for association W7O
+        val summitPosition = 169  // Zero-indexed
+        onView(withId(R.id.associationFragment)).perform(click())
+        onView(withId(R.id.list)).perform(
+            scrollToPosition<AssociationRecyclerViewAdapter.ViewHolder>(summitPosition)
+        )
+        onView(withText(containsString("W7O"))).perform(click())
+        onView(withText(containsString("CN"))).perform(click())
         onView(withText(containsString("W7O/CN-001"))).perform(click())
         onView(withId(R.id.map)).check(matches(isDisplayed()))
-        onView(withId(R.id.summit_id))
+        onView(withId(R.id.code))
             .check(matches(withText(containsString("W7O/CN-001"))))
         onView(withId(R.id.name))
             .check(matches(withText(containsString("Mount Hood"))))
@@ -272,20 +269,21 @@ class SummitsActivityTest {
 
     @Test
     fun loadDifferentSummitDetailsFragment() {
-        onView(withId(R.id.navigation_dashboard)).perform(click())
-        onView(withId(R.id.association)).perform(click())
-        onData(
-            allOf(`is`(instanceOf(Map::class.java)), hasEntry("code", "HL"))
-        ).perform(click())
-        onView(withId(R.id.region)).perform(click())
-        onData(
-            allOf(`is`(instanceOf(Map::class.java)), hasEntry("code", "GN"))
-        ).perform(click())
+        // Position for association HL
+        val summitPosition = 55  // Zero-indexed
+        onView(withId(R.id.associationFragment)).perform(click())
         onView(withId(R.id.list)).perform(
-            scrollToPosition<MySummitRecyclerViewAdapter.ViewHolder>(44))
+            scrollToPosition<AssociationRecyclerViewAdapter.ViewHolder>(summitPosition)
+        )
+        onView(allOf(withId(R.id.code), withText(containsString("HL")))).perform(click())
+        onView(withId(R.id.list)).perform(
+            scrollToPosition<SummitRecyclerViewAdapter.ViewHolder>(9))
+        onView(withText(containsString("GN"))).perform(click())
+        onView(withId(R.id.list)).perform(
+            scrollToPosition<SummitRecyclerViewAdapter.ViewHolder>(44))
         onView(withText(containsString("HL/GN-046"))).perform(click())
         onView(withId(R.id.map)).check(matches(isDisplayed()))
-        onView(withId(R.id.summit_id))
+        onView(withId(R.id.code))
             .check(matches(withText(containsString("HL/GN-046"))))
         onView(withId(R.id.name))
             .check(matches(withText(containsString("뒷삐알산"))))

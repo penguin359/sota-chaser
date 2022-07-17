@@ -52,7 +52,7 @@ class RegionFragment : Fragment() {
         with(binding.list) {
             model.regions.observe(viewLifecycleOwner) { regions ->
                 Log.d(TAG, "Loading data from ${model.association.value} with ${regions.count()} regions")
-                adapter = RegionRecyclerViewAdapter(regions)
+                adapter = RegionRecyclerViewAdapter(model.association.value!!, regions)
             }
         }
 

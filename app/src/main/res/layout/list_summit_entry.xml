@@ -7,7 +7,7 @@
     android:layout_height="wrap_content">
 
     <TextView
-        android:id="@+id/summit_id"
+        android:id="@+id/code"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
@@ -23,7 +23,7 @@
         android:layout_marginBottom="12dp"
         android:textAppearance="?attr/textAppearanceListItem"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/summit_id"
+        app:layout_constraintTop_toBottomOf="@id/code"
         tools:text="Big Summit Name" />
 
     <TextView

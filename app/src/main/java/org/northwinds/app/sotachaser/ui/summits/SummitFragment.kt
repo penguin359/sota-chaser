@@ -3,29 +3,20 @@ package org.northwinds.app.sotachaser.ui.summits
 import android.Manifest
 import android.content.pm.PackageManager
 import android.os.Bundle
-import android.util.Log
 import androidx.fragment.app.Fragment
-import androidx.recyclerview.widget.GridLayoutManager
-import androidx.recyclerview.widget.LinearLayoutManager
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.AdapterView
-import android.widget.SimpleAdapter
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
-import androidx.core.content.edit
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.navArgs
-import androidx.preference.PreferenceManager
 import com.google.android.gms.common.ConnectionResult
 import com.google.android.gms.common.GoogleApiAvailability
 import com.google.android.gms.location.LocationServices
 import dagger.hilt.android.AndroidEntryPoint
-import org.northwinds.app.sotachaser.R
 import org.northwinds.app.sotachaser.databinding.FragmentSummitListBinding
-import org.northwinds.app.sotachaser.ui.SummitDetailsFragmentArgs
 import org.northwinds.app.sotachaser.ui.map.MapsViewModel
 
 
@@ -60,11 +51,11 @@ class SummitFragment : Fragment() {
         // Set the adapter
         with(binding.list) {
             model.summits.observe(viewLifecycleOwner) { summits ->
-                adapter = MySummitRecyclerViewAdapter(summits, model.location.value)
+                adapter = SummitRecyclerViewAdapter(summits, model.location.value)
             }
             model.location.observe(viewLifecycleOwner) { location ->
                 if(model.summits.value != null) {
-                    adapter = MySummitRecyclerViewAdapter(model.summits.value!!, location)
+                    adapter = SummitRecyclerViewAdapter(model.summits.value!!, location)
                 }
             }
         }

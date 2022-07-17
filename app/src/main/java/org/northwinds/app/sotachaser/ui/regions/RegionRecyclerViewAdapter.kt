@@ -2,11 +2,14 @@ package org.northwinds.app.sotachaser.ui.regions
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.navigation.findNavController
 import androidx.recyclerview.widget.RecyclerView
 import org.northwinds.app.sotachaser.databinding.ListRegionEntryBinding
 import org.northwinds.app.sotachaser.domain.models.Region
+import org.northwinds.app.sotachaser.ui.associations.AssociationFragmentDirections
 
 class RegionRecyclerViewAdapter(
+    private val association: String,
     private val values: List<Region>,
 ) : RecyclerView.Adapter<RegionRecyclerViewAdapter.ViewHolder>() {
 
@@ -28,6 +31,9 @@ class RegionRecyclerViewAdapter(
         holder.b.manager.text = item.manager
         holder.b.managerCallsign.text = item.managerCallsign
         holder.b.summitCount.text = item.summitsCount.toString()
+        holder.b.details.setOnClickListener {
+            it.findNavController().navigate(RegionFragmentDirections.actionRegionFragmentToNavigationDashboard(association = association, region = item.code))
+        }
         //holder.topView.setOnClickListener {
         //    val a = item.code.split("/")[0]
         //    val r = item.code.split("/")[1].split("-")[0]

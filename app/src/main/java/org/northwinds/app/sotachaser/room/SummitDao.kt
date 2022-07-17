@@ -21,9 +21,23 @@ interface SummitDao {
     @Insert
     fun insertAssociation(vararg users: AssociationEntity): List<Long>
 
-    //@Update
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun updateAssociation(vararg users: AssociationEntity)
+    @Update
+    //@Insert(onConflict = OnConflictStrategy.REPLACE)
+    fun updateAssociation(vararg users: AssociationEntity): Int
+
+    fun upsertAssociation(vararg users: AssociationEntity): List<Long> {
+        val ids = users.map {
+            val old = getAssociationByCode(it.code)
+            if(old != null) {
+                val record = it.copy(id = old.id)
+                updateAssociation(record)
+                old.id
+            } else {
+                insertAssociation(it)[0]
+            }
+        }
+        return ids
+    }
 
     @Insert
     fun insertRegion(vararg users: RegionEntity): List<Long>

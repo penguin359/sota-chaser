@@ -23,12 +23,17 @@ package org.northwinds.app.sotachaser
 
 import android.Manifest
 import android.app.Activity
+import android.app.Application
 import android.app.Instrumentation
 import android.content.Context
 import android.content.Intent
 import android.util.Log
 import android.widget.Spinner
+import androidx.annotation.VisibleForTesting
+import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.core.content.edit
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.Observer
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.Espresso
 import androidx.test.espresso.Espresso.onView
@@ -36,7 +41,8 @@ import androidx.test.espresso.action.ViewActions
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.intent.Intents
 import androidx.test.espresso.intent.Intents.intending
-import androidx.test.espresso.intent.matcher.IntentMatchers.*
+import androidx.test.espresso.intent.matcher.IntentMatchers.hasAction
+import androidx.test.espresso.intent.matcher.IntentMatchers.hasExtra
 import androidx.test.espresso.matcher.ViewMatchers.*
 import androidx.test.ext.junit.rules.ActivityScenarioRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
@@ -48,17 +54,23 @@ import com.github.flank.utility.screenshot.UiScreenshotTestRule
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
 import org.aprsdroid.app.testing.SharedPreferencesRule
-import org.hamcrest.Matchers
+import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.Matchers.*
 import org.junit.Assert.*
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
+import org.northwinds.app.sotachaser.repository.SummitsRepository
 import org.northwinds.app.sotachaser.testing.HiltFragmentScenario
 import org.northwinds.app.sotachaser.ui.MainActivity
-import org.northwinds.app.sotachaser.ui.home.MapsFragment
-import java.lang.Thread.sleep
+import org.northwinds.app.sotachaser.ui.map.MapsViewModel
+import org.northwinds.app.sotachaser.ui.map.MapsFragment
+import java.util.concurrent.CountDownLatch
+import java.util.concurrent.ExecutorService
+import java.util.concurrent.TimeUnit
+import java.util.concurrent.TimeoutException
+import javax.inject.Inject
 
 @RunWith(AndroidJUnit4::class)
 @HiltAndroidTest
@@ -91,7 +103,7 @@ class MainActivityTest {
         Espresso.openActionBarOverflowOrOptionsMenu(context)
 
         val appCompatTextView = onView(
-            Matchers.allOf(
+            allOf(
                 withText("Feedback"),
                 isDisplayed()
             )
@@ -123,99 +135,107 @@ class MainActivityTest {
     }
 }
 
+@VisibleForTesting(otherwise = VisibleForTesting.NONE)
+fun <T> LiveData<T>.getOrAwaitValue(
+    time: Long = 2,
+    timeUnit: TimeUnit = TimeUnit.SECONDS,
+    afterObserve: () -> Unit = {}
+): T {
+    var data: T? = null
+    val latch = CountDownLatch(1)
+    val observer = object : Observer<T> {
+        override fun onChanged(o: T?) {
+            data = o
+            latch.countDown()
+            this@getOrAwaitValue.removeObserver(this)
+        }
+    }
+    this.observeForever(observer)
+    try {
+        afterObserve.invoke()
+        if (!latch.await(time, timeUnit)) {
+            throw TimeoutException("LiveData value was never set.")
+        }
+    } finally {
+        this.removeObserver(observer)
+    }
+    @Suppress("UNCHECKED_CAST")
+    return data as T
+}
 
 @RunWith(AndroidJUnit4::class)
 @HiltAndroidTest
-class MapsFragmentTest {
+class MapsModelViewTest {
     @get:Rule
     val hiltRule = HiltAndroidRule(this)
 
-    //private val context = ApplicationProvider.getApplicationContext<Context>()
+    @Inject
+    lateinit var executor: ExecutorService
 
-    private lateinit var frag: HiltFragmentScenario<MapsFragment>
+    @Inject
+    lateinit var repo: SummitsRepository
+
+    private lateinit var model: MapsViewModel
+
+    @get:Rule
+    val instantTaskExecutorRule = InstantTaskExecutorRule()
 
     @Before
-    fun load_fragment() {
-        frag = HiltFragmentScenario.launchInHiltContainer(MapsFragment::class.java)
+    fun setup() {
+        hiltRule.inject()
+        val app = ApplicationProvider.getApplicationContext<Application>()
+        model = MapsViewModel(app, executor, repo)
     }
 
     @Test
     fun load_map_viewmodel() {
+        val associations = model.associations.getOrAwaitValue()
+        assertEquals(
+            "Incorrect number of associations",
+            194, associations.count()
+        )
+        val associationIndex = associations.indexOfFirst { it.code == "W7O" }
+        assertThat("Can't find W7O association", associationIndex, greaterThanOrEqualTo(0))
+        model.setAssociation(associationIndex)
+
+        assertEquals(
+            "Incorrect number of regions for association",
+            10, model.regions.getOrAwaitValue().count()
+        )
+        val regionIndex = model.regions.getOrAwaitValue().indexOfFirst { it.code == "WV" }
+        assertThat("Can't find WV region", regionIndex, greaterThanOrEqualTo(0))
+        model.setRegion(regionIndex)
+
+        assertEquals(
+            "Incorrect number of summits for region",
+            138, model.summits.getOrAwaitValue().count()
+        )
+        val associationIndex2 = model.associations.getOrAwaitValue().indexOfFirst { it.code == "W7W" }
+        assertThat("Can't find W7W association", associationIndex2, greaterThanOrEqualTo(0))
+        model.setAssociation(associationIndex2)
+
+        model.regions.getOrAwaitValue()
         Espresso.onIdle()
-        sleep(1000)
-        frag.onFragment {
-            val associations = it.model.associations.value
-            assertNotNull("No associations found", associations)
-            assertEquals(
-                "Incorrect number of associations",
-                194, associations!!.count()
-            )
-            val associationIndex = associations.indexOf("W7O")
-            assertNotNull("Can't find W7O association", associationIndex)
-            it.model.setAssociation(associationIndex)
-        }
-        Espresso.onIdle()
-        sleep(1000)
-        frag.onFragment {
-            assertEquals(
-                "Incorrect number of regions for association",
-                10, it.model.regions.value!!.count()
-            )
-            val regionIndex = it.model.regions.value!!.indexOf("WV")
-            assertNotNull("Can't find WV region", regionIndex)
-            it.model.setRegion(regionIndex)
-        }
-        Espresso.onIdle()
-        sleep(1000)
-        frag.onFragment {
-            assertEquals(
-                "Incorrect number of summits for region",
-                138, it.model.summits.value!!.count()
-            )
-            val associationIndex2 = it.model.associations.value!!.indexOf("W7W")
-            assertNotNull("Can't find W7W association", associationIndex2)
-            it.model.setAssociation(associationIndex2)
-        }
-        Espresso.onIdle()
-        sleep(1000)
-        frag.onFragment {
-            assertEquals(
-                "Incorrect number of regions for association",
-                17, it.model.regions.value!!.count()
-            )
-            val regionIndex2 = it.model.regions.value!!.indexOf("LC")
-            assertNotNull("Can't find LC region", regionIndex2)
-            it.model.setRegion(regionIndex2)
-        }
-        Espresso.onIdle()
-        sleep(1000)
-        frag.onFragment {
-            assertEquals(
-                "Incorrect number of summits for region",
-                169, it.model.summits.value!!.count()
-            )
-        }
+        assertEquals(
+            "Incorrect number of regions for association",
+            17, model.regions.getOrAwaitValue().count()
+        )
+        val regionIndex2 = model.regions.getOrAwaitValue().indexOfFirst { it.code == "LC" }
+        assertThat("Can't find LC region", regionIndex2, greaterThanOrEqualTo(0))
+        model.setRegion(regionIndex2)
     }
 
     @Test
     fun update_map_viewmodel() {
-        Espresso.onIdle()
-        frag.onFragment {
-            // TODO This can be called before data is loaded
-            it.model.setAssociation(0)
-        }
-        Espresso.onIdle()
-        frag.onFragment {
-            it.model.setRegion(0)
-        }
-        Espresso.onIdle()
-        frag.onFragment {
-            it.model.setAssociation(1)
-        }
-        Espresso.onIdle()
-        frag.onFragment {
-            it.model.setRegion(0)
-        }
+        // TODO This can be called before data is loaded
+        model.associations.getOrAwaitValue()
+        model.setAssociation(0)
+        model.regions.getOrAwaitValue()
+        model.setRegion(0)
+        model.setAssociation(1)
+        model.regions.getOrAwaitValue()
+        model.setRegion(0)
+
         //val associations = it.model.associations.value
         //assertNotNull("No associations found", associations)
         //assertEquals(
@@ -252,6 +272,21 @@ class MapsFragmentTest {
         //)
         //}
     }
+}
+
+
+@RunWith(AndroidJUnit4::class)
+@HiltAndroidTest
+class MapsFragmentTest {
+    @get:Rule
+    val hiltRule = HiltAndroidRule(this)
+
+    private lateinit var frag: HiltFragmentScenario<MapsFragment>
+
+    @Before
+    fun setup() {
+        frag = HiltFragmentScenario.launchInHiltContainer(MapsFragment::class.java)
+    }
 
     @Test
     fun load_map_activity() {
@@ -269,16 +304,13 @@ class MapsFragmentTest {
                 throw noViewException
             assertEquals(194, (view as Spinner).count)
         }
-        onView(withId(R.id.association)).check(matches(withSpinnerText(Matchers.containsString("3Y"))))
+        onView(withId(R.id.association)).check(matches(withSpinnerText(containsString("3Y"))))
         onView(withId(R.id.association)).perform(ViewActions.click())
         Espresso.onData(
-            Matchers.allOf(
-                Matchers.`is`(Matchers.instanceOf(String::class.java)),
-                Matchers.`is`("W7O")
-            )
+            allOf(`is`(instanceOf(Map::class.java)), hasEntry("code", "W7O"))
         ).perform(ViewActions.click())
-        onView(withId(R.id.association)).check(matches(withSpinnerText(Matchers.containsString("W7O"))))
-        onView(withId(R.id.region)).check(matches(withSpinnerText(Matchers.containsString("CC"))))
+        onView(withId(R.id.association)).check(matches(withSpinnerText(containsString("W7O"))))
+        onView(withId(R.id.region)).check(matches(withSpinnerText(containsString("CC"))))
         onView(withId(R.id.region)).check { view, noViewException ->
             if (view == null)
                 throw noViewException
@@ -286,13 +318,10 @@ class MapsFragmentTest {
         }
         onView(withId(R.id.association)).perform(ViewActions.click())
         Espresso.onData(
-            Matchers.allOf(
-                Matchers.`is`(Matchers.instanceOf(String::class.java)),
-                Matchers.`is`("W7W")
-            )
+            allOf(`is`(instanceOf(Map::class.java)), hasEntry("code", "W7W"))
         ).perform(ViewActions.click())
-        onView(withId(R.id.association)).check(matches(withSpinnerText(Matchers.containsString("W7W"))))
-        onView(withId(R.id.region)).check(matches(withSpinnerText(Matchers.containsString("CH"))))
+        onView(withId(R.id.association)).check(matches(withSpinnerText(containsString("W7W"))))
+        onView(withId(R.id.region)).check(matches(withSpinnerText(containsString("CH"))))
         onView(withId(R.id.region)).check { view, noViewException ->
             if (view == null)
                 throw noViewException
@@ -304,23 +333,17 @@ class MapsFragmentTest {
     fun will_preserve_last_region() {
         onView(withId(R.id.association)).perform(ViewActions.click())
         Espresso.onData(
-            Matchers.allOf(
-                Matchers.`is`(Matchers.instanceOf(String::class.java)),
-                Matchers.`is`("W7O")
-            )
+            allOf(`is`(instanceOf(Map::class.java)), hasEntry("code", "W7O"))
         ).perform(ViewActions.click())
-        onView(withId(R.id.association)).check(matches(withSpinnerText(Matchers.containsString("W7O"))))
+        onView(withId(R.id.association)).check(matches(withSpinnerText(containsString("W7O"))))
         onView(withId(R.id.region)).perform(ViewActions.click())
         Espresso.onData(
-            Matchers.allOf(
-                Matchers.`is`(Matchers.instanceOf(String::class.java)),
-                Matchers.`is`("WV")
-            )
+            allOf(`is`(instanceOf(Map::class.java)), hasEntry("code", "WV"))
         ).perform(ViewActions.click())
-        onView(withId(R.id.region)).check(matches(withSpinnerText(Matchers.containsString("WV"))))
+        onView(withId(R.id.region)).check(matches(withSpinnerText(containsString("WV"))))
         frag.recreate()
-        onView(withId(R.id.association)).check(matches(withSpinnerText(Matchers.containsString("W7O"))))
-        onView(withId(R.id.region)).check(matches(withSpinnerText(Matchers.containsString("WV"))))
+        onView(withId(R.id.association)).check(matches(withSpinnerText(containsString("W7O"))))
+        onView(withId(R.id.region)).check(matches(withSpinnerText(containsString("WV"))))
     }
 
     companion object {

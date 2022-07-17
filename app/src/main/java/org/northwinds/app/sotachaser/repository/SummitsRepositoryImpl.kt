@@ -3,16 +3,12 @@ package org.northwinds.app.sotachaser.repository
 import android.app.Application
 import android.content.Context
 import android.util.Log
-import android.widget.Toast
 import androidx.core.content.edit
 import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Transformations
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.asCoroutineDispatcher
 import kotlinx.coroutines.withContext
 import okhttp3.OkHttpClient
-import org.northwinds.app.sotachaser.R
 import org.northwinds.app.sotachaser.SummitList
 import org.northwinds.app.sotachaser.domain.models.Association
 import org.northwinds.app.sotachaser.domain.models.Region
@@ -20,6 +16,8 @@ import org.northwinds.app.sotachaser.domain.models.Summit
 import org.northwinds.app.sotachaser.network.SotaApiService
 import org.northwinds.app.sotachaser.network.SummitData
 import org.northwinds.app.sotachaser.room.*
+import org.northwinds.app.sotachaser.room.model.asDatabaseModel
+import org.northwinds.app.sotachaser.room.model.asDomainModel
 import org.northwinds.app.sotachaser.util.asAssociationDatabaseModel
 import org.northwinds.app.sotachaser.util.asRegionDatabaseModel
 import org.northwinds.app.sotachaser.util.asSummitDatabaseModel
@@ -57,11 +55,27 @@ class SummitsRepositoryImpl @Inject constructor(private val context: Application
         }
     }
 
+    override suspend fun refreshAssociations() {
+        withContext(executor.asCoroutineDispatcher()) {
+            api.getAssociations().forEach { associationEntity ->
+                dao.upsertAssociation(associationEntity.asDatabaseModel(dao))
+            }
+        }
+    }
+
     override suspend fun updateAssociation(code: String) {
         withContext(executor.asCoroutineDispatcher()) {
-            val assoc = api.getAssociation(code)
-            val old = dao.getAssociationByCode(code)!!
-            dao.updateAssociation(AssociationEntity(id = old.id, code = assoc.associationCode ?: "", name = assoc.associationName ?: "", manager = assoc.manager, assoc.associationManagerCallsign))
+            val result = api.getAssociation(code)
+            dao.upsertAssociation(result.asDatabaseModel(dao))
+            result.regions?.forEach {
+                dao.upsertRegion(it.asDatabaseModel(dao))
+            }
+        }
+    }
+
+    override suspend fun updateRegion(association: String, region: String) {
+        withContext(executor.asCoroutineDispatcher()) {
+            dao.upsertRegion(api.getRegion(association, region).region.asDatabaseModel(dao))
         }
     }
 
@@ -71,15 +85,21 @@ class SummitsRepositoryImpl @Inject constructor(private val context: Application
         }
     }
 
-    override fun getAssociationByCode(code: String): LiveData<Association> {
+    override fun getAssociationByCode(code: String): LiveData<Association?> {
         return Transformations.map(dao.getAssociationByCode2(code)) {
-            it.asDomainModel()
+            it?.asDomainModel()
         }
     }
 
     override fun getRegionsInAssociationName(associationId: String): LiveData<List<Region>> {
         return Transformations.map(dao.getRegionsInAssociationName(associationId)) {
             it.asDomainModel()
+        }
+    }
+
+    override fun getRegionByCode(association: Association, code: String): LiveData<Region?> {
+        return Transformations.map(dao.getRegionByCode2(association.id, code)) {
+            it?.asDomainModel()
         }
     }
 

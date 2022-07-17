@@ -1,9 +1,9 @@
 package org.northwinds.app.sotachaser.util
 
 import org.northwinds.app.sotachaser.SummitList
-import org.northwinds.app.sotachaser.room.AssociationEntity
-import org.northwinds.app.sotachaser.room.RegionEntity
-import org.northwinds.app.sotachaser.room.SummitEntity
+import org.northwinds.app.sotachaser.room.model.AssociationEntity
+import org.northwinds.app.sotachaser.room.model.RegionEntity
+import org.northwinds.app.sotachaser.room.model.SummitEntity
 
 fun SummitList.asAssociationDatabaseModel(): List<AssociationEntity> {
     return associations.map { association ->

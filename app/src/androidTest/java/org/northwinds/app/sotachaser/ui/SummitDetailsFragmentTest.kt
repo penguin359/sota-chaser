@@ -22,8 +22,6 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import org.northwinds.app.sotachaser.R
 import org.northwinds.app.sotachaser.testing.HiltFragmentScenario
-import org.northwinds.app.sotachaser.ui.ui.SummitDetailsFragment
-import java.lang.Thread.sleep
 
 @RunWith(AndroidJUnit4::class)
 @HiltAndroidTest
@@ -33,18 +31,23 @@ class SummitDetailsFragmentTest {
 
     @Test
     fun canOpenFragment() {
-        HiltFragmentScenario.launchInHiltContainer(SummitDetailsFragment::class.java)
-    }
-
-    @Test
-    fun canOpenSpecificSummit() {
-        HiltFragmentScenario.launchInHiltContainer(SummitDetailsFragment::class.java, bundleOf(
+        HiltFragmentScenario.launchInHiltContainer(
+            SummitDetailsFragment::class.java, bundleOf(
             "association" to "HL",
             "region" to "GN",
             "summit" to "001",
         ))
-        sleep(1000)
-        Espresso.onView(withId(R.id.summit_id))
+    }
+
+    @Test
+    fun canOpenSpecificSummit() {
+        HiltFragmentScenario.launchInHiltContainer(
+            SummitDetailsFragment::class.java, bundleOf(
+            "association" to "HL",
+            "region" to "GN",
+            "summit" to "001",
+        ))
+        Espresso.onView(withId(R.id.code))
             .check(matches(withText(containsString("HL/GN-001"))))
         Espresso.onView(withId(R.id.name))
             .check(matches(withText(containsString("지리산"))))
@@ -62,13 +65,13 @@ class SummitDetailsFragmentTest {
 
     @Test
     fun canOpenDifferentSummit() {
-        HiltFragmentScenario.launchInHiltContainer(SummitDetailsFragment::class.java, bundleOf(
+        HiltFragmentScenario.launchInHiltContainer(
+            SummitDetailsFragment::class.java, bundleOf(
             "association" to "W7W",
             "region" to "LC",
             "summit" to "052",
         ))
-        sleep(1000)
-        Espresso.onView(withId(R.id.summit_id))
+        Espresso.onView(withId(R.id.code))
             .check(matches(withText(containsString("W7W/LC-052"))))
         Espresso.onView(withId(R.id.name))
             .check(matches(withText(containsString("West Soda Peaks"))))
@@ -97,7 +100,6 @@ class SummitDetailsFragmentTest {
                 "summit" to "001",
             )
         )
-        sleep(1000)
         Espresso.onView(withId(R.id.sota_btn)).perform(click())
         Intents.intended(
             allOf(
@@ -121,7 +123,6 @@ class SummitDetailsFragmentTest {
                 "summit" to "001",
             )
         )
-        sleep(1000)
         Espresso.onView(withId(R.id.sotlas_btn)).perform(click())
         Intents.intended(
             allOf(

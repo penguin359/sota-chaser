@@ -1,0 +1,45 @@
+{
+  "region": {
+    "associationCode": "3Y",
+    "regionCode": "BV",
+    "regionManagerCallsign": "LA1ENA",
+    "regionName": "Bouvetøya (Bouvet Island)",
+    "manager": "Aage Grøseth",
+    "summits": 1,
+    "notes": "# Notes",
+    "maxLat": -54.4104,
+    "maxLong": 3.3565,
+    "minLat": -54.4104,
+    "minLong": 3.3565
+  },
+  "summits": [
+    {
+      "summitCode": "3Y/BV-001",
+      "name": "Olavtoppen",
+      "shortCode": "BV-001",
+      "altM": 780,
+      "altFt": 2559,
+      "gridRef1": "3.3565",
+      "gridRef2": "-54.4104",
+      "notes": "",
+      "validFrom": "0001-01-01T00:00:00",
+      "validTo": "0001-01-01T00:00:00",
+      "activationCount": 0,
+      "myActivations": 0,
+      "activationDate": null,
+      "myChases": 0,
+      "activationCall": null,
+      "longitude": 3.3564999103546143,
+      "latitude": -54.410400390625,
+      "locator": null,
+      "points": 10,
+      "regionCode": null,
+      "regionName": null,
+      "associationCode": null,
+      "associationName": null,
+      "valid": false,
+      "restrictionMask": false,
+      "restrictionList": null
+    }
+  ]
+}

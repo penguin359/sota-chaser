@@ -6,25 +6,11 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
-    <LinearLayout
+    <EditText
+        android:id="@+id/filter"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal">
-
-        <Spinner
-            android:id="@+id/association"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:contentDescription="@string/association"
-            android:minHeight="32dp" />
-
-        <Spinner
-            android:id="@+id/region"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:contentDescription="@string/region"
-            android:minHeight="48dp" />
-    </LinearLayout>
+        android:hint="Filter" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/list"
@@ -35,6 +21,6 @@
         android:layout_marginRight="16dp"
         app:layoutManager="LinearLayoutManager"
         tools:context=".testing.SummitFragment"
-        tools:listitem="@layout/fragment_summit" />
+        tools:listitem="@layout/list_summit_entry" />
 
 </LinearLayout>

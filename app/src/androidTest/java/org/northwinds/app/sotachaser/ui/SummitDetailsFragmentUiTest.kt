@@ -84,29 +84,29 @@ class SummitDetailsFragmentUiTest {
     @Test
     fun canOpenTopSummitDetails() {
         device.findObject(UiSelector().descriptionContains("Summit List")).click()
-        associationSpinner.click()
-        selection.getChildByText(UiSelector().text("W7W"), "W7W").click()
-        regionSpinner.click()
-        selection.getChildByText(UiSelector().text("LC"), "LC").click()
-        device.wait(Until.hasObject(By.descContains("W7W/LC")),
+        recycler.scrollIntoView(UiSelector().text("3Y"))
+        device.findObject(UiSelector().descriptionContains("3Y")).click()
+        recycler.scrollIntoView(UiSelector().text("BV"))
+        device.findObject(UiSelector().descriptionContains("BV")).click()
+        device.wait(Until.hasObject(By.descContains("3Y/BV")),
             LAUNCH_TIMEOUT
         )
-        device.findObject(UiSelector().descriptionContains("W7W/LC-001")).click()
-        assertTrue("Has map marker", device.findObject(UiSelector().descriptionContains("Google Map").childSelector(UiSelector().descriptionContains("W7W/LC-001"))).exists())
+        device.findObject(UiSelector().descriptionContains("3Y/BV-001")).click()
+        assertTrue("Has map marker", device.findObject(UiSelector().descriptionContains("Google Map").childSelector(UiSelector().descriptionContains("3Y/BV-001"))).exists())
     }
 
     @Test
     fun canOpenBottomSummitDetails() {
-        device.findObject(UiSelector().descriptionContains("Summit List")).click()
-        associationSpinner.click()
-        selection.getChildByText(UiSelector().text("W7W"), "W7W").click()
-        regionSpinner.click()
-        selection.getChildByText(UiSelector().text("LC"), "LC").click()
-        device.wait(Until.hasObject(By.descContains("W7W/LC")),
-            LAUNCH_TIMEOUT
-        )
-        //recycler.getChildByText(UiSelector().text("W7W/LC-"), "W7W/LC-169").click()
         recycler.maxSearchSwipes = recycler.maxSearchSwipes*2
+        device.findObject(UiSelector().descriptionContains("Summit List")).click()
+        recycler.scrollIntoView(UiSelector().text("W7W"))
+        device.findObject(UiSelector().descriptionContains("W7W")).click()
+        recycler.scrollIntoView(UiSelector().text("LC"))
+        device.findObject(UiSelector().descriptionContains("LC")).click()
+        //device.wait(Until.hasObject(By.descContains("W7W/LC")),
+        //    LAUNCH_TIMEOUT
+        //)
+        //recycler.getChildByText(UiSelector().text("W7W/LC-"), "W7W/LC-169").click()
         recycler.scrollIntoView(UiSelector().text("W7W/LC-169"))
 
         device.findObject(UiSelector().descriptionContains("W7W/LC-169")).click()

@@ -3,4 +3,43 @@
     <string name="title_activity_maps">Summit Map</string>
     <string name="association">Association</string>
     <string name="region">Region</string>
+
+    <string name="title_analytics">Analytics Opt-in</string>
+    <string name="title_anonymous_usage">Anonymous usage statistics</string>
+    <string name="title_crash_reports">Automatically submit crash reports</string>
+    <string name="title_changelog">Changelog</string>
+    <string name="changelog_text">Updates in this release:\n
+\n
+<b>Version 0.5 Alpha</b>\n
+• Added a details view of each summit with a map for it\n
+• Optionally, show distance to summit from current location\n
+• Include links to SOTA and SOTLAS websites for a summit\n
+\n
+<b>Version 0.4 Alpha</b>\n
+• Added screen for showing detailed summit info\n
+\n
+<b>Version 0.3 Alpha</b>\n
+• Added opt-in analytics and crash reporting\n
+• Added feedback button\n
+• Added settings screen\n
+• Speed up first load of app\n
+\n
+<b>Version 0.2 Alpha</b>\n
+• Prevent user interface from hanging while loading data\n
+• Preserve last location when returning to app\n
+\n
+<b>Version 0.1 Alpha</b>\n
+• First demo release of SOTA Summit Mapping</string>
+
+    <string name="preference_asked_for_consent">asked_for_consent</string>
+    <string name="preference_enable_analytics">enable_analytics</string>
+    <string name="preference_enable_crash_reports">enable_crash_reports</string>
+    <string name="preference_changelog">changelog</string>
+
+    <string name="title_activity_settings">SettingsActivity</string>
+    <string name="settings">Settings</string>
+    <string name="title_activity_main">MainActivity</string>
+    <string name="title_home">Map</string>
+    <string name="title_dashboard">Summit List</string>
+    <string name="title_notifications">Notifications</string>
 </resources>

@@ -2,11 +2,13 @@ package org.northwinds.app.sotachaser
 
 import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import org.hamcrest.MatcherAssert.assertThat
+import org.hamcrest.Matchers.containsString
 
 import org.junit.Test
 import org.junit.runner.RunWith
 
-import org.junit.Assert.*
+//import org.junit.Assert.*
 
 /**
  * Instrumented test, which will execute on an Android device.
@@ -19,6 +21,6 @@ class ExampleInstrumentedTest {
     fun useAppContext() {
         // Context of the app under test.
         val appContext = InstrumentationRegistry.getInstrumentation().targetContext
-        assertEquals("org.northwinds.app.sotachaser", appContext.packageName)
+        assertThat("Package name", appContext.packageName, containsString("org.northwinds.app.sotachaser"))
     }
 }

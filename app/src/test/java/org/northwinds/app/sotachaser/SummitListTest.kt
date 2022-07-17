@@ -25,15 +25,15 @@ class SummitListTest {
         assertEquals("Ófæruhöfði", list.names["TF/SL-089"])
         assertEquals("Ajman - عجمان", list.regions["A6/AJ"])
         assertEquals("Brazil - Maranhão", list.associations["PR8"])
-        assertEquals(194, list.summits_by_region.count(), "Incorrect number of associations")
+        assertEquals(194, list.summitsByRegion.count(), "Incorrect number of associations")
         assertEquals(
             10,
-            list.summits_by_region["W7O"]!!.count(),
+            list.summitsByRegion["W7O"]!!.count(),
             "Incorrect number of regions in Oregon association"
         )
         assertEquals(
             127,
-            list.summits_by_region["W7O"]!!["NC"]!!.count(),
+            list.summitsByRegion["W7O"]!!["NC"]!!.count(),
             "Incorrect number of summits in North Coastal region"
         )
 
@@ -47,8 +47,8 @@ class SummitListTest {
         val input = Files.newInputStream(myPath)
         val list = SummitList(input)
         //list.summits_by_region["HL"]!!["HL/GN"]!!["HL/GN-046"]!!
-        assertTrue { list.summit_idx.containsKey("HL/GN-046") }
-        val entry = list.summit_idx["HL/GN-046"]!!
+        assertTrue { list.summitIdx.containsKey("HL/GN-046") }
+        val entry = list.summitIdx["HL/GN-046"]!!
 
         assertEquals("HL/GN-046", entry.summitCode)
         assertEquals("South Korea", entry.associationName)

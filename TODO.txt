@@ -3,3 +3,37 @@ Show summit details
 Show by distance
 Launcher Icon
 
+Tablet - Large Screen Layout
+Alerts/Spots
+
+
+Colorize points by value
+Colorize markers by point value or activation status
+Sort summits by designator/points/distance/name/last activated
+
+Feet/meters
+
+Click to show on map
+Show local position relative to summit
+
+Sota spotting
+Offline max
+Show association/region name in spinner
+Multi-select
+
+
+sendfeedback dummy intent response
+hilt inject firebase
+copyright
+code analysis
+internationalize all strings
+format strings move to strings.xml
+RoboElectric
+
+use get() = on LiveData?
+LiveData() from Database to view
+
+Link to Sotlas, sota.org.uk, Google Maps, etc.
+Logging contacts with current location/time/etc.
+
+Check for database load needed after destructive migration/out of date prefs

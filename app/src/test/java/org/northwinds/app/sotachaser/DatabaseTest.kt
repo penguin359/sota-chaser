@@ -1,5 +1,7 @@
 package org.northwinds.app.sotachaser
 
+import android.app.Application
+import android.os.Looper
 import androidx.room.Room
 import androidx.test.core.app.ApplicationProvider
 import org.hamcrest.CoreMatchers.*
@@ -9,24 +11,41 @@ import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
+import org.northwinds.app.sotachaser.repository.SummitsRepository
+import org.northwinds.app.sotachaser.repository.SummitsRepositoryImpl
 import org.northwinds.app.sotachaser.room.SummitDao
 import org.northwinds.app.sotachaser.room.SummitDatabase
+import org.northwinds.app.sotachaser.util.RoboletricThreadModule_ProvideThreadExecutorFactory
+import org.robolectric.Robolectric
 import org.robolectric.RobolectricTestRunner
+import org.robolectric.Shadows
+import org.robolectric.android.util.concurrent.InlineExecutorService
+import org.robolectric.android.util.concurrent.PausedExecutorService
+import org.robolectric.android.util.concurrent.RoboExecutorService
 import org.robolectric.annotation.Config
+import org.robolectric.annotation.LooperMode
+import org.robolectric.fakes.RoboExtendedResponseCache
 import org.robolectric.junit.rules.BackgroundTestRule
 import java.lang.Exception
 import java.nio.file.Files
 import java.nio.file.Paths
+import java.util.concurrent.ExecutorService
+import javax.inject.Inject
 import kotlin.test.assertEquals
-import kotlin.test.assertTrue
 
 @RunWith(RobolectricTestRunner::class)
-@Config(manifest=Config.NONE)
+@Config(manifest=Config.NONE, application = Application::class)
 class DatabaseTest {
     @get:Rule val backgroundRule = BackgroundTestRule()
 
+    @Inject
+    lateinit var executor: ExecutorService
+
     var db: SummitDatabase? = null
     lateinit var dao: SummitDao
+
+    private lateinit var myExec: InlineExecutorService
+    //private lateinit var myExec: PausedExecutorService
 
     @Before
     fun setup_database() {
@@ -36,13 +55,21 @@ class DatabaseTest {
         val input = Files.newInputStream(myPath)
         val list = SummitList(input)
 
+        myExec = InlineExecutorService()
+        //myExec = PausedExecutorService()
+        //var myExec = RoboExecutorService()
         db = Room.databaseBuilder(
             ApplicationProvider.getApplicationContext(),
             SummitDatabase::class.java, "database"
-        ).build()
+        )
+            .setQueryExecutor(myExec)
+            //.setTransactionExecutor(myExec)
+            .build()
         dao = db!!.summitDao()
         try {
-            SummitInterface.load_database(dao, list)
+            myExec.execute {
+                SummitsRepositoryImpl.loadDatabase(dao, list)
+            }
         } catch (ex: Exception) {
             shutdown_database()
             throw ex
@@ -59,10 +86,12 @@ class DatabaseTest {
     }
 
     @Test
-    @BackgroundTestRule.BackgroundTest
     fun can_open_database() {
         val associations = dao.getAssociations()
-        assertEquals(194, associations.count(), "Incorrect number of summit associations")
+        assertEquals(194, associations.apply {
+            observeForever {  }
+            Shadows.shadowOf(Looper.getMainLooper()).idle()
+        }.value?.count(), "Incorrect number of summit associations")
     }
 
     @Test
@@ -143,27 +172,46 @@ class DatabaseTest {
     }
 
     @Test
-    @BackgroundTestRule.BackgroundTest
+    @LooperMode(LooperMode.Mode.LEGACY)
+    //@BackgroundTestRule.BackgroundTest
     fun has_correct_number_of_summits() {
         val associations = dao.getAssociations()
-        assertEquals(194, associations.count(), "Incorrect number of summit associations")
+        //Shadows.shadowOf(Looper.myLooper()).idle()
+        //Looper.myLooper().
+        associations.observeForever { _ -> }
+        //Robolectric.getBackgroundThreadScheduler().unPause()
+        //Robolectric.flushForegroundThreadScheduler()
+        //Robolectric.flushBackgroundThreadScheduler()
+        Shadows.shadowOf(Looper.getMainLooper()).idle()
+        assertEquals(194, associations.value?.count(), "Incorrect number of summit associations")
+        myExec.execute {
+            assertThat("Region Count",
+                dao.getAssociationByCode("W7O")?.let {
+                    dao.getRegionsInAssociation(it.id)
+                }?.count(),
+                equalTo(10))
+        }
+        val live = dao.getRegionsInAssociationName("W7O").apply { observeForever {  }}
+        Shadows.shadowOf(Looper.getMainLooper()).idle()
         assertThat("Region Count",
-            dao.getAssociationByCode("W7O")?.let {
-                dao.getRegionsInAssociation(it.id)
-            }?.count(),
+            live.value?.count(),
             equalTo(10))
-        assertThat("Region Count",
-            dao.getRegionsInAssociationName("W7O").count(),
-            equalTo(10))
+        myExec.execute {
+            assertThat(
+                "Summit Count",
+                dao.getAssociationByCode("W7O")?.let { assoc ->
+                    dao.getRegionByCode(assoc.id, "NC")?.let { region ->
+                        dao.getSummitsInRegion(region.id)
+                    }
+                }?.count(),
+                equalTo(127)
+            )
+        }
         assertThat("Summit Count",
-            dao.getAssociationByCode("W7O")?.let { assoc ->
-                dao.getRegionByCode(assoc.id, "NC")?.let { region ->
-                    dao.getSummitsInRegion(region.id)
-                }
-            }?.count(),
-            equalTo(127))
-        assertThat("Summit Count",
-            dao.getSummits("W7O", "NC").count(),
+            dao.getSummits("W7O", "NC").apply {
+                observeForever {  }
+                Shadows.shadowOf(Looper.getMainLooper()).idle()
+            }.value?.count(),
             equalTo(127))
     }
 }

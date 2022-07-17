@@ -25,23 +25,23 @@ object MockHttpModule {
                 val input = AndroidResources.rawRes(context, R.raw.summitslist)
                 respond(input)
             }
-            rule(url eq "https://api2.sota.org.uk/api/associations") {
+            rule(url eq "https://api2.sota.org.uk/api/associations", times = anyTimes) {
                 val input = ClasspathResources.resource("associations.json")
                 respond(input)
             }
-            rule(url eq "https://api2.sota.org.uk/api/associations/W7O") {
+            rule(url eq "https://api2.sota.org.uk/api/associations/W7O", times = anyTimes) {
                 val input = ClasspathResources.resource("W7O.json")
                 respond(input)
             }
-            rule(url eq "https://api2.sota.org.uk/api/associations/BV") {
+            rule(url eq "https://api2.sota.org.uk/api/associations/BV", times = anyTimes) {
                 val input = ClasspathResources.resource("BV.json")
                 respond(input)
             }
-            rule(url eq "https://api2.sota.org.uk/api/associations/3Y") {
+            rule(url eq "https://api2.sota.org.uk/api/associations/3Y", times = anyTimes) {
                 val input = ClasspathResources.resource("3Y.json")
                 respond(input)
             }
-            rule(url eq "https://api2.sota.org.uk/api/regions/W7O/CN") {
+            rule(url eq "https://api2.sota.org.uk/api/regions/W7O/CN", times = anyTimes) {
                 val input = ClasspathResources.resource("W7O_CN.json")
                 respond(input)
             }

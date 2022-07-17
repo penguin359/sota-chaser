@@ -1,6 +1,7 @@
 package org.northwinds.app.sotachaser.ui
 
 import android.Manifest
+import android.content.Context
 import androidx.core.content.edit
 import androidx.recyclerview.widget.RecyclerView
 import androidx.test.core.app.ApplicationProvider
@@ -20,6 +21,7 @@ import dagger.hilt.android.testing.HiltAndroidTest
 import junit.framework.Assert.assertEquals
 import org.aprsdroid.app.testing.SharedPreferencesRule
 import org.hamcrest.Matchers.*
+import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -161,47 +163,47 @@ class AssociationActivityTest {
     @get:Rule(order = 3)
     val mScreenshotTestRule = ScreenshotTestRule()
 
+    @Before
+    fun setUp() {
+        // FIXME Workaround caching issue with Summit Repository
+        val prefs = context.getSharedPreferences("database", Context.MODE_PRIVATE)
+        prefs.edit { putBoolean("database_loaded", false) }
+    }
+
     @Test
     fun loadRegionFragment() {
-        sleep(5000)
         onView(withId(R.id.associationFragment)).perform(click())
-        sleep(5000)
         onView(withText(containsString("3Y"))).perform(click())
-        sleep(5000)
-        onView(withId(R.id.points)).check(matches(isDisplayed()))
+        onView(withId(R.id.name)).check(matches(allOf(isDisplayed(), withText(containsString("Bouvetøya")))))
     }
 
     @Test
     fun loadCorrectAssociationDetailsFragment() {
+        // Position for association W7O
+        val summitPosition = 169  // Zero-indexed
         onView(withId(R.id.associationFragment)).perform(click())
+        onView(withId(R.id.list)).perform(
+            scrollToPosition<AssociationRecyclerViewAdapter.ViewHolder>(summitPosition)
+        )
         onView(withText(containsString("W7O"))).perform(click())
-        onView(withId(R.id.points)).check(matches(isDisplayed()))
-        onView(allOf(withId(R.id.code)))
-            .check(matches(withText(containsString("W7O/CN-001"))))
-        onView(withId(R.id.name))
-            .check(matches(withText(containsString("Mount Hood"))))
-        //onView(withId(R.id.name))
-        //    .check(matches(withText(containsString("지리산"))))
+        onView(allOf(withId(R.id.code), withText(containsString("CC"))))
+            .check(matches(isDisplayed()))
+        onView(allOf(withId(R.id.name), withText(containsString("Central Coast"))))
+            .check(matches(isDisplayed()))
     }
 
     @Test
     fun loadDifferentAssociationDetailsFragment() {
+        // Position for association BV
+        val summitPosition = 11  // Zero-indexed
         onView(withId(R.id.associationFragment)).perform(click())
-        onView(withId(R.id.association)).perform(click())
-        onData(
-            allOf(`is`(instanceOf(Map::class.java)), hasEntry("code", "HL"))
-        ).perform(click())
-        onView(withId(R.id.region)).perform(click())
-        onData(
-            allOf(`is`(instanceOf(Map::class.java)), hasEntry("code", "GN"))
-        ).perform(click())
         onView(withId(R.id.list)).perform(
-            scrollToPosition<AssociationRecyclerViewAdapter.ViewHolder>(44))
-        onView(withText(containsString("HL/GN-046"))).perform(click())
-        onView(withId(R.id.map)).check(matches(isDisplayed()))
-        onView(withId(R.id.summit_id))
-            .check(matches(withText(containsString("HL/GN-046"))))
-        onView(withId(R.id.name))
-            .check(matches(withText(containsString("뒷삐알산"))))
+            scrollToPosition<AssociationRecyclerViewAdapter.ViewHolder>(summitPosition)
+        )
+        onView(withText(containsString("BV"))).perform(click())
+        onView(allOf(withId(R.id.code), withText(containsString("CA"))))
+            .check(matches(isDisplayed()))
+        onView(allOf(withId(R.id.name), withText(containsString("Changhua"))))
+            .check(matches(isDisplayed()))
     }
 }

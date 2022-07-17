@@ -32,6 +32,9 @@ class SummitDetailsFragmentUiTest {
     @get:Rule(order = 1)
     val writeStorageRule = GrantPermissionRule.grant(Manifest.permission.WRITE_EXTERNAL_STORAGE)
 
+    @get:Rule(order = 1)
+    val permissionRule = GrantPermissionRule.grant(Manifest.permission.ACCESS_COARSE_LOCATION)
+
     @get:Rule(order = 2)
     val screenshotRule = UiScreenshotTestRule()
 

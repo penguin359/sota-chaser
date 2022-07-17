@@ -48,6 +48,7 @@ package org.northwinds.app.sotachaser
 import androidx.core.content.edit
 import androidx.preference.PreferenceManager
 import androidx.test.espresso.Espresso.onView
+import androidx.test.espresso.IdlingPolicies
 import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.action.ViewActions.pressBack
 import androidx.test.espresso.assertion.ViewAssertions.doesNotExist
@@ -63,10 +64,12 @@ import org.aprsdroid.app.testing.SharedPreferencesRule
 import org.hamcrest.Matchers.not
 import org.junit.Assert.assertFalse
 import org.junit.Assert.assertTrue
+import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.northwinds.app.sotachaser.ui.MainActivity
+import java.util.concurrent.TimeUnit
 
 @RunWith(AndroidJUnit4::class)
 @HiltAndroidTest
@@ -89,6 +92,11 @@ class DialogTest {
     private val prefEnableCrashReports =
         appContext.getString(R.string.preference_enable_crash_reports)
     private val prefs = PreferenceManager(appContext).sharedPreferences!!
+
+    @Before
+    fun setUp() {
+        IdlingPolicies.setIdlingResourceTimeout(60, TimeUnit.SECONDS)
+    }
 
     @Test
     fun analyticsAreDisabledByDefault() {
@@ -182,6 +190,11 @@ class ChanglogDialogTest {
     private val appContext = InstrumentationRegistry.getInstrumentation().targetContext
     private val prefChangelog = appContext.getString(R.string.preference_changelog)
     private val prefs = PreferenceManager(appContext).sharedPreferences!!
+
+    @Before
+    fun setUp() {
+        IdlingPolicies.setIdlingResourceTimeout(60, TimeUnit.SECONDS)
+    }
 
     @Test
     fun dialogDoesNotShowNormally() {

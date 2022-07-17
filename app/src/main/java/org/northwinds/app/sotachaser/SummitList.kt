@@ -1,5 +1,6 @@
 package org.northwinds.app.sotachaser
 
+import com.univocity.parsers.common.TextParsingException
 import com.univocity.parsers.common.processor.BeanListProcessor
 import com.univocity.parsers.csv.CsvParser
 import com.univocity.parsers.csv.CsvParserSettings
@@ -8,8 +9,10 @@ import org.northwinds.app.sotachaser.util.asAssociationDatabaseModel
 import org.northwinds.app.sotachaser.util.asRegionDatabaseModel
 import org.northwinds.app.sotachaser.util.asSummitDatabaseModel
 import java.io.BufferedReader
+import java.io.IOException
 import java.io.InputStream
 import java.io.InputStreamReader
+import java.lang.IllegalStateException
 import java.nio.charset.StandardCharsets
 
 /*
@@ -45,7 +48,15 @@ class SummitList(input: InputStream) {
             parserSettings.rowProcessor = proc
             parserSettings.isHeaderExtractionEnabled = true
             val parser = CsvParser(parserSettings)
-            parser.parse(it)
+            try {
+                parser.parse(it)
+            } catch(ex: TextParsingException) {
+                if(ex.cause is IOException) {
+                    throw ex.cause as IOException
+                } else {
+                    throw IllegalStateException(ex)
+                }
+            }
             summits = proc.beans
         }
     }

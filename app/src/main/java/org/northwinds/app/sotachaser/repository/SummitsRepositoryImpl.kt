@@ -2,44 +2,78 @@ package org.northwinds.app.sotachaser.repository
 
 import android.app.Application
 import android.content.Context
+import android.util.Log
+import android.widget.Toast
 import androidx.core.content.edit
 import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Transformations
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.asCoroutineDispatcher
 import kotlinx.coroutines.withContext
+import okhttp3.OkHttpClient
 import org.northwinds.app.sotachaser.R
 import org.northwinds.app.sotachaser.SummitList
 import org.northwinds.app.sotachaser.domain.models.Association
 import org.northwinds.app.sotachaser.domain.models.Region
 import org.northwinds.app.sotachaser.domain.models.Summit
+import org.northwinds.app.sotachaser.network.SotaApiService
+import org.northwinds.app.sotachaser.network.SummitData
 import org.northwinds.app.sotachaser.room.*
 import org.northwinds.app.sotachaser.util.asAssociationDatabaseModel
 import org.northwinds.app.sotachaser.util.asRegionDatabaseModel
 import org.northwinds.app.sotachaser.util.asSummitDatabaseModel
+import java.io.IOException
+import java.util.concurrent.ExecutorService
 import javax.inject.Inject
 
-class SummitsRepositoryImpl @Inject constructor(private val context: Application, private val dao: SummitDao) : SummitsRepository {
+class SummitsRepositoryImpl @Inject constructor(private val context: Application, private val dao: SummitDao, private val client: OkHttpClient, private val api: SotaApiService, private val executor: ExecutorService) : SummitsRepository {
     private var hasRefreshed = false
 
     override suspend fun checkForRefresh() {
         if(hasRefreshed)
             return
-        withContext(Dispatchers.IO) {
+        withContext(executor.asCoroutineDispatcher()) {
             val prefs = context.getSharedPreferences("database", Context.MODE_PRIVATE)
             if(!prefs.getBoolean("database_loaded", false)) {
-                val input = context.resources.openRawResource(R.raw.summitslist)
-                val list = SummitList(input)
+                Log.v(TAG, "Downloading summit list")
+                val list = try {
+                    SummitData(client).getSummitData()
+                } catch (ex: IOException) {
+                    // TODO Can't Toast on non-UI thread
+                    //Toast.makeText(context, "Network error downloading summits", Toast.LENGTH_LONG).show()
+                    Log.e(TAG, "Network Error downloading summits", ex)
+                    return@withContext
+                } catch (ex: IllegalStateException) {
+                    Log.e(TAG, "Illegal state while downloading summits", ex)
+                    return@withContext
+                }
 
-                SummitsRepositoryImpl.loadDatabase(dao, list)
+                Log.v(TAG, "Loading database with summit list")
+                loadDatabase(dao, list)
                 prefs.edit { putBoolean("database_loaded", true) }
                 hasRefreshed = true
             }
         }
     }
 
+    override suspend fun updateAssociation(code: String) {
+        withContext(executor.asCoroutineDispatcher()) {
+            val assoc = api.getAssociation(code)
+            val old = dao.getAssociationByCode(code)!!
+            dao.updateAssociation(AssociationEntity(id = old.id, code = assoc.associationCode ?: "", name = assoc.associationName ?: "", manager = assoc.manager, assoc.associationManagerCallsign))
+        }
+    }
+
     override fun getAssociations(): LiveData<List<Association>> {
         return Transformations.map(dao.getAssociations()) {
                 it.asDomainModel()
+        }
+    }
+
+    override fun getAssociationByCode(code: String): LiveData<Association> {
+        return Transformations.map(dao.getAssociationByCode2(code)) {
+            it.asDomainModel()
         }
     }
 
@@ -56,6 +90,7 @@ class SummitsRepositoryImpl @Inject constructor(private val context: Application
     }
 
     companion object {
+        const val TAG = "SOTAChaser-SummitRepository"
         fun loadDatabase(dao: SummitDao, summitList: SummitList) {
             dao.clear()
             val items = summitList.asAssociationDatabaseModel()

@@ -18,44 +18,34 @@ import com.google.android.gms.location.LocationServices
 import dagger.hilt.android.AndroidEntryPoint
 import org.northwinds.app.sotachaser.databinding.FragmentSummitListBinding
 import org.northwinds.app.sotachaser.ui.map.MapsViewModel
+import org.northwinds.app.sotachaser.domain.models.Summit
+import org.northwinds.app.sotachaser.ui.abstraction.AbstractFilterListFragment
 
 
 @AndroidEntryPoint
-class SummitFragment : Fragment() {
-    private val model: MapsViewModel by viewModels()
-    private lateinit var binding: FragmentSummitListBinding
+class SummitFragment : AbstractFilterListFragment<Summit, FragmentSummitListBinding, SummitRecyclerViewAdapter, SummitViewModel>() {
+    override val TAG = "SOTAChaser-SummitFragment"
+    override val vmc = SummitViewModel::class.java
+    override val bindingInflater: (LayoutInflater) -> FragmentSummitListBinding
+        = FragmentSummitListBinding::inflate
+    override val listView get() = binding.list
 
     val args: SummitFragmentArgs by navArgs()
+
+    override fun adapterFactory(values: List<Summit>) = SummitRecyclerViewAdapter(values, model.location.value)
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        binding = FragmentSummitListBinding.inflate(inflater)
+        val root = super.onCreateView(inflater, container, savedInstanceState)
 
-        model.associations.observe(viewLifecycleOwner) { associations ->
-            if (associations == null)
-                return@observe
-            val index = associations.indexOfFirst { it.code == args.association }
-            if (index >= 0)
-                model.setAssociation(index)
-        }
-        model.regions.observe(viewLifecycleOwner) { regions ->
-            if (regions == null)
-                return@observe
-            val index = regions.indexOfFirst { it.code == args.region }
-            if (index >= 0)
-                model.setRegion(index)
-        }
+        model.setRegion(args.association, args.region)
 
-        // Set the adapter
         with(binding.list) {
-            model.summits.observe(viewLifecycleOwner) { summits ->
-                adapter = SummitRecyclerViewAdapter(summits, model.location.value)
-            }
             model.location.observe(viewLifecycleOwner) { location ->
-                if(model.summits.value != null) {
-                    adapter = SummitRecyclerViewAdapter(model.summits.value!!, location)
+                if(model.list_items.value != null) {
+                    adapter = SummitRecyclerViewAdapter(model.list_items.value!!, location)
                 }
             }
         }
@@ -90,10 +80,6 @@ class SummitFragment : Fragment() {
             }
         }
 
-        return binding.root
-    }
-
-    companion object {
-        const val TAG = "SOTAChaser-SummitFragment"
+        return root
     }
 }

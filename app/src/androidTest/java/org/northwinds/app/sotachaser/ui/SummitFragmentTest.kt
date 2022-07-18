@@ -34,6 +34,7 @@ import org.northwinds.app.sotachaser.ui.associations.AssociationRecyclerViewAdap
 import org.northwinds.app.sotachaser.ui.regions.RegionFragmentDirections
 import org.northwinds.app.sotachaser.ui.summits.SummitRecyclerViewAdapter
 import org.northwinds.app.sotachaser.ui.summits.SummitFragment
+import org.northwinds.app.sotachaser.ui.summits.SummitRecyclerViewAdapterVH
 
 @RunWith(AndroidJUnit4::class)
 @HiltAndroidTest
@@ -143,7 +144,7 @@ class SummitFragmentTest {
         val frag = HiltFragmentScenario.launchInHiltContainer(SummitFragment::class.java,
             RegionFragmentDirections.actionRegionFragmentToNavigationDashboard("HL", "GN").arguments)
         onView(withId(R.id.list)).perform(
-            scrollToPosition<SummitRecyclerViewAdapter.ViewHolder>(summitPosition)
+            scrollToPosition<SummitRecyclerViewAdapterVH>(summitPosition)
         )
         onView(RecyclerViewMatcher(R.id.list).atPosition(summitPosition)).check(
             matches(
@@ -279,10 +280,10 @@ class SummitActivityTest {
         )
         onView(allOf(withId(R.id.code), withText(containsString("HL")))).perform(click())
         onView(withId(R.id.list)).perform(
-            scrollToPosition<SummitRecyclerViewAdapter.ViewHolder>(9))
+            scrollToPosition<SummitRecyclerViewAdapterVH>(9))
         onView(withText(containsString("GN"))).perform(click())
         onView(withId(R.id.list)).perform(
-            scrollToPosition<SummitRecyclerViewAdapter.ViewHolder>(44))
+            scrollToPosition<SummitRecyclerViewAdapterVH>(44))
         onView(withText(containsString("HL/GN-046"))).perform(click())
         onView(withId(R.id.map)).check(matches(isDisplayed()))
         onView(withId(R.id.code))

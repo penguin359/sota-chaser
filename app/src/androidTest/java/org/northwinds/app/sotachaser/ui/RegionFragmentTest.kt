@@ -34,6 +34,7 @@ import org.northwinds.app.sotachaser.ui.associations.AssociationRecyclerViewAdap
 import org.northwinds.app.sotachaser.ui.associations.AssociationRecyclerViewAdapterVH
 import org.northwinds.app.sotachaser.ui.regions.RegionFragment
 import org.northwinds.app.sotachaser.ui.regions.RegionRecyclerViewAdapter
+import org.northwinds.app.sotachaser.ui.regions.RegionRecyclerViewAdapterVH
 
 @RunWith(AndroidJUnit4::class)
 @HiltAndroidTest
@@ -116,7 +117,7 @@ class RegionFragmentTest {
         val frag = HiltFragmentScenario.launchInHiltContainer(RegionFragment::class.java,
             AssociationFragmentDirections.actionAssociationFragmentToRegionFragment("BV").arguments)
         onView(withId(R.id.list)).perform(
-            scrollToPosition<RegionRecyclerViewAdapter.ViewHolder>(summitPosition)
+            scrollToPosition<RegionRecyclerViewAdapterVH>(summitPosition)
         )
         onView(RecyclerViewMatcher(R.id.list).atPosition(summitPosition)).check(
             matches(

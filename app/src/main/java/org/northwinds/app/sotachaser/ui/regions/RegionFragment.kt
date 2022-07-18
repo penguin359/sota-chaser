@@ -25,41 +25,36 @@ import com.google.android.gms.location.LocationServices
 import dagger.hilt.android.AndroidEntryPoint
 import org.northwinds.app.sotachaser.R
 import org.northwinds.app.sotachaser.databinding.FragmentSummitListBinding
+import org.northwinds.app.sotachaser.domain.models.Region
+import org.northwinds.app.sotachaser.ui.abstraction.AbstractFilterListFragment
 import org.northwinds.app.sotachaser.ui.map.MapsViewModel
 import org.northwinds.app.sotachaser.ui.summits.SummitFragmentArgs
 
 
 @AndroidEntryPoint
-class RegionFragment : Fragment() {
-    private val model: MapsViewModel by viewModels()
-    private lateinit var binding: FragmentSummitListBinding
+class RegionFragment : AbstractFilterListFragment<Region, FragmentSummitListBinding, RegionRecyclerViewAdapter, RegionViewModel>() {
+    override val TAG = "SOTAChaser-RegionFragment"
+    override val vmc = RegionViewModel::class.java
+    override val bindingInflater: (LayoutInflater) -> FragmentSummitListBinding
+        = FragmentSummitListBinding::inflate
+    override val listView get() = binding.list
 
     val args: RegionFragmentArgs by navArgs()
+
+    override fun adapterFactory(values: List<Region>) = RegionRecyclerViewAdapter(args.association, values)
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        binding = FragmentSummitListBinding.inflate(inflater)
+        val root = super.onCreateView(inflater, container, savedInstanceState)
 
-        model.associations.observe(viewLifecycleOwner) { associations ->
-            if (associations == null)
-                return@observe
-            val index = associations.indexOfFirst { it.code == args.association }
-            if (index >= 0)
-                model.setAssociation(index)
-        }
-        with(binding.list) {
-            model.regions.observe(viewLifecycleOwner) { regions ->
-                Log.d(TAG, "Loading data from ${model.association.value} with ${regions.count()} regions")
-                adapter = RegionRecyclerViewAdapter(model.association.value!!, regions)
-            }
-        }
+        model.setAssociation(args.association)
 
-        return binding.root
+        return root
     }
 
-    companion object {
-        const val TAG = "SOTAChaser-RegionFragment"
-    }
+    //companion object {
+    //    const val TAG = "SOTAChaser-RegionFragment"
+    //}
 }

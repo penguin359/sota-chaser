@@ -7,44 +7,27 @@ import androidx.recyclerview.widget.RecyclerView
 import org.northwinds.app.sotachaser.databinding.ListRegionEntryBinding
 import org.northwinds.app.sotachaser.domain.models.Region
 import org.northwinds.app.sotachaser.ui.associations.AssociationFragmentDirections
+import org.northwinds.app.sotachaser.ui.abstraction.AbstractRecyclerViewAdapter
+
+typealias RegionRecyclerViewAdapterVH = AbstractRecyclerViewAdapter.ViewHolder<ListRegionEntryBinding>
 
 class RegionRecyclerViewAdapter(
     private val association: String,
     private val values: List<Region>,
-) : RecyclerView.Adapter<RegionRecyclerViewAdapter.ViewHolder>() {
+) : AbstractRecyclerViewAdapter<Region, ListRegionEntryBinding>(values) {
+    override val bindingInflater: (LayoutInflater, ViewGroup?, Boolean) -> ListRegionEntryBinding
+        = ListRegionEntryBinding::inflate
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-        return ViewHolder(
-            ListRegionEntryBinding.inflate(
-                LayoutInflater.from(parent.context),
-                parent,
-                false
-            )
-        )
-    }
-
-    override fun onBindViewHolder(holder: ViewHolder, position: Int) {
+    override fun onBindViewBinding(binding: ListRegionEntryBinding, position: Int) {
         val item = values[position]
-        holder.b.code.text = item.code
-        holder.b.code.contentDescription = item.code
-        holder.b.name.text = item.name
-        holder.b.manager.text = item.manager
-        holder.b.managerCallsign.text = item.managerCallsign
-        holder.b.summitCount.text = item.summitsCount.toString()
-        holder.b.details.setOnClickListener {
+        binding.code.text = item.code
+        binding.code.contentDescription = item.code
+        binding.name.text = item.name
+        binding.manager.text = item.manager
+        binding.managerCallsign.text = item.managerCallsign
+        binding.summitCount.text = item.summitsCount.toString()
+        binding.details.setOnClickListener {
             it.findNavController().navigate(RegionFragmentDirections.actionRegionFragmentToNavigationDashboard(association = association, region = item.code))
         }
-        //holder.topView.setOnClickListener {
-        //    val a = item.code.split("/")[0]
-        //    val r = item.code.split("/")[1].split("-")[0]
-        //    val s = item.code.split("-")[1]
-        //    it.findNavController().navigate(SummitFragmentDirections.actionNavigationDashboardToSummitDetailsFragment(association = a, region = r, summit = s))
-        //}
-    }
-
-    override fun getItemCount(): Int = values.size
-
-    class ViewHolder(binding: ListRegionEntryBinding) : RecyclerView.ViewHolder(binding.root) {
-        val b = binding
     }
 }

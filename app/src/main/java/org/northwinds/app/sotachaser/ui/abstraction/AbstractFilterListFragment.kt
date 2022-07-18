@@ -1,6 +1,7 @@
 package org.northwinds.app.sotachaser.ui.abstraction
 
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -11,6 +12,7 @@ import androidx.viewbinding.ViewBinding
 
 
 abstract class AbstractFilterListFragment<E, VB: ViewBinding, R: AbstractRecyclerViewAdapter<E, *>, VM: AbstractViewModel<E>> : Fragment() {
+    abstract val TAG: String
     abstract val vmc: Class<VM>
     protected lateinit var model: VM
 
@@ -31,6 +33,7 @@ abstract class AbstractFilterListFragment<E, VB: ViewBinding, R: AbstractRecycle
 
         with(listView) {
             model.list_items.observe(viewLifecycleOwner) {
+                Log.d(TAG, "Loading data with ${it.count()} items")
                 adapter = adapterFactory(it)
             }
         }

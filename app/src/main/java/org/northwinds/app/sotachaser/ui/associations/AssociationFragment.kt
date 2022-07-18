@@ -9,6 +9,7 @@ import org.northwinds.app.sotachaser.ui.abstraction.AbstractFilterListFragment
 
 @AndroidEntryPoint
 class AssociationFragment : AbstractFilterListFragment<Association, FragmentSummitListBinding, AssociationRecyclerViewAdapter, AssociationViewModel>() {
+    override val TAG = "SOTAChaser-AssociationFragment"
     override val vmc = AssociationViewModel::class.java
     override val bindingInflater: (LayoutInflater) -> FragmentSummitListBinding
         = FragmentSummitListBinding::inflate

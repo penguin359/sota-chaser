@@ -26,6 +26,7 @@ import org.junit.runner.RunWith
 import org.northwinds.app.sotachaser.BuildConfig
 import org.northwinds.app.sotachaser.R
 import org.northwinds.app.sotachaser.SotaChaserBaseApplication
+import org.northwinds.app.sotachaser.databinding.ListAssociationEntryBinding
 import org.northwinds.app.sotachaser.testing.HiltFragmentScenario
 import org.northwinds.app.sotachaser.testing.Matcher.atPosition
 import org.northwinds.app.sotachaser.ui.associations.AssociationFragmentDirections
@@ -202,7 +203,7 @@ class RegionActivityTest {
         val summitPosition = 169  // Zero-indexed
         onView(withId(R.id.associationFragment)).perform(click())
         onView(withId(R.id.list)).perform(
-            scrollToPosition<AssociationRecyclerViewAdapter.ViewHolder>(summitPosition)
+            scrollToPosition<AbstractRecyclerViewAdapter.ViewHolder<ListAssociationEntryBinding>>(summitPosition)
         )
         onView(withText(containsString("W7O"))).perform(click())
         onView(withText(containsString("CN"))).perform(click())

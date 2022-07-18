@@ -28,6 +28,8 @@ import org.junit.runner.RunWith
 import org.northwinds.app.sotachaser.BuildConfig
 import org.northwinds.app.sotachaser.R
 import org.northwinds.app.sotachaser.SotaChaserBaseApplication
+import org.northwinds.app.sotachaser.databinding.ListAssociationEntryBinding
+import org.northwinds.app.sotachaser.domain.models.Association
 import org.northwinds.app.sotachaser.testing.HiltFragmentScenario
 import org.northwinds.app.sotachaser.testing.Matcher.atPosition
 import org.northwinds.app.sotachaser.ui.associations.AssociationFragment
@@ -88,7 +90,7 @@ class AssociationFragmentTest {
         val summitPosition = 167  // Zero-indexed
         val frag = HiltFragmentScenario.launchInHiltContainer(AssociationFragment::class.java)
         onView(withId(R.id.list)).perform(
-            scrollToPosition<AssociationRecyclerViewAdapter.ViewHolder>(summitPosition)
+            scrollToPosition<AbstractRecyclerViewAdapter.ViewHolder<ListAssociationEntryBinding>>(summitPosition)
         )
         onView(RecyclerViewMatcher(R.id.list).atPosition(summitPosition)).check(
             matches(
@@ -183,7 +185,7 @@ class AssociationActivityTest {
         val summitPosition = 169  // Zero-indexed
         onView(withId(R.id.associationFragment)).perform(click())
         onView(withId(R.id.list)).perform(
-            scrollToPosition<AssociationRecyclerViewAdapter.ViewHolder>(summitPosition)
+            scrollToPosition<AbstractRecyclerViewAdapter.ViewHolder<ListAssociationEntryBinding>>(summitPosition)
         )
         onView(withText(containsString("W7O"))).perform(click())
         onView(allOf(withId(R.id.code), withText(containsString("CC"))))
@@ -198,7 +200,7 @@ class AssociationActivityTest {
         val summitPosition = 11  // Zero-indexed
         onView(withId(R.id.associationFragment)).perform(click())
         onView(withId(R.id.list)).perform(
-            scrollToPosition<AssociationRecyclerViewAdapter.ViewHolder>(summitPosition)
+            scrollToPosition<AbstractRecyclerViewAdapter.ViewHolder<ListAssociationEntryBinding>>(summitPosition)
         )
         onView(withText(containsString("BV"))).perform(click())
         onView(allOf(withId(R.id.code), withText(containsString("CA"))))

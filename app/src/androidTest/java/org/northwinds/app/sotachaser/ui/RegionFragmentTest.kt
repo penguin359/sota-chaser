@@ -31,6 +31,7 @@ import org.northwinds.app.sotachaser.testing.HiltFragmentScenario
 import org.northwinds.app.sotachaser.testing.Matcher.atPosition
 import org.northwinds.app.sotachaser.ui.associations.AssociationFragmentDirections
 import org.northwinds.app.sotachaser.ui.associations.AssociationRecyclerViewAdapter
+import org.northwinds.app.sotachaser.ui.associations.AssociationRecyclerViewAdapterVH
 import org.northwinds.app.sotachaser.ui.regions.RegionFragment
 import org.northwinds.app.sotachaser.ui.regions.RegionRecyclerViewAdapter
 
@@ -203,7 +204,7 @@ class RegionActivityTest {
         val summitPosition = 169  // Zero-indexed
         onView(withId(R.id.associationFragment)).perform(click())
         onView(withId(R.id.list)).perform(
-            scrollToPosition<AbstractRecyclerViewAdapter.ViewHolder<ListAssociationEntryBinding>>(summitPosition)
+            scrollToPosition<AssociationRecyclerViewAdapterVH>(summitPosition)
         )
         onView(withText(containsString("W7O"))).perform(click())
         onView(withText(containsString("CN"))).perform(click())

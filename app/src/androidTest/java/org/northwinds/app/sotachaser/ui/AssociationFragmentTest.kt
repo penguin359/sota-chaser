@@ -34,6 +34,7 @@ import org.northwinds.app.sotachaser.testing.HiltFragmentScenario
 import org.northwinds.app.sotachaser.testing.Matcher.atPosition
 import org.northwinds.app.sotachaser.ui.associations.AssociationFragment
 import org.northwinds.app.sotachaser.ui.associations.AssociationRecyclerViewAdapter
+import org.northwinds.app.sotachaser.ui.associations.AssociationRecyclerViewAdapterVH
 import java.lang.Thread.sleep
 
 @RunWith(AndroidJUnit4::class)
@@ -90,7 +91,7 @@ class AssociationFragmentTest {
         val summitPosition = 167  // Zero-indexed
         val frag = HiltFragmentScenario.launchInHiltContainer(AssociationFragment::class.java)
         onView(withId(R.id.list)).perform(
-            scrollToPosition<AbstractRecyclerViewAdapter.ViewHolder<ListAssociationEntryBinding>>(summitPosition)
+            scrollToPosition<AssociationRecyclerViewAdapterVH>(summitPosition)
         )
         onView(RecyclerViewMatcher(R.id.list).atPosition(summitPosition)).check(
             matches(
@@ -185,7 +186,7 @@ class AssociationActivityTest {
         val summitPosition = 169  // Zero-indexed
         onView(withId(R.id.associationFragment)).perform(click())
         onView(withId(R.id.list)).perform(
-            scrollToPosition<AbstractRecyclerViewAdapter.ViewHolder<ListAssociationEntryBinding>>(summitPosition)
+            scrollToPosition<AssociationRecyclerViewAdapterVH>(summitPosition)
         )
         onView(withText(containsString("W7O"))).perform(click())
         onView(allOf(withId(R.id.code), withText(containsString("CC"))))
@@ -200,7 +201,7 @@ class AssociationActivityTest {
         val summitPosition = 11  // Zero-indexed
         onView(withId(R.id.associationFragment)).perform(click())
         onView(withId(R.id.list)).perform(
-            scrollToPosition<AbstractRecyclerViewAdapter.ViewHolder<ListAssociationEntryBinding>>(summitPosition)
+            scrollToPosition<AssociationRecyclerViewAdapterVH>(summitPosition)
         )
         onView(withText(containsString("BV"))).perform(click())
         onView(allOf(withId(R.id.code), withText(containsString("CA"))))

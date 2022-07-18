@@ -30,7 +30,7 @@ import org.northwinds.app.sotachaser.databinding.FragmentSummitListBinding
 import org.northwinds.app.sotachaser.ui.map.MapsViewModel
 
 
-abstract class AbstractFilterListFragment<E, VBL: ViewBinding, VB: ViewBinding, R: AbstractRecyclerViewAdapter<E, VBL>> : Fragment() {
+abstract class AbstractFilterListFragment<E, VB: ViewBinding, R: AbstractRecyclerViewAdapter<E, *>> : Fragment() {
     protected val model: MapsViewModel by viewModels()
     protected lateinit var binding: VB
     abstract val bindingInflater: (LayoutInflater) -> VB
@@ -57,8 +57,4 @@ abstract class AbstractFilterListFragment<E, VBL: ViewBinding, VB: ViewBinding, 
 
         return binding.root
     }
-
-    //companion object {
-    //    const val TAG = "SOTAChaser-AssociationFragment"
-    //}
 }

@@ -9,7 +9,6 @@ abstract class AbstractRecyclerViewAdapter<E, VB: ViewBinding>(
     private val values: List<E>,
 ) : RecyclerView.Adapter<AbstractRecyclerViewAdapter.ViewHolder<VB>>() {
     protected lateinit var binding: VB
-    //protected val binding: VB get() = requireNotNull(_binding)
     abstract val bindingInflater: (LayoutInflater, ViewGroup?, Boolean) -> VB
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder<VB> {
@@ -25,12 +24,12 @@ abstract class AbstractRecyclerViewAdapter<E, VB: ViewBinding>(
     abstract fun onBindViewBinding(binding: VB, position: Int)
 
     override fun onBindViewHolder(holder: ViewHolder<VB>, position: Int) {
-        onBindViewBinding(holder.b, position)
+        onBindViewBinding(holder.binding, position)
     }
 
     override fun getItemCount(): Int = values.size
 
     class ViewHolder<VB: ViewBinding>(binding: VB) : RecyclerView.ViewHolder(binding.root) {
-        val b = binding
+        val binding = binding
     }
 }

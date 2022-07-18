@@ -9,6 +9,8 @@ import org.northwinds.app.sotachaser.databinding.ListAssociationEntryBinding
 import org.northwinds.app.sotachaser.domain.models.Association
 import org.northwinds.app.sotachaser.ui.AbstractRecyclerViewAdapter
 
+typealias AssociationRecyclerViewAdapterVH = AbstractRecyclerViewAdapter.ViewHolder<ListAssociationEntryBinding>
+
 class AssociationRecyclerViewAdapter(
     private val values: List<Association>,
 ) : AbstractRecyclerViewAdapter<Association, ListAssociationEntryBinding>(values) {

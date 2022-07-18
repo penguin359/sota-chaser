@@ -30,6 +30,7 @@ import org.northwinds.app.sotachaser.databinding.ListAssociationEntryBinding
 import org.northwinds.app.sotachaser.testing.HiltFragmentScenario
 import org.northwinds.app.sotachaser.testing.Matcher.atPosition
 import org.northwinds.app.sotachaser.ui.associations.AssociationRecyclerViewAdapter
+import org.northwinds.app.sotachaser.ui.associations.AssociationRecyclerViewAdapterVH
 import org.northwinds.app.sotachaser.ui.regions.RegionFragmentDirections
 import org.northwinds.app.sotachaser.ui.summits.SummitRecyclerViewAdapter
 import org.northwinds.app.sotachaser.ui.summits.SummitFragment
@@ -240,7 +241,7 @@ class SummitActivityTest {
         val summitPosition = 169  // Zero-indexed
         onView(withId(R.id.associationFragment)).perform(click())
         onView(withId(R.id.list)).perform(
-            scrollToPosition<AbstractRecyclerViewAdapter.ViewHolder<ListAssociationEntryBinding>>(summitPosition)
+            scrollToPosition<AssociationRecyclerViewAdapterVH>(summitPosition)
         )
         onView(withText(containsString("W7O"))).perform(click())
         onView(withText(containsString("CN"))).perform(click())
@@ -254,7 +255,7 @@ class SummitActivityTest {
         val summitPosition = 169  // Zero-indexed
         onView(withId(R.id.associationFragment)).perform(click())
         onView(withId(R.id.list)).perform(
-            scrollToPosition<AbstractRecyclerViewAdapter.ViewHolder<ListAssociationEntryBinding>>(summitPosition)
+            scrollToPosition<AssociationRecyclerViewAdapterVH>(summitPosition)
         )
         onView(withText(containsString("W7O"))).perform(click())
         onView(withText(containsString("CN"))).perform(click())
@@ -274,7 +275,7 @@ class SummitActivityTest {
         val summitPosition = 55  // Zero-indexed
         onView(withId(R.id.associationFragment)).perform(click())
         onView(withId(R.id.list)).perform(
-            scrollToPosition<AbstractRecyclerViewAdapter.ViewHolder<ListAssociationEntryBinding>>(summitPosition)
+            scrollToPosition<AssociationRecyclerViewAdapterVH>(summitPosition)
         )
         onView(allOf(withId(R.id.code), withText(containsString("HL")))).perform(click())
         onView(withId(R.id.list)).perform(

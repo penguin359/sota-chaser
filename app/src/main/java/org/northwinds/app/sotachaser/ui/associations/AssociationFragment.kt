@@ -31,11 +31,10 @@ import org.northwinds.app.sotachaser.ui.map.MapsViewModel
 
 
 @AndroidEntryPoint
-class AssociationFragment : AbstractFilterListFragment<Association, ListAssociationEntryBinding, FragmentSummitListBinding, AssociationRecyclerViewAdapter>() {
+class AssociationFragment : AbstractFilterListFragment<Association, FragmentSummitListBinding, AssociationRecyclerViewAdapter>() {
     override val bindingInflater: (LayoutInflater) -> FragmentSummitListBinding
         = FragmentSummitListBinding::inflate
-    override val listView
-        get() = binding.list
+    override val listView get() = binding.list
     override val data get() = model.associations
 
     override fun adapterFactory(values: List<Association>) = AssociationRecyclerViewAdapter(values)

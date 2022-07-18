@@ -6,7 +6,6 @@ Launcher Icon
 Tablet - Large Screen Layout
 Alerts/Spots
 
-
 Colorize points by value
 *Colorize markers by point value or activation status
 Sort summits by designator/points/distance/name/last activated
@@ -62,3 +61,5 @@ Update out of date rows automatically in background
 SSL trust anchors for older APIs
 Test real network traffic and fix SSL trust errors
 SMS submit spot
+Test database migrations
+Add auto-migrations

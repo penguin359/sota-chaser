@@ -1,0 +1,430 @@
+{
+  "formatVersion": 1,
+  "database": {
+    "version": 4,
+    "identityHash": "a2ac2290c0ca45e94705425e7217cc85",
+    "entities": [
+      {
+        "tableName": "association",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `code` TEXT NOT NULL, `name` TEXT NOT NULL, `manager` TEXT, `manager_callsign` TEXT, `active_from` TEXT, `dxcc` TEXT, `regions_count` INTEGER, `summits_count` INTEGER, `max_lat` REAL, `max_long` REAL, `min_lat` REAL, `min_long` REAL, `updated_at` INTEGER)",
+        "fields": [
+          {
+            "fieldPath": "id",
+            "columnName": "id",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "code",
+            "columnName": "code",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "name",
+            "columnName": "name",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "manager",
+            "columnName": "manager",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "managerCallsign",
+            "columnName": "manager_callsign",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "activeFrom",
+            "columnName": "active_from",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "dxcc",
+            "columnName": "dxcc",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "regionsCount",
+            "columnName": "regions_count",
+            "affinity": "INTEGER",
+            "notNull": false
+          },
+          {
+            "fieldPath": "summitsCount",
+            "columnName": "summits_count",
+            "affinity": "INTEGER",
+            "notNull": false
+          },
+          {
+            "fieldPath": "maxLat",
+            "columnName": "max_lat",
+            "affinity": "REAL",
+            "notNull": false
+          },
+          {
+            "fieldPath": "maxLong",
+            "columnName": "max_long",
+            "affinity": "REAL",
+            "notNull": false
+          },
+          {
+            "fieldPath": "minLat",
+            "columnName": "min_lat",
+            "affinity": "REAL",
+            "notNull": false
+          },
+          {
+            "fieldPath": "minLong",
+            "columnName": "min_long",
+            "affinity": "REAL",
+            "notNull": false
+          },
+          {
+            "fieldPath": "updatedAt",
+            "columnName": "updated_at",
+            "affinity": "INTEGER",
+            "notNull": false
+          }
+        ],
+        "primaryKey": {
+          "columnNames": [
+            "id"
+          ],
+          "autoGenerate": true
+        },
+        "indices": [
+          {
+            "name": "index_association_code",
+            "unique": true,
+            "columnNames": [
+              "code"
+            ],
+            "orders": [],
+            "createSql": "CREATE UNIQUE INDEX IF NOT EXISTS `index_association_code` ON `${TABLE_NAME}` (`code`)"
+          }
+        ],
+        "foreignKeys": []
+      },
+      {
+        "tableName": "region",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `association_id` INTEGER NOT NULL, `code` TEXT NOT NULL, `name` TEXT NOT NULL, `manager` TEXT, `manager_callsign` TEXT, `notes` TEXT, `summits_count` INTEGER, `max_lat` REAL, `max_long` REAL, `min_lat` REAL, `min_long` REAL, `updated_at` INTEGER, FOREIGN KEY(`association_id`) REFERENCES `association`(`id`) ON UPDATE NO ACTION ON DELETE CASCADE )",
+        "fields": [
+          {
+            "fieldPath": "id",
+            "columnName": "id",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "associationId",
+            "columnName": "association_id",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "code",
+            "columnName": "code",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "name",
+            "columnName": "name",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "manager",
+            "columnName": "manager",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "managerCallsign",
+            "columnName": "manager_callsign",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "notes",
+            "columnName": "notes",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "summitsCount",
+            "columnName": "summits_count",
+            "affinity": "INTEGER",
+            "notNull": false
+          },
+          {
+            "fieldPath": "maxLat",
+            "columnName": "max_lat",
+            "affinity": "REAL",
+            "notNull": false
+          },
+          {
+            "fieldPath": "maxLong",
+            "columnName": "max_long",
+            "affinity": "REAL",
+            "notNull": false
+          },
+          {
+            "fieldPath": "minLat",
+            "columnName": "min_lat",
+            "affinity": "REAL",
+            "notNull": false
+          },
+          {
+            "fieldPath": "minLong",
+            "columnName": "min_long",
+            "affinity": "REAL",
+            "notNull": false
+          },
+          {
+            "fieldPath": "updatedAt",
+            "columnName": "updated_at",
+            "affinity": "INTEGER",
+            "notNull": false
+          }
+        ],
+        "primaryKey": {
+          "columnNames": [
+            "id"
+          ],
+          "autoGenerate": true
+        },
+        "indices": [
+          {
+            "name": "index_region_association_id_code",
+            "unique": true,
+            "columnNames": [
+              "association_id",
+              "code"
+            ],
+            "orders": [],
+            "createSql": "CREATE UNIQUE INDEX IF NOT EXISTS `index_region_association_id_code` ON `${TABLE_NAME}` (`association_id`, `code`)"
+          },
+          {
+            "name": "index_region_association_id",
+            "unique": false,
+            "columnNames": [
+              "association_id"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_region_association_id` ON `${TABLE_NAME}` (`association_id`)"
+          }
+        ],
+        "foreignKeys": [
+          {
+            "table": "association",
+            "onDelete": "CASCADE",
+            "onUpdate": "NO ACTION",
+            "columns": [
+              "association_id"
+            ],
+            "referencedColumns": [
+              "id"
+            ]
+          }
+        ]
+      },
+      {
+        "tableName": "summit",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `region_id` INTEGER NOT NULL, `code` TEXT NOT NULL, `name` TEXT NOT NULL, `alt_m` INTEGER NOT NULL, `alt_ft` INTEGER NOT NULL, `grid_ref1` TEXT, `grid_ref2` TEXT, `longitude` REAL NOT NULL, `latitude` REAL NOT NULL, `points` INTEGER NOT NULL, `bonus_points` INTEGER NOT NULL, `valid_from` TEXT, `valid_to` TEXT, `activation_count` INTEGER NOT NULL, `activation_date` TEXT, `activation_call` TEXT, `my_activations` INTEGER, `my_chases` INTEGER, `notes` TEXT, `valid` INTEGER, `restriction_mask` INTEGER, `updated_at` INTEGER, FOREIGN KEY(`region_id`) REFERENCES `region`(`id`) ON UPDATE NO ACTION ON DELETE CASCADE )",
+        "fields": [
+          {
+            "fieldPath": "id",
+            "columnName": "id",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "regionId",
+            "columnName": "region_id",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "code",
+            "columnName": "code",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "name",
+            "columnName": "name",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "altM",
+            "columnName": "alt_m",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "altFt",
+            "columnName": "alt_ft",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "gridRef1",
+            "columnName": "grid_ref1",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "gridRef2",
+            "columnName": "grid_ref2",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "longitude",
+            "columnName": "longitude",
+            "affinity": "REAL",
+            "notNull": true
+          },
+          {
+            "fieldPath": "latitude",
+            "columnName": "latitude",
+            "affinity": "REAL",
+            "notNull": true
+          },
+          {
+            "fieldPath": "points",
+            "columnName": "points",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "bonusPoints",
+            "columnName": "bonus_points",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "validFrom",
+            "columnName": "valid_from",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "validTo",
+            "columnName": "valid_to",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "activationCount",
+            "columnName": "activation_count",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "activationDate",
+            "columnName": "activation_date",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "activationCall",
+            "columnName": "activation_call",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "myActivations",
+            "columnName": "my_activations",
+            "affinity": "INTEGER",
+            "notNull": false
+          },
+          {
+            "fieldPath": "myChases",
+            "columnName": "my_chases",
+            "affinity": "INTEGER",
+            "notNull": false
+          },
+          {
+            "fieldPath": "notes",
+            "columnName": "notes",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "valid",
+            "columnName": "valid",
+            "affinity": "INTEGER",
+            "notNull": false
+          },
+          {
+            "fieldPath": "restrictionMask",
+            "columnName": "restriction_mask",
+            "affinity": "INTEGER",
+            "notNull": false
+          },
+          {
+            "fieldPath": "updatedAt",
+            "columnName": "updated_at",
+            "affinity": "INTEGER",
+            "notNull": false
+          }
+        ],
+        "primaryKey": {
+          "columnNames": [
+            "id"
+          ],
+          "autoGenerate": true
+        },
+        "indices": [
+          {
+            "name": "index_summit_region_id_code",
+            "unique": true,
+            "columnNames": [
+              "region_id",
+              "code"
+            ],
+            "orders": [],
+            "createSql": "CREATE UNIQUE INDEX IF NOT EXISTS `index_summit_region_id_code` ON `${TABLE_NAME}` (`region_id`, `code`)"
+          },
+          {
+            "name": "index_summit_region_id",
+            "unique": false,
+            "columnNames": [
+              "region_id"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_summit_region_id` ON `${TABLE_NAME}` (`region_id`)"
+          }
+        ],
+        "foreignKeys": [
+          {
+            "table": "region",
+            "onDelete": "CASCADE",
+            "onUpdate": "NO ACTION",
+            "columns": [
+              "region_id"
+            ],
+            "referencedColumns": [
+              "id"
+            ]
+          }
+        ]
+      }
+    ],
+    "views": [],
+    "setupQueries": [
+      "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'a2ac2290c0ca45e94705425e7217cc85')"
+    ]
+  }
+}

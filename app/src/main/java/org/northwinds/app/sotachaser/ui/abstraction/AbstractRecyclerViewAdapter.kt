@@ -1,4 +1,4 @@
-package org.northwinds.app.sotachaser.ui
+package org.northwinds.app.sotachaser.ui.abstraction
 
 import android.view.LayoutInflater
 import android.view.ViewGroup

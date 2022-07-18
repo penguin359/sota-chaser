@@ -3,11 +3,9 @@ package org.northwinds.app.sotachaser.ui.associations
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.navigation.findNavController
-import androidx.recyclerview.widget.RecyclerView
-import androidx.viewbinding.ViewBinding
 import org.northwinds.app.sotachaser.databinding.ListAssociationEntryBinding
 import org.northwinds.app.sotachaser.domain.models.Association
-import org.northwinds.app.sotachaser.ui.AbstractRecyclerViewAdapter
+import org.northwinds.app.sotachaser.ui.abstraction.AbstractRecyclerViewAdapter
 
 typealias AssociationRecyclerViewAdapterVH = AbstractRecyclerViewAdapter.ViewHolder<ListAssociationEntryBinding>
 

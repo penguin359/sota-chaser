@@ -1,4 +1,4 @@
-package org.northwinds.app.sotachaser.ui.ui.notifications
+package org.northwinds.app.sotachaser.ui.notifications
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData

@@ -19,7 +19,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package org.northwinds.app.sotachaser
+package org.northwinds.app.sotachaser.ui
 
 import android.Manifest
 import android.app.Activity
@@ -46,7 +46,6 @@ import androidx.test.espresso.intent.matcher.IntentMatchers.hasExtra
 import androidx.test.espresso.matcher.ViewMatchers.*
 import androidx.test.ext.junit.rules.ActivityScenarioRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.platform.app.InstrumentationRegistry.getInstrumentation
 import androidx.test.rule.GrantPermissionRule
 import androidx.test.uiautomator.*
@@ -61,11 +60,12 @@ import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
+import org.northwinds.app.sotachaser.BuildConfig
+import org.northwinds.app.sotachaser.R
 import org.northwinds.app.sotachaser.repository.SummitsRepository
 import org.northwinds.app.sotachaser.testing.HiltFragmentScenario
-import org.northwinds.app.sotachaser.ui.MainActivity
-import org.northwinds.app.sotachaser.ui.map.MapsViewModel
 import org.northwinds.app.sotachaser.ui.map.MapsFragment
+import org.northwinds.app.sotachaser.ui.map.MapsViewModel
 import java.util.concurrent.CountDownLatch
 import java.util.concurrent.ExecutorService
 import java.util.concurrent.TimeUnit
@@ -81,8 +81,8 @@ class MainActivityTest {
     private val context = ApplicationProvider.getApplicationContext<Context>()
 
     @get:Rule(order = 1)
-    val prefsRule = SharedPreferencesRule() {
-        it.edit() {
+    val prefsRule = SharedPreferencesRule {
+        it.edit {
             putBoolean(context.getString(R.string.preference_asked_for_consent), true)
             putInt(context.getString(R.string.preference_changelog), BuildConfig.VERSION_CODE)
         }
@@ -110,7 +110,7 @@ class MainActivityTest {
         )
         appCompatTextView.perform(ViewActions.click())
 
-        Log.d(TAG, "All Intents: ${Intents.getIntents().toString()}")
+        Log.d(TAG, "All Intents: ${Intents.getIntents()}")
         Intents.intended(allOf(
             hasAction(Intent.ACTION_CHOOSER),
             hasExtra(`is`(Intent.EXTRA_INTENT), allOf(
@@ -188,7 +188,7 @@ class MapsModelViewTest {
     }
 
     @Test
-    fun load_map_viewmodel() {
+    fun load_map_view_model() {
         val associations = model.associations.getOrAwaitValue()
         assertEquals(
             "Incorrect number of associations",
@@ -226,7 +226,7 @@ class MapsModelViewTest {
     }
 
     @Test
-    fun update_map_viewmodel() {
+    fun update_map_view_model() {
         // TODO This can be called before data is loaded
         model.associations.getOrAwaitValue()
         model.setAssociation(0)
@@ -345,10 +345,6 @@ class MapsFragmentTest {
         onView(withId(R.id.association)).check(matches(withSpinnerText(containsString("W7O"))))
         onView(withId(R.id.region)).check(matches(withSpinnerText(containsString("WV"))))
     }
-
-    companion object {
-        private const val TAG = "SOTAChaser-MapsFragTest"
-    }
 }
 
 //private const val PACKAGE = "org.northwinds.app.sotachaser"
@@ -362,17 +358,17 @@ class MainActivityUiTest {
     val hiltRule = HiltAndroidRule(this)
 
     @get:Rule(order = 1)
-    val writeStorageRule = GrantPermissionRule.grant(Manifest.permission.WRITE_EXTERNAL_STORAGE)
+    val writeStorageRule: GrantPermissionRule = GrantPermissionRule.grant(Manifest.permission.WRITE_EXTERNAL_STORAGE)
 
     @get:Rule(order = 2)
     val screenshotRule = UiScreenshotTestRule()
 
     private val context = ApplicationProvider.getApplicationContext<Context>()
-    private val `package` = InstrumentationRegistry.getInstrumentation().targetContext.packageName
+    private val `package` = getInstrumentation().targetContext.packageName
 
     @get:Rule
-    val prefsRule = SharedPreferencesRule() {
-        it.edit() {
+    val prefsRule = SharedPreferencesRule {
+        it.edit {
             clear()  // Some tests rely on starting region to be default
             putBoolean(context.getString(R.string.preference_asked_for_consent), true)
             putInt(context.getString(R.string.preference_changelog), BuildConfig.VERSION_CODE)

@@ -1,4 +1,4 @@
-package org.northwinds.app.sotachaser.ui
+package org.northwinds.app.sotachaser.ui.summitdetails
 
 import android.app.Activity
 import android.app.Instrumentation

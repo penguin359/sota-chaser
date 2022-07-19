@@ -1,4 +1,4 @@
-package org.northwinds.app.sotachaser.ui.ui.notifications
+package org.northwinds.app.sotachaser.ui.notifications
 
 import android.os.Bundle
 import android.view.LayoutInflater

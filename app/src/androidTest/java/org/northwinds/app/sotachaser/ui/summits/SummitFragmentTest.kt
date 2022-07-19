@@ -1,10 +1,9 @@
-package org.northwinds.app.sotachaser.ui
+package org.northwinds.app.sotachaser.ui.summits
 
 import android.Manifest
 import androidx.core.content.edit
 import androidx.recyclerview.widget.RecyclerView
 import androidx.test.core.app.ApplicationProvider
-import androidx.test.espresso.Espresso.onData
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.assertion.ViewAssertions.matches
@@ -17,24 +16,21 @@ import com.dannyroa.espresso_samples.recyclerview.RecyclerViewMatcher
 import com.github.flank.utility.screenshot.ScreenshotTestRule
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
-import junit.framework.Assert.assertEquals
+import org.junit.Assert.assertEquals
 import org.aprsdroid.app.testing.SharedPreferencesRule
-import org.hamcrest.Matchers.*
+import org.hamcrest.Matchers.allOf
+import org.hamcrest.Matchers.containsString
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.northwinds.app.sotachaser.BuildConfig
 import org.northwinds.app.sotachaser.R
 import org.northwinds.app.sotachaser.SotaChaserBaseApplication
-import org.northwinds.app.sotachaser.databinding.ListAssociationEntryBinding
 import org.northwinds.app.sotachaser.testing.HiltFragmentScenario
 import org.northwinds.app.sotachaser.testing.Matcher.atPosition
-import org.northwinds.app.sotachaser.ui.associations.AssociationRecyclerViewAdapter
+import org.northwinds.app.sotachaser.ui.MainActivity
 import org.northwinds.app.sotachaser.ui.associations.AssociationRecyclerViewAdapterVH
 import org.northwinds.app.sotachaser.ui.regions.RegionFragmentDirections
-import org.northwinds.app.sotachaser.ui.summits.SummitRecyclerViewAdapter
-import org.northwinds.app.sotachaser.ui.summits.SummitFragment
-import org.northwinds.app.sotachaser.ui.summits.SummitRecyclerViewAdapterVH
 
 @RunWith(AndroidJUnit4::class)
 @HiltAndroidTest
@@ -43,13 +39,14 @@ class SummitFragmentTest {
     val hiltRule = HiltAndroidRule(this)
 
     @get:Rule
-    val permissionRule = GrantPermissionRule.grant(Manifest.permission.ACCESS_COARSE_LOCATION)
+    val permissionRule: GrantPermissionRule = GrantPermissionRule.grant(Manifest.permission.ACCESS_COARSE_LOCATION)
 
     @Test
     fun loadSummit() {
         val frag = HiltFragmentScenario.launchInHiltContainer(SummitFragment::class.java,
             RegionFragmentDirections.actionRegionFragmentToNavigationDashboard("HL", "GN").arguments)
         onView(withId(R.id.list)).check(matches(isDisplayed()))
+        frag.close()
     }
 
     @Test
@@ -62,6 +59,7 @@ class SummitFragmentTest {
             val recyclerView = view as RecyclerView
             assertEquals(127, recyclerView.adapter?.itemCount)
         }
+        frag.close()
     }
 
     @Test
@@ -135,6 +133,7 @@ class SummitFragmentTest {
         onView(RecyclerViewMatcher(R.id.list).atPositionOnView(0, R.id.activation_count)).check(
             matches(withText(containsString("37")))
         )
+        frag.close()
     }
 
     @Test
@@ -204,6 +203,7 @@ class SummitFragmentTest {
         //kotlin.test.assertEquals(9, entry.activationCount)
         //kotlin.test.assertEquals("02/10/2020", entry.activationDate)
         //kotlin.test.assertEquals("DS5VKX", entry.activationCall)
+        frag.close()
     }
 }
 
@@ -216,11 +216,11 @@ class SummitActivityTest {
     private val context = ApplicationProvider.getApplicationContext<SotaChaserBaseApplication>()
 
     @get:Rule(order = 1)
-    val permissionRule = GrantPermissionRule.grant(Manifest.permission.ACCESS_COARSE_LOCATION)
+    val permissionRule: GrantPermissionRule = GrantPermissionRule.grant(Manifest.permission.ACCESS_COARSE_LOCATION)
 
     @get:Rule(order = 1)
-    val prefsRule = SharedPreferencesRule() {
-        it.edit() {
+    val prefsRule = SharedPreferencesRule {
+        it.edit {
             clear()
             putBoolean(context.getString(R.string.preference_asked_for_consent), true)
             putInt(context.getString(R.string.preference_changelog), BuildConfig.VERSION_CODE)
@@ -231,7 +231,7 @@ class SummitActivityTest {
     var mActivityScenarioRule = ActivityScenarioRule(MainActivity::class.java)
 
     @get:Rule(order = 2)
-    val writeStorageRule = GrantPermissionRule.grant(Manifest.permission.WRITE_EXTERNAL_STORAGE)
+    val writeStorageRule: GrantPermissionRule = GrantPermissionRule.grant(Manifest.permission.WRITE_EXTERNAL_STORAGE)
 
     @get:Rule(order = 3)
     val mScreenshotTestRule = ScreenshotTestRule()

@@ -1,4 +1,4 @@
-package org.northwinds.app.sotachaser.ui
+package org.northwinds.app.sotachaser.ui.summitdetails
 
 import android.Manifest
 import android.content.Context
@@ -30,10 +30,10 @@ class SummitDetailsFragmentUiTest {
     val hiltRule = HiltAndroidRule(this)
 
     @get:Rule(order = 1)
-    val writeStorageRule = GrantPermissionRule.grant(Manifest.permission.WRITE_EXTERNAL_STORAGE)
+    val writeStorageRule: GrantPermissionRule = GrantPermissionRule.grant(Manifest.permission.WRITE_EXTERNAL_STORAGE)
 
     @get:Rule(order = 1)
-    val permissionRule = GrantPermissionRule.grant(Manifest.permission.ACCESS_COARSE_LOCATION)
+    val permissionRule: GrantPermissionRule = GrantPermissionRule.grant(Manifest.permission.ACCESS_COARSE_LOCATION)
 
     @get:Rule(order = 2)
     val screenshotRule = UiScreenshotTestRule()
@@ -42,8 +42,8 @@ class SummitDetailsFragmentUiTest {
     private val `package` = InstrumentationRegistry.getInstrumentation().targetContext.packageName
 
     @get:Rule
-    val prefsRule = SharedPreferencesRule() {
-        it.edit() {
+    val prefsRule = SharedPreferencesRule {
+        it.edit {
             clear()  // Some tests rely on starting region to be default
             putBoolean(context.getString(R.string.preference_asked_for_consent), true)
             putInt(context.getString(R.string.preference_changelog), BuildConfig.VERSION_CODE)
@@ -52,17 +52,6 @@ class SummitDetailsFragmentUiTest {
 
     private val device = UiDevice.getInstance(InstrumentationRegistry.getInstrumentation())
 
-    private val associationSpinner = device.findObject(
-        UiSelector().descriptionContains("Association")
-            .className("android.widget.Spinner")
-    )
-
-    private val regionSpinner = device.findObject(
-        UiSelector().descriptionContains("Region")
-            .className("android.widget.Spinner")
-    )
-
-    private val selection = UiScrollable(UiSelector().className("android.widget.ListView"))
     private val recycler = UiScrollable(UiSelector().className("androidx.recyclerview.widget.RecyclerView"))
 
     @Before

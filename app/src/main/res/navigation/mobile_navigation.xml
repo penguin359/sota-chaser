@@ -50,7 +50,7 @@
 
     <fragment
         android:id="@+id/summitDetailsFragment"
-        android:name="org.northwinds.app.sotachaser.ui.SummitDetailsFragment"
+        android:name="org.northwinds.app.sotachaser.ui.summitdetails.SummitDetailsFragment"
         android:label="SummitDetailsFragment" >
         <argument
             android:name="association"
@@ -66,7 +66,7 @@
     <!--
         <fragment
             android:id="@+id/navigation_notifications"
-            android:name="org.northwinds.app.sotachaser.ui.ui.notifications.NotificationsFragment"
+            android:name="org.northwinds.app.sotachaser.ui.notifications.NotificationsFragment"
             android:label="@string/title_notifications"
             tools:layout="@layout/fragment_notifications" />
     -->

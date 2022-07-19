@@ -1,4 +1,4 @@
-package org.northwinds.app.sotachaser.ui
+package org.northwinds.app.sotachaser.ui.summitdetails
 
 import android.content.Intent
 import android.net.Uri

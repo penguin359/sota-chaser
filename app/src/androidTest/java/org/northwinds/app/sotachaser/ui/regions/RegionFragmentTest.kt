@@ -1,10 +1,9 @@
-package org.northwinds.app.sotachaser.ui
+package org.northwinds.app.sotachaser.ui.regions
 
 import android.Manifest
 import androidx.core.content.edit
 import androidx.recyclerview.widget.RecyclerView
 import androidx.test.core.app.ApplicationProvider
-import androidx.test.espresso.Espresso.onData
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.assertion.ViewAssertions.matches
@@ -17,24 +16,21 @@ import com.dannyroa.espresso_samples.recyclerview.RecyclerViewMatcher
 import com.github.flank.utility.screenshot.ScreenshotTestRule
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
-import junit.framework.Assert.assertEquals
+import org.junit.Assert.assertEquals
 import org.aprsdroid.app.testing.SharedPreferencesRule
-import org.hamcrest.Matchers.*
+import org.hamcrest.Matchers.allOf
+import org.hamcrest.Matchers.containsString
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.northwinds.app.sotachaser.BuildConfig
 import org.northwinds.app.sotachaser.R
 import org.northwinds.app.sotachaser.SotaChaserBaseApplication
-import org.northwinds.app.sotachaser.databinding.ListAssociationEntryBinding
 import org.northwinds.app.sotachaser.testing.HiltFragmentScenario
 import org.northwinds.app.sotachaser.testing.Matcher.atPosition
+import org.northwinds.app.sotachaser.ui.MainActivity
 import org.northwinds.app.sotachaser.ui.associations.AssociationFragmentDirections
-import org.northwinds.app.sotachaser.ui.associations.AssociationRecyclerViewAdapter
 import org.northwinds.app.sotachaser.ui.associations.AssociationRecyclerViewAdapterVH
-import org.northwinds.app.sotachaser.ui.regions.RegionFragment
-import org.northwinds.app.sotachaser.ui.regions.RegionRecyclerViewAdapter
-import org.northwinds.app.sotachaser.ui.regions.RegionRecyclerViewAdapterVH
 
 @RunWith(AndroidJUnit4::class)
 @HiltAndroidTest
@@ -43,13 +39,14 @@ class RegionFragmentTest {
     val hiltRule = HiltAndroidRule(this)
 
     @get:Rule
-    val permissionRule = GrantPermissionRule.grant(Manifest.permission.ACCESS_COARSE_LOCATION)
+    val permissionRule: GrantPermissionRule = GrantPermissionRule.grant(Manifest.permission.ACCESS_COARSE_LOCATION)
 
     @Test
     fun loadRegion() {
         val frag = HiltFragmentScenario.launchInHiltContainer(RegionFragment::class.java,
             AssociationFragmentDirections.actionAssociationFragmentToRegionFragment("HL").arguments)
         onView(withId(R.id.list)).check(matches(isDisplayed()))
+        frag.close()
     }
 
     @Test
@@ -62,6 +59,7 @@ class RegionFragmentTest {
             val recyclerView = view as RecyclerView
             assertEquals(10, recyclerView.adapter?.itemCount)
         }
+        frag.close()
     }
 
     @Test
@@ -108,6 +106,7 @@ class RegionFragmentTest {
                 )
             )
         )
+        frag.close()
     }
 
     @Test
@@ -148,6 +147,7 @@ class RegionFragmentTest {
                 R.id.summit_count
             )
         ).check(matches(withText(containsString("3"))))
+        frag.close()
     }
 }
 
@@ -160,11 +160,11 @@ class RegionActivityTest {
     private val context = ApplicationProvider.getApplicationContext<SotaChaserBaseApplication>()
 
     @get:Rule(order = 1)
-    val permissionRule = GrantPermissionRule.grant(Manifest.permission.ACCESS_COARSE_LOCATION)
+    val permissionRule: GrantPermissionRule = GrantPermissionRule.grant(Manifest.permission.ACCESS_COARSE_LOCATION)
 
     @get:Rule(order = 1)
-    val prefsRule = SharedPreferencesRule() {
-        it.edit() {
+    val prefsRule = SharedPreferencesRule {
+        it.edit {
             clear()
             putBoolean(context.getString(R.string.preference_asked_for_consent), true)
             putInt(context.getString(R.string.preference_changelog), BuildConfig.VERSION_CODE)
@@ -175,7 +175,7 @@ class RegionActivityTest {
     var mActivityScenarioRule = ActivityScenarioRule(MainActivity::class.java)
 
     @get:Rule(order = 2)
-    val writeStorageRule = GrantPermissionRule.grant(Manifest.permission.WRITE_EXTERNAL_STORAGE)
+    val writeStorageRule: GrantPermissionRule = GrantPermissionRule.grant(Manifest.permission.WRITE_EXTERNAL_STORAGE)
 
     @get:Rule(order = 3)
     val mScreenshotTestRule = ScreenshotTestRule()

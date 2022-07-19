@@ -1,6 +1,6 @@
 package org.northwinds.app.sotachaser.ui.associations
 
-import androidx.lifecycle.viewModelScope
+import androidx.lifecycle.*
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import org.northwinds.app.sotachaser.domain.models.Association
@@ -32,31 +32,22 @@ import javax.inject.Inject
 
 @HiltViewModel
 class AssociationViewModel @Inject constructor(/*app: Application, private val executorService: ExecutorService, */private val repo: SummitsRepository) : AbstractViewModel<Association>() {
-    //private val context = getApplication<Application>().applicationContext
+    private val _filter = MutableLiveData<String>().apply { value = "" }
+    val filter: LiveData<String> = _filter
 
-    //private val _location = MutableLiveData<Location?>()
-    //val location: LiveData<Location?> = _location
-
-    //fun setLocation(location: Location?) {
-    //    _location.value = location
-    //}
-
-    //init {
-    //    Log.i(TAG, "Starting new model view")
-    //    executorService.execute {
-    //        //_associations.postValue(repo.getAssociations().value?.map { it.code } ?: listOf())
-    //        runBlocking {
-    //            repo.checkForRefresh()
-    //        }
-    //    }
-    //}
-
-    //val _list_items: MutableLiveData<List<E>> = listOf()
-    //val list_items: LiveData<List<E>> = _list_items
-
-    override val list_items = repo.getAssociations()
+    override val list_items = filter.switchMap { f ->
+        repo.getAssociations().map { items ->
+            items.filter {
+                it.code.contains(f, ignoreCase = true) || it.name.contains(f, ignoreCase = true)
+            }
+        }
+    }
 
     override fun refresh(force: Boolean) = viewModelScope.launch {
         repo.refreshAssociations()
+    }
+
+    override fun setFilter(filter: String) {
+        _filter.value = filter
     }
 }

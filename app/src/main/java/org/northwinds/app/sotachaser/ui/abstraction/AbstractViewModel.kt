@@ -50,4 +50,6 @@ abstract class AbstractViewModel<E>(/*app: Application, private val executorServ
     abstract val list_items: LiveData<List<E>>
 
     abstract fun refresh(force: Boolean = false): Job
+
+    abstract fun setFilter(filter: String)
 }

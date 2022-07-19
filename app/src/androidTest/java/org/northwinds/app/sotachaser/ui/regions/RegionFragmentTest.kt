@@ -5,6 +5,7 @@ import androidx.core.content.edit
 import androidx.recyclerview.widget.RecyclerView
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.Espresso.onView
+import androidx.test.espresso.action.ViewActions
 import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.contrib.RecyclerViewActions.scrollToPosition
@@ -29,6 +30,7 @@ import org.northwinds.app.sotachaser.SotaChaserBaseApplication
 import org.northwinds.app.sotachaser.testing.HiltFragmentScenario
 import org.northwinds.app.sotachaser.testing.Matcher.atPosition
 import org.northwinds.app.sotachaser.ui.MainActivity
+import org.northwinds.app.sotachaser.ui.associations.AssociationFragment
 import org.northwinds.app.sotachaser.ui.associations.AssociationFragmentDirections
 import org.northwinds.app.sotachaser.ui.associations.AssociationRecyclerViewAdapterVH
 
@@ -147,6 +149,34 @@ class RegionFragmentTest {
                 R.id.summit_count
             )
         ).check(matches(withText(containsString("3"))))
+        frag.close()
+    }
+
+    @Test
+    fun filterRegionList() {
+        val frag = HiltFragmentScenario.launchInHiltContainer(RegionFragment::class.java,
+            AssociationFragmentDirections.actionAssociationFragmentToRegionFragment("W7O").arguments)
+        onView(withId(R.id.filter)).perform(ViewActions.replaceText("Cas"))
+        onView(withId(R.id.list)).check { view, noMatchingViewException ->
+            if (view == null)
+                throw noMatchingViewException
+            val recyclerView = view as RecyclerView
+            assertEquals(3, recyclerView.adapter?.itemCount)
+        }
+        onView(withId(R.id.filter)).perform(ViewActions.replaceText("WV"))
+        onView(withId(R.id.list)).check { view, noMatchingViewException ->
+            if (view == null)
+                throw noMatchingViewException
+            val recyclerView = view as RecyclerView
+            assertEquals(1, recyclerView.adapter?.itemCount)
+        }
+        onView(withId(R.id.filter)).perform(ViewActions.replaceText("WVZ"))
+        onView(withId(R.id.list)).check { view, noMatchingViewException ->
+            if (view == null)
+                throw noMatchingViewException
+            val recyclerView = view as RecyclerView
+            assertEquals(0, recyclerView.adapter?.itemCount)
+        }
         frag.close()
     }
 }

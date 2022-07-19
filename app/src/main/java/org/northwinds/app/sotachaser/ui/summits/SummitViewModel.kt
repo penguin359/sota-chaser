@@ -1,10 +1,7 @@
 package org.northwinds.app.sotachaser.ui.summits
 
 import android.location.Location
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.Transformations
-import androidx.lifecycle.viewModelScope
+import androidx.lifecycle.*
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import org.northwinds.app.sotachaser.domain.models.Summit
@@ -60,9 +57,18 @@ class SummitViewModel @Inject constructor(private val repo: SummitsRepository) :
         _region.value = r
     }
 
-    override val list_items = Transformations.switchMap(association) { a ->
-        Transformations.switchMap(region) { r ->
-            repo.getSummits(a ?: "", r ?: "")
+    override val list_items = filter.switchMap { f ->
+        association.switchMap { a ->
+            region.switchMap { r ->
+                repo.getSummits(a ?: "", r ?: "").map { items ->
+                    items.filter {
+                        it.code.contains(f, ignoreCase = true) || it.name.contains(
+                            f,
+                            ignoreCase = true
+                        )
+                    }
+                }
+            }
         }
     }
 

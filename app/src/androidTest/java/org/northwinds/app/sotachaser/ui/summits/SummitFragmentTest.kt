@@ -5,6 +5,7 @@ import androidx.core.content.edit
 import androidx.recyclerview.widget.RecyclerView
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.Espresso.onView
+import androidx.test.espresso.action.ViewActions
 import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.contrib.RecyclerViewActions.scrollToPosition
@@ -29,7 +30,9 @@ import org.northwinds.app.sotachaser.SotaChaserBaseApplication
 import org.northwinds.app.sotachaser.testing.HiltFragmentScenario
 import org.northwinds.app.sotachaser.testing.Matcher.atPosition
 import org.northwinds.app.sotachaser.ui.MainActivity
+import org.northwinds.app.sotachaser.ui.associations.AssociationFragmentDirections
 import org.northwinds.app.sotachaser.ui.associations.AssociationRecyclerViewAdapterVH
+import org.northwinds.app.sotachaser.ui.regions.RegionFragment
 import org.northwinds.app.sotachaser.ui.regions.RegionFragmentDirections
 
 @RunWith(AndroidJUnit4::class)
@@ -203,6 +206,34 @@ class SummitFragmentTest {
         //kotlin.test.assertEquals(9, entry.activationCount)
         //kotlin.test.assertEquals("02/10/2020", entry.activationDate)
         //kotlin.test.assertEquals("DS5VKX", entry.activationCall)
+        frag.close()
+    }
+
+    @Test
+    fun filterSummitList() {
+        val frag = HiltFragmentScenario.launchInHiltContainer(SummitFragment::class.java,
+            RegionFragmentDirections.actionRegionFragmentToNavigationDashboard("W7O", "CN").arguments)
+        onView(withId(R.id.filter)).perform(ViewActions.replaceText("Ridge"))
+        onView(withId(R.id.list)).check { view, noMatchingViewException ->
+            if (view == null)
+                throw noMatchingViewException
+            val recyclerView = view as RecyclerView
+            assertEquals(6, recyclerView.adapter?.itemCount)
+        }
+        onView(withId(R.id.filter)).perform(ViewActions.replaceText("Hood"))
+        onView(withId(R.id.list)).check { view, noMatchingViewException ->
+            if (view == null)
+                throw noMatchingViewException
+            val recyclerView = view as RecyclerView
+            assertEquals(1, recyclerView.adapter?.itemCount)
+        }
+        onView(withId(R.id.filter)).perform(ViewActions.replaceText("Missing"))
+        onView(withId(R.id.list)).check { view, noMatchingViewException ->
+            if (view == null)
+                throw noMatchingViewException
+            val recyclerView = view as RecyclerView
+            assertEquals(0, recyclerView.adapter?.itemCount)
+        }
         frag.close()
     }
 }

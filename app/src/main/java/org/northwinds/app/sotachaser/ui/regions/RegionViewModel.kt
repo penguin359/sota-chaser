@@ -1,9 +1,6 @@
 package org.northwinds.app.sotachaser.ui.regions
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.Transformations
-import androidx.lifecycle.viewModelScope
+import androidx.lifecycle.*
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import org.northwinds.app.sotachaser.domain.models.Region
@@ -45,8 +42,14 @@ class RegionViewModel @Inject constructor(private val repo: SummitsRepository) :
 
     internal val association: LiveData<String> = _association
 
-    override val list_items = Transformations.switchMap(association) { name ->
-        repo.getRegionsInAssociationName(name)
+    override val list_items = filter.switchMap { f ->
+        association.switchMap { name ->
+            repo.getRegionsInAssociationName(name).map { items ->
+                items.filter {
+                    it.code.contains(f, ignoreCase = true) || it.name.contains(f, ignoreCase = true)
+                }
+            }
+        }
     }
 
     override fun refresh(force: Boolean) = viewModelScope.launch {

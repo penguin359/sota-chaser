@@ -49,6 +49,7 @@ class RegionFragment : AbstractFilterListFragment<Region, FragmentSummitListBind
         val root = super.onCreateView(inflater, container, savedInstanceState)
 
         model.setAssociation(args.association)
+        model.refresh()  // TODO This should be handled by superclass
 
         return root
     }

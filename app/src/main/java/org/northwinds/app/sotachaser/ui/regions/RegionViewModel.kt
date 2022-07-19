@@ -50,6 +50,9 @@ class RegionViewModel @Inject constructor(private val repo: SummitsRepository) :
     }
 
     override fun refresh(force: Boolean) = viewModelScope.launch {
-        //repo.refreshRegions()
+        association.value?.let {
+            if(it != "")
+                repo.updateAssociation(it)
+        }
     }
 }

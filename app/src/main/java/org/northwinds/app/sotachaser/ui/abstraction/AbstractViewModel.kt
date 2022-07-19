@@ -47,9 +47,15 @@ abstract class AbstractViewModel<E>(/*app: Application, private val executorServ
 
     //abstract val _list_items: MutableLiveData<List<E>>
     //val list_items: LiveData<List<E>> = _list_items
+
+    private val _filter = MutableLiveData<String>().apply { value = "" }
+    protected val filter: LiveData<String> = _filter
+
+    internal fun setFilter(filter: String) {
+        _filter.value = filter
+    }
+
     abstract val list_items: LiveData<List<E>>
 
     abstract fun refresh(force: Boolean = false): Job
-
-    abstract fun setFilter(filter: String)
 }

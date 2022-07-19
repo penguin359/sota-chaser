@@ -14,6 +14,7 @@ class AssociationFragment : AbstractFilterListFragment<Association, FragmentSumm
     override val bindingInflater: (LayoutInflater) -> FragmentSummitListBinding
         = FragmentSummitListBinding::inflate
     override val listView get() = binding.list
+    override val filterView get() = binding.filter
 
     override fun adapterFactory(values: List<Association>) = AssociationRecyclerViewAdapter(values)
 

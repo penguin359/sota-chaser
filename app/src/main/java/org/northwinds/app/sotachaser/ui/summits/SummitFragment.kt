@@ -29,6 +29,7 @@ class SummitFragment : AbstractFilterListFragment<Summit, FragmentSummitListBind
     override val bindingInflater: (LayoutInflater) -> FragmentSummitListBinding
         = FragmentSummitListBinding::inflate
     override val listView get() = binding.list
+    override val filterView get() = binding.filter
 
     val args: SummitFragmentArgs by navArgs()
 

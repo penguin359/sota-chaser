@@ -69,7 +69,4 @@ class SummitViewModel @Inject constructor(private val repo: SummitsRepository) :
     override fun refresh(force: Boolean) = viewModelScope.launch {
         //repo.refreshSummits()
     }
-
-    override fun setFilter(filter: String) {
-    }
 }

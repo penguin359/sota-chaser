@@ -7,6 +7,7 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions.click
+import androidx.test.espresso.action.ViewActions.replaceText
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.contrib.RecyclerViewActions.scrollToPosition
 import androidx.test.espresso.matcher.ViewMatchers.*
@@ -132,6 +133,33 @@ class AssociationFragmentTest {
                 R.id.summit_count
             )
         ).check(matches(withText(containsString("1990"))))
+        frag.close()
+    }
+
+    @Test
+    fun filterAssociationList() {
+        val frag = HiltFragmentScenario.launchInHiltContainer(AssociationFragment::class.java)
+        onView(withId(R.id.filter)).perform(replaceText("3"))
+        onView(withId(R.id.list)).check { view, noMatchingViewException ->
+            if (view == null)
+                throw noMatchingViewException
+            val recyclerView = view as RecyclerView
+            assertEquals(13, recyclerView.adapter?.itemCount)
+        }
+        onView(withId(R.id.filter)).perform(replaceText("3Y"))
+        onView(withId(R.id.list)).check { view, noMatchingViewException ->
+            if (view == null)
+                throw noMatchingViewException
+            val recyclerView = view as RecyclerView
+            assertEquals(1, recyclerView.adapter?.itemCount)
+        }
+        onView(withId(R.id.filter)).perform(replaceText("3YZ"))
+        onView(withId(R.id.list)).check { view, noMatchingViewException ->
+            if (view == null)
+                throw noMatchingViewException
+            val recyclerView = view as RecyclerView
+            assertEquals(0, recyclerView.adapter?.itemCount)
+        }
         frag.close()
     }
 }

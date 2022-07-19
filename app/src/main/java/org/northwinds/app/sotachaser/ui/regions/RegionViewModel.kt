@@ -55,7 +55,4 @@ class RegionViewModel @Inject constructor(private val repo: SummitsRepository) :
                 repo.updateAssociation(it)
         }
     }
-
-    override fun setFilter(filter: String) {
-    }
 }

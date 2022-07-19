@@ -32,9 +32,6 @@ import javax.inject.Inject
 
 @HiltViewModel
 class AssociationViewModel @Inject constructor(/*app: Application, private val executorService: ExecutorService, */private val repo: SummitsRepository) : AbstractViewModel<Association>() {
-    private val _filter = MutableLiveData<String>().apply { value = "" }
-    val filter: LiveData<String> = _filter
-
     override val list_items = filter.switchMap { f ->
         repo.getAssociations().map { items ->
             items.filter {
@@ -45,9 +42,5 @@ class AssociationViewModel @Inject constructor(/*app: Application, private val e
 
     override fun refresh(force: Boolean) = viewModelScope.launch {
         repo.refreshAssociations()
-    }
-
-    override fun setFilter(filter: String) {
-        _filter.value = filter
     }
 }

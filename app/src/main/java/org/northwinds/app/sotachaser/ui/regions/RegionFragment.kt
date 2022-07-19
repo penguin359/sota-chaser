@@ -37,6 +37,7 @@ class RegionFragment : AbstractFilterListFragment<Region, FragmentSummitListBind
     override val bindingInflater: (LayoutInflater) -> FragmentSummitListBinding
         = FragmentSummitListBinding::inflate
     override val listView get() = binding.list
+    override val filterView get() = binding.filter
 
     val args: RegionFragmentArgs by navArgs()
 

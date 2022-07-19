@@ -28,7 +28,7 @@ class SotaApiServiceTest {
         val associations = runBlocking {
             AppModule.provideSotaApiService(client).getAssociations()
         }
-        assertEquals(10, associations.count())
+        assertEquals(19, associations.count())
         println(associations)
     }
 

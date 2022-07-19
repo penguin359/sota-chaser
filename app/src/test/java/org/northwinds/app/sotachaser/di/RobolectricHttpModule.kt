@@ -31,7 +31,7 @@ object RobolectricHttpModule {
                 respond(input)
             }
             rule(url eq "https://api2.sota.org.uk/api/regions/W7O/CN") {
-                val input = ClasspathResources.resource("CN.json")
+                val input = ClasspathResources.resource("W7O_CN.json")
                 respond(input)
             }
             rule(get) {

@@ -1,26 +1,31 @@
 package org.northwinds.app.sotachaser.util
 
 import org.northwinds.app.sotachaser.SummitList
+import org.northwinds.app.sotachaser.room.SummitDao
 import org.northwinds.app.sotachaser.room.model.AssociationEntity
 import org.northwinds.app.sotachaser.room.model.RegionEntity
 import org.northwinds.app.sotachaser.room.model.SummitEntity
 
-fun SummitList.asAssociationDatabaseModel(): List<AssociationEntity> {
+fun SummitList.asAssociationDatabaseModel(dao: SummitDao): List<AssociationEntity> {
     return associations.map { association ->
-        AssociationEntity(0, association.key, association.value)
+        val old = dao.getAssociationByCode(association.key)
+        AssociationEntity(old?.id ?: 0, association.key, association.value)
     }
 }
 
-fun SummitList.asRegionDatabaseModel(associationToId: Map<String, Long>): List<RegionEntity> {
+fun SummitList.asRegionDatabaseModel(dao: SummitDao, associationToId: Map<String, Long>): List<RegionEntity> {
     return regions.map { (key, value) ->
         val (assoc, code) = key.split("/")
-        RegionEntity(0, associationToId[assoc]!!, code, value)
+        val association = dao.getAssociationByCode(assoc)
+        val old = association?.let { aid -> dao.getRegionByCode(aid.id, code) }
+        RegionEntity(old?.id ?: 0, associationToId[assoc]!!, code, value)
     }
 }
 
-fun SummitList.asSummitDatabaseModel(regionToId: Map<String, Long>): List<SummitEntity> {
+fun SummitList.asSummitDatabaseModel(dao: SummitDao, regionToId: Map<String, Long>): List<SummitEntity> {
     return summitsByRegion.flatMap { (assoc, value) -> value.flatMap { (region, summits) -> summits.map { summit ->
-        SummitEntity(0,
+        val old = dao.getSummitByCode(regionToId["${assoc}/${region}"]!!, summit.summitCode.split('-')[1])
+        SummitEntity(old?.id ?: 0,
             regionToId["${assoc}/${region}"]!!,
             summit.summitCode.split('-')[1],
             summit.summitName,

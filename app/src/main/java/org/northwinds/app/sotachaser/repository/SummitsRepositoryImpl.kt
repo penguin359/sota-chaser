@@ -113,17 +113,17 @@ class SummitsRepositoryImpl @Inject constructor(private val context: Application
         const val TAG = "SOTAChaser-SummitRepository"
         fun loadDatabase(dao: SummitDao, summitList: SummitList) {
             dao.clear()
-            val items = summitList.asAssociationDatabaseModel()
-            val aids = dao.insertAssociation(*items.toTypedArray())
+            val items = summitList.asAssociationDatabaseModel(dao)
+            val aids = dao.upsertAssociation(*items.toTypedArray())
             val associationToId = items.map { it.code }.zip(aids).toMap()
             val idToAssociation = associationToId.entries.associate { (k, v) -> v to k }
-            val regions = summitList.asRegionDatabaseModel(associationToId)
-            val rids = dao.insertRegion(*regions.toTypedArray())
+            val regions = summitList.asRegionDatabaseModel(dao, associationToId)
+            val rids = dao.upsertRegion(*regions.toTypedArray())
             val regionToId = regions.map {
                 "${idToAssociation[it.associationId]}/${it.code}"
             }.zip(rids).toMap()
-            val summits = summitList.asSummitDatabaseModel(regionToId)
-            dao.insertSummit(*summits.toTypedArray())
+            val summits = summitList.asSummitDatabaseModel(dao, regionToId)
+            dao.upsertSummit(*summits.toTypedArray())
         }
     }
 }

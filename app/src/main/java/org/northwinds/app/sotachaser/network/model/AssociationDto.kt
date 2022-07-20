@@ -3,10 +3,7 @@ package org.northwinds.app.sotachaser.network.model
 import com.squareup.moshi.JsonClass
 
 @JsonClass(generateAdapter = true)
-data class AssociationList(val associations: List<AssociationEntity>)
-
-@JsonClass(generateAdapter = true)
-data class AssociationEntity(
+data class AssociationDto(
     val associationCode: String?,
     val associationName: String?,
     val manager: String?,
@@ -22,7 +19,7 @@ data class AssociationEntity(
 )
 
 @JsonClass(generateAdapter = true)
-data class AssociationWithRegionsEntity(
+data class AssociationWithRegionsDto(
     val associationCode: String?,
     val associationName: String?,
     val manager: String?,
@@ -35,12 +32,12 @@ data class AssociationWithRegionsEntity(
     val maxLong: Double?,
     val minLat: Double?,
     val minLong: Double?,
-    val regions: List<RegionEntity>?,
-    val arm: List<ArmEntity>?,
+    val regions: List<RegionDto>?,
+    val arm: List<ArmDto>?,
 )
 
 @JsonClass(generateAdapter = true)
-data class ArmEntity(
+data class ArmDto(
     val associationPrefix: String?,
     val fileName: String?,
     val language: String?,
@@ -49,7 +46,7 @@ data class ArmEntity(
 )
 
 @JsonClass(generateAdapter = true)
-data class RegionEntity(
+data class RegionDto(
     val associationCode: String?,
     val regionCode: String?,
     val regionManagerCallsign: String?,
@@ -64,26 +61,26 @@ data class RegionEntity(
 )
 
 @JsonClass(generateAdapter = true)
-data class RegionWithSummitsEntity(
-    val region: RegionEntity,
-    val summits: List<SummitEntity>?,
+data class RegionWithSummitsDto(
+    val region: RegionDto,
+    val summits: List<SummitDto>?,
 )
 
 @JsonClass(generateAdapter = true)
-data class RestrictionEntity(
+data class RestrictionDto(
     val code: Int,
     val type: String?,
 )
 
 @JsonClass(generateAdapter = true)
-data class RestrictionDetailEntity(
+data class RestrictionDetailDto(
     val id: Int,
     val content: String?,
     val title: String?,
 )
 
 @JsonClass(generateAdapter = true)
-data class SummitEntity(
+data class SummitDto(
     val summitCode: String?,
     val name: String?,
     val shortCode: String?,
@@ -109,22 +106,5 @@ data class SummitEntity(
     val associationName: String?,
     val valid: Boolean,
     val restrictionMask: Boolean,
-    val restrictionList: List<RestrictionEntity>?,
-)
-
-@JsonClass(generateAdapter = true)
-data class SpotEntity(
-    val id: Long,
-    val userID: Long,
-    val timeStamp: String,  // 2022-07-10T02:22:00.461Z
-    val comments: String?,
-    val callsign: String?,
-    val associationCode: String,
-    val summitCode: String,
-    val activatorCallsign: String,  // max len: 12
-    val activatorName: String?,
-    val frequency: String,
-    val mode: String,
-    val summitDetails: String?,
-    val highlightColor: String?,
+    val restrictionList: List<RestrictionDto>?,
 )

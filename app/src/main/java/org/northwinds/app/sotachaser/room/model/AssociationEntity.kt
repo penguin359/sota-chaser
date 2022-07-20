@@ -1,9 +1,8 @@
 package org.northwinds.app.sotachaser.room.model
 
 import androidx.room.*
-import androidx.room.ForeignKey.CASCADE
 import org.northwinds.app.sotachaser.domain.models.Association
-import org.northwinds.app.sotachaser.domain.models.Region
+import org.northwinds.app.sotachaser.network.model.AssociationWithRegionsDto
 import org.northwinds.app.sotachaser.room.SummitDao
 
 @Entity(
@@ -28,7 +27,7 @@ data class AssociationEntity(
     @ColumnInfo(name = "updated_at") val updatedAt: Long? = null,
 )
 
-fun org.northwinds.app.sotachaser.network.model.AssociationWithRegionsEntity.asDatabaseModel(dao: SummitDao): AssociationEntity {
+fun AssociationWithRegionsDto.asDatabaseModel(dao: SummitDao): AssociationEntity {
     val old = associationCode?.let { dao.getAssociationByCode(it) }
     return AssociationEntity(
         id = old?.id ?: 0,

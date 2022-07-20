@@ -1,8 +1,8 @@
 package org.northwinds.app.sotachaser.room.model
 
 import androidx.room.*
-import org.northwinds.app.sotachaser.domain.models.Association
 import org.northwinds.app.sotachaser.domain.models.Region
+import org.northwinds.app.sotachaser.network.model.RegionDto
 import org.northwinds.app.sotachaser.room.SummitDao
 
 
@@ -35,7 +35,7 @@ data class RegionEntity(
     @ColumnInfo(name = "updated_at") val updatedAt: Long? = null,
 )
 
-fun org.northwinds.app.sotachaser.network.model.RegionEntity.asDatabaseModel(dao: SummitDao): RegionEntity {
+fun RegionDto.asDatabaseModel(dao: SummitDao): RegionEntity {
     val association = associationCode?.let { dao.getAssociationByCode(it) }
     val old = association?.let { aid -> regionCode?.let { dao.getRegionByCode(aid.id, it) } }
     return RegionEntity(

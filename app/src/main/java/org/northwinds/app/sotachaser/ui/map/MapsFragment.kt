@@ -152,7 +152,7 @@ class MapsFragment : Fragment(), OnMapReadyCallback {
         val sydney = LatLng(-34.0, 151.0)
         mMap.addMarker(MarkerOptions().position(sydney).title("Marker in Sydney"))
         mMap.moveCamera(CameraUpdateFactory.newLatLng(sydney))
-        model.regionDetails.observe(this) { region ->
+        model.regionDetails.observe(this) { _ ->
             //mMap.addPolygon(PolygonOptions().add(
             //    LatLng(region.minLat!!, region.minLong!!),
             //    LatLng(region.minLat, region.maxLong!!),

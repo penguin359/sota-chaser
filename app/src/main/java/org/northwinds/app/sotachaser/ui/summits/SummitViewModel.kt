@@ -62,7 +62,7 @@ class SummitViewModel @Inject constructor(private val executorService: ExecutorS
     override val list_items = filter.switchMap { f ->
         association.switchMap { a ->
             region.switchMap { r ->
-                repo.getSummits(a ?: "", r ?: "").map { items ->
+                val map = repo.getSummits(a, r).map { items ->
                     items.filter {
                         it.code.contains(f, ignoreCase = true) || it.name.contains(
                             f,
@@ -70,6 +70,7 @@ class SummitViewModel @Inject constructor(private val executorService: ExecutorS
                         )
                     }
                 }
+                map
             }
         }
     }

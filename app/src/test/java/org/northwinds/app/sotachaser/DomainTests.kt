@@ -122,7 +122,7 @@ class DomainTests {
     fun canMapToSummitModel() {
         val associationToId = list.asAssociationDatabaseModel(dummyDao).withIndex().map { (idx, it) -> it.code to idx.toLong() }.toMap()
         val idToAssociation = associationToId.entries.associate { (k, v) -> v to k }
-        val regions = list.asRegionDatabaseModel(dummyDao, associationToId)
+        //val regions = list.asRegionDatabaseModel(dummyDao, associationToId)
         val regionToId = list.asRegionDatabaseModel(dummyDao, associationToId).withIndex().map { (idx, it) ->
             "${idToAssociation[it.associationId]}/${it.code}" to idx.toLong() }.toMap()
         val summits = list.asSummitDatabaseModel(dummyDao, regionToId)

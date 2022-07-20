@@ -16,7 +16,7 @@ class AssociationFragment : AbstractFilterListFragment<Association, FragmentSumm
     override val listView get() = binding.list
     override val filterView get() = binding.filter
 
-    override fun adapterFactory(values: List<Association>) = AssociationRecyclerViewAdapter(values)
+    override fun adapterFactory(value: List<Association>) = AssociationRecyclerViewAdapter(value)
 
     //companion object {
     //    const val TAG = "SOTAChaser-AssociationFragment"

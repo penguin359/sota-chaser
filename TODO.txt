@@ -68,3 +68,4 @@ Verify that navigate back works
 Add deep link to summit from map
 Add geo: links
 Support Gaia GPS and others
+Add link to weather for area

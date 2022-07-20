@@ -14,7 +14,7 @@ import java.nio.file.Paths
 class SummitDataTest {
     @Test
     fun testCanQueryData() {
-        val summitList = SummitData(OkHttpClient()).getSummitData()
+        SummitData(OkHttpClient()).getSummitData()
     }
 
     @Test

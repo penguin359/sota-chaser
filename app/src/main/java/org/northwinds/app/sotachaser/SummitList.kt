@@ -45,7 +45,7 @@ class SummitList(input: InputStream) {
             val proc = BeanListProcessor(SummitRecord::class.java)
             val parserSettings = CsvParserSettings()
             parserSettings.isLineSeparatorDetectionEnabled = true
-            parserSettings.rowProcessor = proc
+            parserSettings.setProcessor(proc)
             parserSettings.isHeaderExtractionEnabled = true
             val parser = CsvParser(parserSettings)
             try {

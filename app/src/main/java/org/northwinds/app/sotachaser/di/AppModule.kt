@@ -10,6 +10,7 @@ import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
 import okhttp3.OkHttpClient
+import org.northwinds.app.sotachaser.network.SmpApiService
 import org.northwinds.app.sotachaser.network.SotaApiService
 import org.northwinds.app.sotachaser.repository.SummitsRepository
 import org.northwinds.app.sotachaser.repository.SummitsRepositoryImpl
@@ -52,6 +53,19 @@ abstract class AppModule {
                 .build()
 
             return retrofit.create(SotaApiService::class.java)
+        }
+
+        @Singleton
+        @Provides
+        fun provideSmpApiService(client: OkHttpClient): SmpApiService {
+            val moshi = Moshi.Builder().addLast(KotlinJsonAdapterFactory()).build()
+            val retrofit = Retrofit.Builder()
+                .baseUrl("https://api-db.sota.org.uk/smp/")
+                .addConverterFactory(MoshiConverterFactory.create(moshi))
+                .client(client)
+                .build()
+
+            return retrofit.create(SmpApiService::class.java)
         }
     }
 }

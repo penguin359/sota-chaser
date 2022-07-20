@@ -17,8 +17,8 @@ android {
         applicationId "org.northwinds.app.sotachaser"
         minSdk 21
         targetSdk 32
-        versionCode 6
-        versionName "0.6 Alpha"
+        versionCode 7
+        versionName "0.7 Alpha"
 
         testInstrumentationRunner "org.northwinds.app.sotachaser.SotaChaserTestRunner"
         //testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
@@ -43,7 +43,7 @@ android {
 
     buildTypes {
         release {
-            minifyEnabled false
+            minifyEnabled true
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
         debug {

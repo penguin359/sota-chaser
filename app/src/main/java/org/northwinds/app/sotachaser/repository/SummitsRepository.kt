@@ -6,9 +6,11 @@ import androidx.lifecycle.LiveData
 import org.northwinds.app.sotachaser.R
 import org.northwinds.app.sotachaser.SummitList
 import org.northwinds.app.sotachaser.domain.models.Association
+import org.northwinds.app.sotachaser.domain.models.GpxTrack
 import org.northwinds.app.sotachaser.domain.models.Region
 import org.northwinds.app.sotachaser.domain.models.Summit
 import org.northwinds.app.sotachaser.room.SummitDao
+import org.northwinds.app.sotachaser.room.model.GpxTrackEntity
 import org.northwinds.app.sotachaser.util.asAssociationDatabaseModel
 import org.northwinds.app.sotachaser.util.asRegionDatabaseModel
 import org.northwinds.app.sotachaser.util.asSummitDatabaseModel
@@ -17,6 +19,7 @@ interface SummitsRepository {
     suspend fun refreshAssociations()
     suspend fun updateAssociation(code: String)
     suspend fun updateRegion(association: String, region: String)
+    suspend fun updateGpxTracks(summit: Summit)
 
     fun getAssociations(): LiveData<List<Association>>
     fun getAssociationByCode(code: String): LiveData<Association?>
@@ -25,6 +28,7 @@ interface SummitsRepository {
     fun getRegionByCode(association: Association, code: String): LiveData<Region?>
     fun getSummits(associationId: String,  region: String): LiveData<List<Summit>>
     //fun getSummitByCode(code: String): LiveData<Summit>
+    fun getGpxTracks(summit: Summit): LiveData<List<GpxTrack>>
 
     //fun loadDatabase(dao: SummitDao, summitList: SummitList)
 }

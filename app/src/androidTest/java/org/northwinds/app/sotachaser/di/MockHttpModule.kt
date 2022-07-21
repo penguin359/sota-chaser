@@ -51,6 +51,10 @@ object MockHttpModule {
                 val input = ClasspathResources.resource("W7O_CN.json")
                 respond(input)
             }
+            rule(url eq "https://api-db.sota.org.uk/smp/gpx/summit/W7W/LC-050", times = anyTimes) {
+                val input = ClasspathResources.resource("gpx/W7W_LC-050.json")
+                respond(input)
+            }
             rule(path matches "/api/associations/(\\w+)".toRegex(), times = anyTimes) {
                 respond {
                     val association = it.url.pathSegments[2]
@@ -60,6 +64,13 @@ object MockHttpModule {
                     |    "regionsCount": 0,
                     |    "summitsCount": 0
                     |}""".trimMargin(), MediaTypes.MEDIATYPE_JSON) }
+            }
+            rule(path matches "/smp/gpx/summit/(\\w+)/(.*)".toRegex(), times = anyTimes) {
+                respond {
+                    //val association = it.url.pathSegments[2]
+                    body("""
+                    |[
+                    |]""".trimMargin(), MediaTypes.MEDIATYPE_JSON) }
             }
             rule(path matches "/api/regions/(\\w+)/(\\w+)".toRegex(), times = anyTimes) {
                 respond {

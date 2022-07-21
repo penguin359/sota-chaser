@@ -3,9 +3,7 @@ package org.northwinds.app.sotachaser.room
 import androidx.lifecycle.LiveData
 import androidx.room.*
 import androidx.room.OnConflictStrategy.REPLACE
-import org.northwinds.app.sotachaser.room.model.AssociationEntity
-import org.northwinds.app.sotachaser.room.model.RegionEntity
-import org.northwinds.app.sotachaser.room.model.SummitEntity
+import org.northwinds.app.sotachaser.room.model.*
 
 @Dao
 interface SummitDao {
@@ -102,6 +100,18 @@ interface SummitDao {
     //@MapInfo(keyColumn = "summitCode")
     @Query("SELECT summit.*, association.code || '/' || region.code || '-' || summit.code AS code FROM summit JOIN region ON (summit.region_id = region.id) JOIN association ON (region.association_id = association.id) WHERE association.code = :associationId AND region.code = :region ORDER BY code")
     fun getSummits(associationId: String,  region: String): LiveData<List<SummitEntity>>
+
+    @Insert
+    fun insertGpxTrack(vararg users: GpxTrackEntity): List<Long>
+
+    @Query("SELECT * FROM gpx_track WHERE summit_id = :summitId ORDER BY callsign")
+    fun getGpxTracks(summitId: Long): LiveData<List<GpxTrackEntity>>
+
+    @Insert
+    fun insertGpxPoint(vararg users: GpxPointEntity): List<Long>
+
+    @Query("SELECT * FROM gpx_point WHERE gpx_track_id = :gpxTrackId ORDER BY 'index'")
+    fun getGpxPoints(gpxTrackId: Long): LiveData<List<GpxPointEntity>>
 
     @Query("DELETE FROM association")
     fun clear()

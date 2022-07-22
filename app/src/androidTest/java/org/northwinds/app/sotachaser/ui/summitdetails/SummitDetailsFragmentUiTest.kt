@@ -72,10 +72,13 @@ class SummitDetailsFragmentUiTest {
 
     @Test
     fun canOpenTopSummitDetails() {
+        device.wait(Until.hasObject(By.descContains("Summit List")),
+            LAUNCH_TIMEOUT
+        )
         device.findObject(UiSelector().descriptionContains("Summit List")).click()
-        recycler.scrollIntoView(UiSelector().text("3Y"))
+        //recycler.scrollIntoView(UiSelector().text("3Y"))
         device.findObject(UiSelector().descriptionContains("3Y")).click()
-        recycler.scrollIntoView(UiSelector().text("BV"))
+        //recycler.scrollIntoView(UiSelector().text("BV"))
         device.findObject(UiSelector().descriptionContains("BV")).click()
         device.wait(Until.hasObject(By.descContains("3Y/BV")),
             LAUNCH_TIMEOUT
@@ -86,6 +89,9 @@ class SummitDetailsFragmentUiTest {
 
     @Test
     fun canOpenBottomSummitDetails() {
+        device.wait(Until.hasObject(By.descContains("Summit List")),
+            LAUNCH_TIMEOUT
+        )
         recycler.maxSearchSwipes = recycler.maxSearchSwipes*2
         device.findObject(UiSelector().descriptionContains("Summit List")).click()
         recycler.scrollIntoView(UiSelector().text("W7W"))

@@ -3,6 +3,7 @@ package org.northwinds.app.sotachaser.ui.associations
 import android.Manifest
 import android.content.Context
 import androidx.core.content.edit
+import androidx.preference.PreferenceManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.Espresso
@@ -39,6 +40,8 @@ import javax.inject.Inject
 @RunWith(AndroidJUnit4::class)
 @HiltAndroidTest
 class AssociationFragmentTest {
+    private val context = ApplicationProvider.getApplicationContext<SotaChaserBaseApplication>()
+
     @get:Rule
     val hiltRule = HiltAndroidRule(this)
 
@@ -51,6 +54,8 @@ class AssociationFragmentTest {
     @Before
     fun setUp() {
         hiltRule.inject()
+        val prefs = context.getSharedPreferences("database", Context.MODE_PRIVATE)
+        prefs.edit { putBoolean("database_loaded", false) }
     }
 
     @Test

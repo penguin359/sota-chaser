@@ -6,6 +6,7 @@ import kotlinx.coroutines.launch
 import org.northwinds.app.sotachaser.domain.models.Association
 import org.northwinds.app.sotachaser.repository.SummitsRepository
 import org.northwinds.app.sotachaser.ui.abstraction.AbstractViewModel
+import java.util.concurrent.ExecutorService
 import javax.inject.Inject
 
 /*
@@ -31,7 +32,7 @@ import javax.inject.Inject
  */
 
 @HiltViewModel
-class AssociationViewModel @Inject constructor(/*app: Application, private val executorService: ExecutorService, */private val repo: SummitsRepository) : AbstractViewModel<Association>() {
+class AssociationViewModel @Inject constructor(private val executorService: ExecutorService, private val repo: SummitsRepository) : AbstractViewModel<Association>(executorService, repo) {
     override val list_items = filter.switchMap { f ->
         repo.getAssociations().map { items ->
             items.filter {

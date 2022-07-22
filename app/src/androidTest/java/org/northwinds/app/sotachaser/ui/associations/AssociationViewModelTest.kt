@@ -13,6 +13,7 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import org.northwinds.app.sotachaser.repository.SummitsRepository
 import org.northwinds.app.sotachaser.ui.getOrAwaitValue
+import java.util.concurrent.ExecutorService
 import javax.inject.Inject
 
 @RunWith(AndroidJUnit4::class)
@@ -21,8 +22,8 @@ class AssociationViewModelTest {
     @get:Rule
     val hiltRule = HiltAndroidRule(this)
 
-    //@Inject
-    //lateinit var executor: ExecutorService
+    @Inject
+    lateinit var executor: ExecutorService
 
     @Inject
     lateinit var repo: SummitsRepository
@@ -35,7 +36,7 @@ class AssociationViewModelTest {
     @Before
     fun setup() {
         hiltRule.inject()
-        model = AssociationViewModel(repo)
+        model = AssociationViewModel(executor, repo)
     }
 
     @Test

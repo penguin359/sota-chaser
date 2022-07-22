@@ -1,7 +1,12 @@
 package org.northwinds.app.sotachaser.ui.abstraction
 
+import android.util.Log
 import androidx.lifecycle.*
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.runBlocking
+import org.northwinds.app.sotachaser.repository.SummitsRepository
+import org.northwinds.app.sotachaser.ui.map.MapsViewModel
+import java.util.concurrent.ExecutorService
 
 /*
  * Copyright (c) 2022 Loren M. Lang
@@ -25,7 +30,7 @@ import kotlinx.coroutines.Job
  * SOFTWARE.
  */
 
-abstract class AbstractViewModel<E>(/*app: Application, private val executorService: ExecutorService, private val repo: SummitsRepository*/) : ViewModel() {
+abstract class AbstractViewModel<E>(private val executorService: ExecutorService, private val repo: SummitsRepository) : ViewModel() {
     //private val context = getApplication<Application>().applicationContext
 
     //private val _location = MutableLiveData<Location?>()
@@ -47,6 +52,15 @@ abstract class AbstractViewModel<E>(/*app: Application, private val executorServ
 
     //abstract val _list_items: MutableLiveData<List<E>>
     //val list_items: LiveData<List<E>> = _list_items
+
+    init {
+        executorService.execute {
+            runBlocking {
+                repo.checkForRefresh()
+            }
+        }
+    }
+
 
     private val _filter = MutableLiveData<String>().apply { value = "" }
     protected val filter: LiveData<String> = _filter

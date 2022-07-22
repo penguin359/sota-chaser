@@ -3,9 +3,11 @@ package org.northwinds.app.sotachaser.ui.regions
 import androidx.lifecycle.*
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
+import org.northwinds.app.sotachaser.domain.models.Association
 import org.northwinds.app.sotachaser.domain.models.Region
 import org.northwinds.app.sotachaser.repository.SummitsRepository
 import org.northwinds.app.sotachaser.ui.abstraction.AbstractViewModel
+import java.util.concurrent.ExecutorService
 import javax.inject.Inject
 
 /*
@@ -31,7 +33,7 @@ import javax.inject.Inject
  */
 
 @HiltViewModel
-class RegionViewModel @Inject constructor(private val repo: SummitsRepository) : AbstractViewModel<Region>() {
+class RegionViewModel @Inject constructor(executorService: ExecutorService, private val repo: SummitsRepository) : AbstractViewModel<Region>(executorService, repo) {
     fun setAssociation(entry: String) {
         _association.value = entry
     }

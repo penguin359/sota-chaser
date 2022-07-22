@@ -4,9 +4,11 @@ import android.location.Location
 import androidx.lifecycle.*
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
+import org.northwinds.app.sotachaser.domain.models.Association
 import org.northwinds.app.sotachaser.domain.models.Summit
 import org.northwinds.app.sotachaser.repository.SummitsRepository
 import org.northwinds.app.sotachaser.ui.abstraction.AbstractViewModel
+import java.util.concurrent.ExecutorService
 import javax.inject.Inject
 
 /*
@@ -32,7 +34,7 @@ import javax.inject.Inject
  */
 
 @HiltViewModel
-class SummitViewModel @Inject constructor(private val repo: SummitsRepository) : AbstractViewModel<Summit>() {
+class SummitViewModel @Inject constructor(private val executorService: ExecutorService, private val repo: SummitsRepository) : AbstractViewModel<Summit>(executorService, repo) {
     private val _location = MutableLiveData<Location?>()
     val location: LiveData<Location?> = _location
 

@@ -75,6 +75,7 @@ class SettingsSimpleTest {
     val screenshotRule = UiScreenshotTestRule()
 
     @Test
+    @FlakyTest
     fun settingsBackButtonExitTest() {
         val device = UiDevice.getInstance(InstrumentationRegistry.getInstrumentation())
         device.pressBack()

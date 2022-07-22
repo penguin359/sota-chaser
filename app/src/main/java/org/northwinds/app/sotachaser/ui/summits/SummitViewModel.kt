@@ -73,6 +73,13 @@ class SummitViewModel @Inject constructor(private val repo: SummitsRepository) :
     }
 
     override fun refresh(force: Boolean) = viewModelScope.launch {
-        //repo.refreshSummits()
+        association.value?.let { a ->
+            if(a != "")
+                repo.updateAssociation(a)  //  FIXME workaround to avoid adding regions without an associationId
+            region.value?.let { r ->
+                if (a != "" && r != "")
+                    repo.updateRegion(a, r)
+            }
+        }
     }
 }

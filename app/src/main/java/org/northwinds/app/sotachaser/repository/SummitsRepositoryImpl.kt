@@ -76,6 +76,11 @@ class SummitsRepositoryImpl @Inject constructor(private val context: Application
     override suspend fun updateRegion(association: String, region: String) {
         withContext(executor.asCoroutineDispatcher()) {
             dao.upsertRegion(api.getRegion(association, region).region.asDatabaseModel(dao))
+            val result = api.getRegion(association, region)
+            dao.upsertRegion(result.region.asDatabaseModel(dao))
+            result.summits?.forEach {
+                dao.upsertSummit(it.asDatabaseModel(dao))
+            }
         }
     }
 

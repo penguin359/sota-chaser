@@ -5,6 +5,7 @@ import android.content.Context
 import androidx.core.content.edit
 import androidx.recyclerview.widget.RecyclerView
 import androidx.test.core.app.ApplicationProvider
+import androidx.test.espresso.Espresso
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.action.ViewActions.replaceText
@@ -19,8 +20,7 @@ import com.github.flank.utility.screenshot.ScreenshotTestRule
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
 import org.aprsdroid.app.testing.SharedPreferencesRule
-import org.hamcrest.Matchers.allOf
-import org.hamcrest.Matchers.containsString
+import org.hamcrest.Matchers.*
 import org.junit.Assert.assertEquals
 import org.junit.Before
 import org.junit.Rule
@@ -29,9 +29,12 @@ import org.junit.runner.RunWith
 import org.northwinds.app.sotachaser.BuildConfig
 import org.northwinds.app.sotachaser.R
 import org.northwinds.app.sotachaser.SotaChaserBaseApplication
+import org.northwinds.app.sotachaser.room.SummitDao
 import org.northwinds.app.sotachaser.testing.HiltFragmentScenario
 import org.northwinds.app.sotachaser.testing.Matcher.atPosition
 import org.northwinds.app.sotachaser.ui.MainActivity
+import java.lang.Thread.sleep
+import javax.inject.Inject
 
 @RunWith(AndroidJUnit4::class)
 @HiltAndroidTest
@@ -39,8 +42,16 @@ class AssociationFragmentTest {
     @get:Rule
     val hiltRule = HiltAndroidRule(this)
 
+    @Inject
+    lateinit var dao: SummitDao
+
     @get:Rule
     val permissionRule: GrantPermissionRule = GrantPermissionRule.grant(Manifest.permission.ACCESS_COARSE_LOCATION)
+
+    @Before
+    fun setUp() {
+        hiltRule.inject()
+    }
 
     @Test
     fun loadAssociation() {
@@ -159,6 +170,20 @@ class AssociationFragmentTest {
                 throw noMatchingViewException
             val recyclerView = view as RecyclerView
             assertEquals(0, recyclerView.adapter?.itemCount)
+        }
+        frag.close()
+    }
+
+    @Test
+    fun loadAssociationsAfterClear() {
+        dao.clear()
+        val frag = HiltFragmentScenario.launchInHiltContainer(AssociationFragment::class.java)
+        onView(withId(R.id.list)).check(matches(isDisplayed()))
+        onView(withId(R.id.list)).check { view, noMatchingViewException ->
+            if (view == null)
+                throw noMatchingViewException
+            val recyclerView = view as RecyclerView
+            assertThat(recyclerView.adapter?.itemCount, `is`(greaterThanOrEqualTo(10)))
         }
         frag.close()
     }

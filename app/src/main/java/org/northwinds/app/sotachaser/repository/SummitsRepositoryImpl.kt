@@ -48,7 +48,9 @@ class SummitsRepositoryImpl @Inject constructor(private val context: Application
                 }
 
                 Log.v(TAG, "Loading database with summit list")
-                loadDatabase(dao, list)
+                synchronized(this) {
+                    loadDatabase(dao, list)
+                }
                 prefs.edit { putBoolean("database_loaded", true) }
                 hasRefreshed = true
             }
@@ -57,8 +59,11 @@ class SummitsRepositoryImpl @Inject constructor(private val context: Application
 
     override suspend fun refreshAssociations() {
         withContext(executor.asCoroutineDispatcher()) {
-            api.getAssociations().forEach { associationEntity ->
-                dao.upsertAssociation(associationEntity.asDatabaseModel(dao))
+            val results = api.getAssociations()
+            synchronized(this) {
+                results.forEach { associationEntity ->
+                    dao.upsertAssociation(associationEntity.asDatabaseModel(dao))
+                }
             }
         }
     }
@@ -66,20 +71,23 @@ class SummitsRepositoryImpl @Inject constructor(private val context: Application
     override suspend fun updateAssociation(code: String) {
         withContext(executor.asCoroutineDispatcher()) {
             val result = api.getAssociation(code)
-            dao.upsertAssociation(result.asDatabaseModel(dao))
-            result.regions?.forEach {
-                dao.upsertRegion(it.asDatabaseModel(dao))
+            synchronized(this) {
+                dao.upsertAssociation(result.asDatabaseModel(dao))
+                result.regions?.forEach {
+                    dao.upsertRegion(it.asDatabaseModel(dao))
+                }
             }
         }
     }
 
     override suspend fun updateRegion(association: String, region: String) {
         withContext(executor.asCoroutineDispatcher()) {
-            dao.upsertRegion(api.getRegion(association, region).region.asDatabaseModel(dao))
             val result = api.getRegion(association, region)
-            dao.upsertRegion(result.region.asDatabaseModel(dao))
-            result.summits?.forEach {
-                dao.upsertSummit(it.asDatabaseModel(dao))
+            synchronized(this) {
+                dao.upsertRegion(result.region.asDatabaseModel(dao))
+                result.summits?.forEach {
+                    dao.upsertSummit(it.asDatabaseModel(dao))
+                }
             }
         }
     }

@@ -19,14 +19,17 @@ import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
 import org.junit.Assert.assertEquals
 import org.aprsdroid.app.testing.SharedPreferencesRule
+import org.hamcrest.Matchers
 import org.hamcrest.Matchers.allOf
 import org.hamcrest.Matchers.containsString
+import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.northwinds.app.sotachaser.BuildConfig
 import org.northwinds.app.sotachaser.R
 import org.northwinds.app.sotachaser.SotaChaserBaseApplication
+import org.northwinds.app.sotachaser.room.SummitDao
 import org.northwinds.app.sotachaser.testing.HiltFragmentScenario
 import org.northwinds.app.sotachaser.testing.Matcher.atPosition
 import org.northwinds.app.sotachaser.ui.MainActivity
@@ -34,6 +37,7 @@ import org.northwinds.app.sotachaser.ui.associations.AssociationFragmentDirectio
 import org.northwinds.app.sotachaser.ui.associations.AssociationRecyclerViewAdapterVH
 import org.northwinds.app.sotachaser.ui.regions.RegionFragment
 import org.northwinds.app.sotachaser.ui.regions.RegionFragmentDirections
+import javax.inject.Inject
 
 @RunWith(AndroidJUnit4::class)
 @HiltAndroidTest
@@ -41,8 +45,16 @@ class SummitFragmentTest {
     @get:Rule
     val hiltRule = HiltAndroidRule(this)
 
+    @Inject
+    lateinit var dao: SummitDao
+
     @get:Rule
     val permissionRule: GrantPermissionRule = GrantPermissionRule.grant(Manifest.permission.ACCESS_COARSE_LOCATION)
+
+    @Before
+    fun setUp() {
+        hiltRule.inject()
+    }
 
     @Test
     fun loadSummit() {
@@ -233,6 +245,23 @@ class SummitFragmentTest {
                 throw noMatchingViewException
             val recyclerView = view as RecyclerView
             assertEquals(0, recyclerView.adapter?.itemCount)
+        }
+        frag.close()
+    }
+
+    @Test
+    fun loadSummitsAfterClear() {
+        dao.clear()
+        val frag = HiltFragmentScenario.launchInHiltContainer(SummitFragment::class.java,
+            RegionFragmentDirections.actionRegionFragmentToNavigationDashboard("W7O", "CN").arguments)
+        onView(withId(R.id.list)).check(matches(isDisplayed()))
+        onView(withId(R.id.list)).check { view, noMatchingViewException ->
+            if (view == null)
+                throw noMatchingViewException
+            val recyclerView = view as RecyclerView
+            assertThat(recyclerView.adapter?.itemCount,
+                Matchers.`is`(Matchers.greaterThanOrEqualTo(10))
+            )
         }
         frag.close()
     }

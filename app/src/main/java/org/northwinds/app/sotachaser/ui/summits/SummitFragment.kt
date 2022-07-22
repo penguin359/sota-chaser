@@ -42,6 +42,7 @@ class SummitFragment : AbstractFilterListFragment<Summit, FragmentSummitListBind
         val root = super.onCreateView(inflater, container, savedInstanceState)
 
         model.setRegion(args.association, args.region)
+        model.refresh()
 
         with(binding.list) {
             model.location.observe(viewLifecycleOwner) { location ->

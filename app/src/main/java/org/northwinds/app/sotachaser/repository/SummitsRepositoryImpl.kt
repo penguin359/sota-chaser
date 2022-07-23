@@ -125,7 +125,7 @@ class SummitsRepositoryImpl @Inject constructor(private val context: Application
     companion object {
         const val TAG = "SOTAChaser-SummitRepository"
         fun loadDatabase(dao: SummitDao, summitList: SummitList) {
-            dao.clear()
+            //dao.clear()
             val items = summitList.asAssociationDatabaseModel(dao)
             val aids = dao.upsertAssociation(*items.toTypedArray())
             val associationToId = items.map { it.code }.zip(aids).toMap()

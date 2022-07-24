@@ -43,7 +43,7 @@ class SummitsRepositoryTest {
         //val summit = repo.getSummits(region.value!!.id, "050")
         dao.clear()
         runBlocking {
-            repo.checkForRefresh()
+            repo.refreshAssociations()
         }
         val summitsData = repo.getSummits("W7W", "LC")
         runOnUiThread {

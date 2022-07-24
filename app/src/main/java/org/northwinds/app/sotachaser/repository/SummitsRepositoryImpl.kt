@@ -66,8 +66,8 @@ class SummitsRepositoryImpl @Inject constructor(private val context: Application
         withContext(executor.asCoroutineDispatcher()) {
             val results = api.getAssociations()
             synchronized(this) {
-                results.forEach { associationEntity ->
-                    dao.upsertAssociation(associationEntity.asDatabaseModel(dao))
+                results.forEach {
+                    dao.upsertAssociation(it.asDatabaseModel(dao))
                 }
             }
         }

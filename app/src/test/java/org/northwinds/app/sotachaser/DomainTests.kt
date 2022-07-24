@@ -5,9 +5,7 @@ import androidx.lifecycle.MutableLiveData
 import org.junit.Before
 import org.junit.Test
 import org.northwinds.app.sotachaser.room.SummitDao
-import org.northwinds.app.sotachaser.room.model.AssociationEntity
-import org.northwinds.app.sotachaser.room.model.RegionEntity
-import org.northwinds.app.sotachaser.room.model.SummitEntity
+import org.northwinds.app.sotachaser.room.model.*
 import org.northwinds.app.sotachaser.util.asAssociationDatabaseModel
 import org.northwinds.app.sotachaser.util.asRegionDatabaseModel
 import org.northwinds.app.sotachaser.util.asSummitDatabaseModel
@@ -84,6 +82,22 @@ class DomainTests {
             region: String
         ): LiveData<List<SummitEntity>> {
             return MutableLiveData()
+        }
+
+        override fun insertGpxTrack(vararg users: GpxTrackEntity): List<Long> {
+            TODO("Not yet implemented")
+        }
+
+        override fun getGpxTracks(summitId: Long): LiveData<List<GpxTrackEntity>> {
+            TODO("Not yet implemented")
+        }
+
+        override fun insertGpxPoint(vararg users: GpxPointEntity): List<Long> {
+            TODO("Not yet implemented")
+        }
+
+        override fun getGpxPoints(gpxTrackId: Long): LiveData<List<GpxPointEntity>> {
+            TODO("Not yet implemented")
         }
 
         override fun clear() {

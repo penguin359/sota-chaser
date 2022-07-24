@@ -191,9 +191,12 @@ class SummitRepositoryTest {
     @Test
     fun testCanGpxTracks() {
         runBlocking {
-            repo.checkForRefresh()
+            repo.refreshAssociations()
         }
-        val result2 = repo.getGpxTracks("W7W")
+        val sld = repo.getSummits("W7W", "LC")
+        val result = sld.blockingObserve()
+        assertNotNull("Summits result is null", result)
+        val result2 = repo.getGpxTracks(sld.value!![0])
 
         //val result = result2.blockingObserve()
         //assertNotNull("Region result is null", result)

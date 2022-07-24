@@ -73,6 +73,14 @@ class DomainTests {
             return null
         }
 
+        override fun getSummitByCodeLive(
+            associationCode: String,
+            regionCode: String,
+            summitCode: String
+        ): LiveData<SummitEntity?> {
+            TODO("Not yet implemented")
+        }
+
         override fun getSummitsInRegion(regionId: Long): List<SummitEntity> {
             return listOf()
         }

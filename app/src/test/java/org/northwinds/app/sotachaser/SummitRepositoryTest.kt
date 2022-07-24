@@ -13,13 +13,10 @@ import okhttp3.mock.MockInterceptor
 import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.Matchers.*
 import org.hamcrest.core.StringContains
-import org.junit.After
+import org.junit.*
 import org.junit.Assert.*
-import org.junit.Test
 import org.northwinds.app.sotachaser.repository.SummitsRepository
 import javax.inject.Inject
-import org.junit.Before
-import org.junit.Rule
 import org.junit.runner.RunWith
 import org.northwinds.app.sotachaser.room.SummitDao
 import org.northwinds.app.sotachaser.room.SummitDatabase
@@ -189,6 +186,35 @@ class SummitRepositoryTest {
         assertEquals(44.5081, value.minLat ?: 0.0, 0.00001)
         assertEquals(-121.9929, value.minLong ?: 0.0, 0.00001)
         assertEquals(103, value.summitsCount)
+    }
+
+    @Test
+    @Ignore("Underlying implementation is incomplete")
+    fun testWillLoadAllSummitCsvDetails() {
+        runBlocking {
+            withContext(Dispatchers.IO) {
+                dao.clear()
+            }
+            repo.refreshAssociations()
+        }
+        val summit = repo.getSummitByCode("HL", "GN", "001")
+        summit.observeForever {  }
+        shadowOf(getMainLooper()).idle()
+        //assertTrue("HTTP request not made", interceptor.rules[1].isConsumed)
+        assertNotNull("No value returned", summit.value)
+        val value = summit.value!!
+        assertEquals("W7O", value.code)
+        //assertEquals("USA - Oregon", value.name)
+        //assertEquals("Etienne", value.manager)
+        //assertEquals("K7ATN", value.managerCallsign)
+        //assertEquals("2010-07-01T00:00:00", value.activeFrom)
+        //assertEquals("291", value.dxcc)
+        //assertEquals(46.105, value.maxLat)
+        //assertEquals(-116.6597, value.maxLong)
+        //assertEquals(41.9951, value.minLat)
+        //assertEquals(-124.436, value.minLong)
+        //assertEquals(10, value.regionsCount)
+        //assertEquals(1990, value.summitsCount)
     }
 
     @Test

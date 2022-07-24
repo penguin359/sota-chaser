@@ -94,6 +94,9 @@ interface SummitDao {
     @Query("SELECT * FROM summit WHERE region_id = :regionId AND code = :code")
     fun getSummitByCode(regionId: Long, code: String): SummitEntity?
 
+    @Query("SELECT summit.* FROM summit JOIN region ON (summit.region_id = region.id) JOIN association ON (region.association_id = association.id) WHERE association.code = :associationCode AND region.code = :regionCode AND summit.code = :summitCode")
+    fun getSummitByCodeLive(associationCode: String, regionCode: String, summitCode: String): LiveData<SummitEntity?>
+
     @Query("SELECT * FROM summit WHERE region_id = :regionId ORDER BY code")
     fun getSummitsInRegion(regionId: Long): List<SummitEntity>
 

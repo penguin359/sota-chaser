@@ -22,12 +22,9 @@ interface SummitsRepository {
     fun getAssociations(): LiveData<List<Association>>
     fun getAssociationByCode(code: String): LiveData<Association?>
     fun getRegionsInAssociationName(associationId: String): LiveData<List<Region>>
-    //fun getRegionByCode(code: String): LiveData<Region>
     fun getRegionByCode(association: Association, code: String): LiveData<Region?>
     fun getSummits(associationId: String,  region: String): LiveData<List<Summit>>
-    //fun getSummitByCode(code: String): LiveData<Summit>
+    fun getSummitByCode(association: String, region: String, summit: String): LiveData<Summit?>
     fun getGpxTracks(summit: Summit): LiveData<List<GpxTrack>>
     fun getGpxPoints(gpxTrack: GpxTrack): LiveData<List<GpxPoint>>
-
-    //fun loadDatabase(dao: SummitDao, summitList: SummitList)
 }

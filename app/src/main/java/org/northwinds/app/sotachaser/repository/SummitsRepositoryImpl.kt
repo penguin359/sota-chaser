@@ -160,6 +160,14 @@ class SummitsRepositoryImpl @Inject constructor(private val context: Application
         }
     }
 
+    override fun getSummitByCode(association: String, region: String, summit: String): LiveData<Summit?> {
+        val associationId = 0L
+        return Transformations.map(dao.getSummitByCodeLive(association, region, summit)) {
+            //it?.asDomainModel()
+            TODO("Needs implementation")
+        }
+    }
+
     companion object {
         const val TAG = "SOTAChaser-SummitRepository"
         fun loadDatabase(dao: SummitDao, summitList: SummitList) {

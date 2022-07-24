@@ -55,7 +55,7 @@ class SummitRepositoryTest {
     @Test
     fun testCanLoadAssociations() {
         runBlocking {
-            repo.checkForRefresh()
+            repo.refreshAssociations()
         }
         val result2 = /*liveData<List<Association>> {
             withContext(Dispatchers.IO) {*/
@@ -80,7 +80,7 @@ class SummitRepositoryTest {
     @Test
     fun testCanLoadRegions() {
         runBlocking {
-            repo.checkForRefresh()
+            repo.refreshAssociations()
         }
         val result2 = repo.getRegionsInAssociationName("W7W")
 
@@ -100,7 +100,7 @@ class SummitRepositoryTest {
     fun testWillLoadRefreshFromNetwork() {
         assertFalse(interceptor.rules[0].isConsumed)
         runBlocking {
-            repo.checkForRefresh()
+            repo.refreshAssociations()
         }
         assertTrue("HTTP request not made", interceptor.rules[0].isConsumed)
     }
@@ -137,7 +137,6 @@ class SummitRepositoryTest {
     @Test
     fun testWillLoadAssociationExtraDetails() {
         runBlocking {
-            repo.checkForRefresh()
             repo.updateAssociation("W7O")
         }
         assertTrue("HTTP request not made", interceptor.rules[0].isConsumed)
@@ -164,7 +163,6 @@ class SummitRepositoryTest {
     @Test
     fun testWillLoadRegionExtraDetails() {
         runBlocking {
-            repo.checkForRefresh()
             repo.updateRegion("W7O", "CN")
         }
         val association = repo.getAssociationByCode("W7O")

@@ -10,6 +10,9 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withContext
 import okhttp3.mock.MockInterceptor
+import org.hamcrest.MatcherAssert.assertThat
+import org.hamcrest.Matchers.*
+import org.hamcrest.core.StringContains
 import org.junit.After
 import org.junit.Assert.*
 import org.junit.Test
@@ -189,23 +192,51 @@ class SummitRepositoryTest {
     }
 
     @Test
+    fun testCanEmptyGpxTracks() {
+        runBlocking {
+            repo.refreshAssociations()
+        }
+        val sld = repo.getSummits("W7W", "LC")
+        val result = sld.blockingObserve()
+        assertThat("Summits result is null", result, `is`(notNullValue()))
+        assertThat("Has summits", result!!.count(), `is`(greaterThanOrEqualTo(1)))
+        val summitIndex = result.indexOfFirst { it.code.contains("001") }
+        assertThat("Found summit", summitIndex, `is`(greaterThanOrEqualTo(0)))
+        val summit = result[summitIndex]
+        runBlocking {
+            repo.updateGpxTracks(summit)
+        }
+        val result2 = repo.getGpxTracks(summit)
+
+        val gpxTracks = result2.blockingObserve()
+        assertThat("Gpx Tracks is null", gpxTracks, `is`(notNullValue()))
+        assertThat("Correct number of tracks", gpxTracks!!.count(), `is`(equalTo(0)))
+    }
+
+    @Test
     fun testCanGpxTracks() {
         runBlocking {
             repo.refreshAssociations()
         }
         val sld = repo.getSummits("W7W", "LC")
         val result = sld.blockingObserve()
-        assertNotNull("Summits result is null", result)
-        val result2 = repo.getGpxTracks(sld.value!![0])
+        assertThat("Summits result is null", result, `is`(notNullValue()))
+        assertThat("Has summits", result!!.count(), `is`(greaterThanOrEqualTo(1)))
+        val summitIndex = result.indexOfFirst { it.code.contains("050") }
+        assertThat("Found summit", summitIndex, `is`(greaterThanOrEqualTo(0)))
+        val summit = result[summitIndex]
+        runBlocking {
+            repo.updateGpxTracks(summit)
+        }
+        val result2 = repo.getGpxTracks(summit)
 
-        //val result = result2.blockingObserve()
-        //assertNotNull("Region result is null", result)
-        //assertEquals("Incorrect number of regions", 17, result!!.count())
-        //val regionMatches = result.filter { it.code == "LC" }
-        //assertEquals("Failed to one association 3Y", 1, regionMatches.count())
-        //val region = regionMatches[0]
-        //assertEquals("LC", region.code)
-        //assertEquals("WA-Lower Columbia", region.name)
+        val gpxTracks = result2.blockingObserve()
+        assertThat("Gpx Tracks is null", gpxTracks, `is`(notNullValue()))
+        assertThat("Correct number of tracks", gpxTracks!!.count(), `is`(equalTo(1)))
+        val track = gpxTracks[0]
+        assertThat("Has correct callsign", track.callsign, `is`(equalTo("ND7Y")))
+        assertThat("Has valid notes", track.trackNotes, StringContains("Hike the trail"))
+        assertThat("Has valid title", track.trackTitle, StringContains("Tillicum Campground"))
     }
 }
 

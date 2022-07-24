@@ -47,16 +47,6 @@ class MapsViewModel @Inject constructor(app: Application, private val executorSe
         _location.value = location
     }
 
-    init {
-        Log.i(TAG, "Starting new model view")
-        executorService.execute {
-            //_associations.postValue(repo.getAssociations().value?.map { it.code } ?: listOf())
-            runBlocking {
-                repo.checkForRefresh()
-            }
-        }
-    }
-
     val associations = repo.getAssociations()
 
     private val _association = MutableLiveData<String>().apply {

@@ -14,7 +14,6 @@ import org.northwinds.app.sotachaser.util.asRegionDatabaseModel
 import org.northwinds.app.sotachaser.util.asSummitDatabaseModel
 
 interface SummitsRepository {
-    suspend fun checkForRefresh()
     suspend fun refreshAssociations()
     suspend fun updateAssociation(code: String)
     suspend fun updateRegion(association: String, region: String)

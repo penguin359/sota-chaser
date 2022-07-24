@@ -40,26 +40,8 @@ abstract class AbstractViewModel<E>(private val executorService: ExecutorService
     //    _location.value = location
     //}
 
-    //init {
-    //    Log.i(TAG, "Starting new model view")
-    //    executorService.execute {
-    //        //_associations.postValue(repo.getAssociations().value?.map { it.code } ?: listOf())
-    //        runBlocking {
-    //            repo.checkForRefresh()
-    //        }
-    //    }
-    //}
-
     //abstract val _list_items: MutableLiveData<List<E>>
     //val list_items: LiveData<List<E>> = _list_items
-
-    init {
-        executorService.execute {
-            runBlocking {
-                repo.checkForRefresh()
-            }
-        }
-    }
 
 
     private val _filter = MutableLiveData<String>().apply { value = "" }

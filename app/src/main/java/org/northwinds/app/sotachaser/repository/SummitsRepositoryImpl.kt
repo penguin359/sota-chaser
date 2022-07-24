@@ -28,7 +28,7 @@ import javax.inject.Inject
 class SummitsRepositoryImpl @Inject constructor(private val context: Application, private val dao: SummitDao, private val client: OkHttpClient, private val api: SotaApiService, private val executor: ExecutorService) : SummitsRepository {
     private var hasRefreshed = false
 
-    override suspend fun checkForRefresh() {
+    private suspend fun checkForRefresh() {
         if(hasRefreshed)
             return
         withContext(executor.asCoroutineDispatcher()) {
@@ -58,6 +58,7 @@ class SummitsRepositoryImpl @Inject constructor(private val context: Application
     }
 
     override suspend fun refreshAssociations() {
+        checkForRefresh()
         withContext(executor.asCoroutineDispatcher()) {
             val results = api.getAssociations()
             synchronized(this) {
@@ -69,6 +70,7 @@ class SummitsRepositoryImpl @Inject constructor(private val context: Application
     }
 
     override suspend fun updateAssociation(code: String) {
+        checkForRefresh()
         withContext(executor.asCoroutineDispatcher()) {
             val result = api.getAssociation(code)
             synchronized(this) {
@@ -81,6 +83,7 @@ class SummitsRepositoryImpl @Inject constructor(private val context: Application
     }
 
     override suspend fun updateRegion(association: String, region: String) {
+        checkForRefresh()
         withContext(executor.asCoroutineDispatcher()) {
             val result = api.getRegion(association, region)
             synchronized(this) {

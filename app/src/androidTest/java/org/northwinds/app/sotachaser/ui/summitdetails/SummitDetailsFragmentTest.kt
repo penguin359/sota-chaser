@@ -124,6 +124,7 @@ class SummitDetailsFragmentTest {
             )
         )
         Espresso.onView(withId(R.id.sotlas_btn)).perform(click())
+        Espresso.onIdle()
         Intents.intended(
             allOf(
                 hasAction(Intent.ACTION_VIEW),

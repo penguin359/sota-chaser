@@ -120,6 +120,16 @@ class SummitsRepositoryImpl @Inject constructor(private val context: Application
         }
     }
 
+    override suspend fun updateSummit(association: String, region: String, summit: String) {
+        checkForRefresh()
+        withContext(executor.asCoroutineDispatcher()) {
+            val result = api.getSummit(association, region, summit)
+            synchronized(this) {
+                dao.upsertSummit(result.asDatabaseModel(dao))
+            }
+        }
+    }
+
     override fun getAssociations(): LiveData<List<Association>> {
         return Transformations.map(dao.getAssociations()) {
                 it.asDomainModel()

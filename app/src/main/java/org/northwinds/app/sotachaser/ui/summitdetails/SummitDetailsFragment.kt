@@ -56,6 +56,7 @@ class SummitDetailsFragment : Fragment(), OnMapReadyCallback {
             .findFragmentById(R.id.map) as SupportMapFragment
         mapFragment.getMapAsync(this)
 
+        model.updateSummit(args.association, args.region, args.summit)
         model.associations.observe(viewLifecycleOwner) {
             if(association == null)
                 return@observe

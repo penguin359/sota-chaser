@@ -16,6 +16,7 @@ interface SummitsRepository {
     suspend fun refreshAssociations()
     suspend fun updateAssociation(code: String)
     suspend fun updateRegion(association: String, region: String)
+    suspend fun updateSummit(association: String, region: String, summit: String)
     suspend fun updateGpxTracks(summit: Summit)
 
     fun getAssociations(): LiveData<List<Association>>

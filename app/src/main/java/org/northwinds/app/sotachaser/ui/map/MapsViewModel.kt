@@ -110,6 +110,10 @@ class MapsViewModel @Inject constructor(app: Application, private val executorSe
         repo.refreshAssociations()
     }
 
+    fun updateSummit(a: String, r: String, s: String) = viewModelScope.launch {
+        repo.updateSummit(a, r, s)
+    }
+
     companion object {
         private const val TAG = "SOTAChaser-MapsViewModel"
     }

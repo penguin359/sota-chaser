@@ -10,6 +10,9 @@
     <string name="title_changelog">Changelog</string>
     <string name="changelog_text">Updates in this release:\n
 \n
+<b>Version 0.7.1 Alpha</b>\n
+• Fixed issues with API not reloading data correctly.\n
+\n
 <b>Version 0.7 Alpha</b>\n
 • Changed summit list to multi-level list\n
 • Present many more details on the association and region being viewed\n

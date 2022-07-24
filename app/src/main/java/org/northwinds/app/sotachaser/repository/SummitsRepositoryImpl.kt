@@ -11,15 +11,11 @@ import kotlinx.coroutines.asCoroutineDispatcher
 import kotlinx.coroutines.withContext
 import okhttp3.OkHttpClient
 import org.northwinds.app.sotachaser.SummitList
-import org.northwinds.app.sotachaser.domain.models.Association
-import org.northwinds.app.sotachaser.domain.models.GpxTrack
-import org.northwinds.app.sotachaser.domain.models.Region
-import org.northwinds.app.sotachaser.domain.models.Summit
+import org.northwinds.app.sotachaser.domain.models.*
 import org.northwinds.app.sotachaser.network.SmpApiService
 import org.northwinds.app.sotachaser.network.SotaApiService
 import org.northwinds.app.sotachaser.network.SummitData
 import org.northwinds.app.sotachaser.room.*
-import org.northwinds.app.sotachaser.room.model.GpxTrackEntity
 import org.northwinds.app.sotachaser.room.model.asDatabaseModel
 import org.northwinds.app.sotachaser.room.model.asDomainModel
 import org.northwinds.app.sotachaser.util.asAssociationDatabaseModel
@@ -114,6 +110,12 @@ class SummitsRepositoryImpl @Inject constructor(private val context: Application
 
     override fun getGpxTracks(summit: Summit): LiveData<List<GpxTrack>> {
         return dao.getGpxTracks(summit.id).map() {
+            it.asDomainModel()
+        }
+    }
+
+    override fun getGpxPoints(gpxTrack: GpxTrack): LiveData<List<GpxPoint>> {
+        return dao.getGpxPoints(gpxTrack.id).map() {
             it.asDomainModel()
         }
     }

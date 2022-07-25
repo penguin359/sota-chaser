@@ -18,6 +18,7 @@ import org.northwinds.app.sotachaser.network.SummitData
 import org.northwinds.app.sotachaser.room.*
 import org.northwinds.app.sotachaser.room.model.asDatabaseModel
 import org.northwinds.app.sotachaser.room.model.asDomainModel
+import org.northwinds.app.sotachaser.room.model.asSummitDatabaseModel
 import org.northwinds.app.sotachaser.util.asAssociationDatabaseModel
 import org.northwinds.app.sotachaser.util.asRegionDatabaseModel
 import org.northwinds.app.sotachaser.util.asSummitDatabaseModel
@@ -125,7 +126,7 @@ class SummitsRepositoryImpl @Inject constructor(private val context: Application
         withContext(executor.asCoroutineDispatcher()) {
             val result = api.getSummit(association, region, summit)
             synchronized(this) {
-                dao.upsertSummit(result.asDatabaseModel(dao))
+                dao.upsertSummit(result.asSummitDatabaseModel(dao))
             }
         }
     }

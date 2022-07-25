@@ -81,11 +81,27 @@ class DomainTests {
             TODO("Not yet implemented")
         }
 
+        override fun insertSummit(vararg users: SummitJsonEntity): List<Long> {
+            TODO("Not yet implemented")
+        }
+
+        override fun insertSummit(vararg users: SummitSingleJsonEntity): List<Long> {
+            TODO("Not yet implemented")
+        }
+
         override fun insertSummit(vararg users: SummitEntity): List<Long> {
             return listOf()
         }
 
         override fun updateSummit(vararg users: SummitCsvEntity): Int {
+            TODO("Not yet implemented")
+        }
+
+        override fun updateSummit(vararg users: SummitJsonEntity): Int {
+            TODO("Not yet implemented")
+        }
+
+        override fun updateSummit(vararg users: SummitSingleJsonEntity): Int {
             TODO("Not yet implemented")
         }
 

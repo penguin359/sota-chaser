@@ -126,6 +126,42 @@ interface SummitDao {
         return ids
     }
 
+    @Insert(entity = SummitEntity::class)
+    fun insertSummit(vararg users: SummitJsonEntity): List<Long>
+
+    @Update(entity = SummitEntity::class)
+    fun updateSummit(vararg users: SummitJsonEntity): Int
+
+    fun upsertSummit(vararg users: SummitJsonEntity): List<Long> {
+        val ids = users.map {
+            if(it.id != 0L) {
+                updateSummit(it)
+                it.id
+            } else {
+                insertSummit(it)[0]
+            }
+        }
+        return ids
+    }
+
+    @Insert(entity = SummitEntity::class)
+    fun insertSummit(vararg users: SummitSingleJsonEntity): List<Long>
+
+    @Update(entity = SummitEntity::class)
+    fun updateSummit(vararg users: SummitSingleJsonEntity): Int
+
+    fun upsertSummit(vararg users: SummitSingleJsonEntity): List<Long> {
+        val ids = users.map {
+            if(it.id != 0L) {
+                updateSummit(it)
+                it.id
+            } else {
+                insertSummit(it)[0]
+            }
+        }
+        return ids
+    }
+
     @Insert
     fun insertSummit(vararg users: SummitEntity): List<Long>
 

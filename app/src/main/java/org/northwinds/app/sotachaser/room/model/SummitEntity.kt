@@ -3,6 +3,7 @@ package org.northwinds.app.sotachaser.room.model
 import androidx.room.*
 import org.northwinds.app.sotachaser.domain.models.Region
 import org.northwinds.app.sotachaser.domain.models.Summit
+import org.northwinds.app.sotachaser.network.model.SummitDto
 import org.northwinds.app.sotachaser.room.SummitDao
 
 
@@ -46,7 +47,7 @@ data class SummitEntity(
     @ColumnInfo(name = "updated_at") val updatedAt: Long? = null,
 )
 
-fun org.northwinds.app.sotachaser.network.model.SummitEntity.asDatabaseModel(dao: SummitDao): SummitEntity {
+fun SummitDto.asDatabaseModel(dao: SummitDao): SummitEntity {
     val a = (summitCode ?: "").split("/")[0]
     val r = (summitCode ?: "").split("/")[1].split("-")[0]
     val s = (summitCode ?: "").split("-")[1]

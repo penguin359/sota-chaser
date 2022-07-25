@@ -6,7 +6,6 @@ import dagger.hilt.components.SingletonComponent
 import dagger.hilt.testing.TestInstallIn
 import org.northwinds.app.sotachaser.di.ThreadModule
 import org.robolectric.android.util.concurrent.InlineExecutorService
-import org.robolectric.android.util.concurrent.RoboExecutorService
 import java.util.concurrent.ExecutorService
 import javax.inject.Singleton
 

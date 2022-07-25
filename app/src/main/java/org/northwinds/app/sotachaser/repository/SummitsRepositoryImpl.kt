@@ -6,13 +6,13 @@ import android.util.Log
 import androidx.core.content.edit
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Transformations
+import androidx.lifecycle.map
 import kotlinx.coroutines.asCoroutineDispatcher
 import kotlinx.coroutines.withContext
 import okhttp3.OkHttpClient
 import org.northwinds.app.sotachaser.SummitList
-import org.northwinds.app.sotachaser.domain.models.Association
-import org.northwinds.app.sotachaser.domain.models.Region
-import org.northwinds.app.sotachaser.domain.models.Summit
+import org.northwinds.app.sotachaser.domain.models.*
+import org.northwinds.app.sotachaser.network.SmpApiService
 import org.northwinds.app.sotachaser.network.SotaApiService
 import org.northwinds.app.sotachaser.network.SummitData
 import org.northwinds.app.sotachaser.room.*
@@ -25,7 +25,7 @@ import java.io.IOException
 import java.util.concurrent.ExecutorService
 import javax.inject.Inject
 
-class SummitsRepositoryImpl @Inject constructor(private val context: Application, private val dao: SummitDao, private val client: OkHttpClient, private val api: SotaApiService, private val executor: ExecutorService) : SummitsRepository {
+class SummitsRepositoryImpl @Inject constructor(private val context: Application, private val dao: SummitDao, private val client: OkHttpClient, private val api: SotaApiService, private val smpApi: SmpApiService, private val executor: ExecutorService) : SummitsRepository {
     private var hasRefreshed = false
 
     private suspend fun checkForRefresh() {
@@ -62,8 +62,8 @@ class SummitsRepositoryImpl @Inject constructor(private val context: Application
         withContext(executor.asCoroutineDispatcher()) {
             val results = api.getAssociations()
             synchronized(this) {
-                results.forEach { associationEntity ->
-                    dao.upsertAssociation(associationEntity.asDatabaseModel(dao))
+                results.forEach {
+                    dao.upsertAssociation(it.asDatabaseModel(dao))
                 }
             }
         }
@@ -92,6 +92,31 @@ class SummitsRepositoryImpl @Inject constructor(private val context: Application
                     dao.upsertSummit(it.asDatabaseModel(dao))
                 }
             }
+        }
+    }
+
+    override suspend fun updateGpxTracks(summit: Summit) {
+        withContext(executor.asCoroutineDispatcher()) {
+            val a = summit.code.split("/")[0]
+            val r = summit.code.split("/")[1].split("-")[0]
+            val s = summit.code.split("-")[1]
+            val track = smpApi.getGpxTracks(a, r, s)
+            val ids = dao.insertGpxTrack(*track.asDatabaseModel(summit.id).toTypedArray())
+            ids.zip(track).forEach { (id, track) ->
+                dao.insertGpxPoint(*track.points.asDatabaseModel(id).toTypedArray())
+            }
+        }
+    }
+
+    override fun getGpxTracks(summit: Summit): LiveData<List<GpxTrack>> {
+        return dao.getGpxTracks(summit.id).map() {
+            it.asDomainModel()
+        }
+    }
+
+    override fun getGpxPoints(gpxTrack: GpxTrack): LiveData<List<GpxPoint>> {
+        return dao.getGpxPoints(gpxTrack.id).map() {
+            it.asDomainModel()
         }
     }
 

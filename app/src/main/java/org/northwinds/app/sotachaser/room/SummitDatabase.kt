@@ -2,15 +2,15 @@ package org.northwinds.app.sotachaser.room
 
 import androidx.room.Database
 import androidx.room.RoomDatabase
-import org.northwinds.app.sotachaser.room.model.AssociationEntity
-import org.northwinds.app.sotachaser.room.model.RegionEntity
-import org.northwinds.app.sotachaser.room.model.SummitEntity
+import org.northwinds.app.sotachaser.room.model.*
 
 @Database(entities = [
     AssociationEntity::class,
     RegionEntity::class,
-    SummitEntity::class],
-    version = 4)
+    SummitEntity::class,
+    GpxTrackEntity::class,
+    GpxPointEntity::class],
+    version = 5)
 abstract class SummitDatabase : RoomDatabase() {
     abstract fun summitDao(): SummitDao
 }

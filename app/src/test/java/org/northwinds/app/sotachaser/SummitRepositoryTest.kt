@@ -10,6 +10,9 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withContext
 import okhttp3.mock.MockInterceptor
+import org.hamcrest.MatcherAssert.assertThat
+import org.hamcrest.Matchers.*
+import org.hamcrest.core.StringContains
 import org.junit.After
 import org.junit.Assert.*
 import org.junit.Test
@@ -186,6 +189,90 @@ class SummitRepositoryTest {
         assertEquals(44.5081, value.minLat ?: 0.0, 0.00001)
         assertEquals(-121.9929, value.minLong ?: 0.0, 0.00001)
         assertEquals(103, value.summitsCount)
+    }
+
+    @Test
+    fun testCanEmptyGpxTracks() {
+        runBlocking {
+            repo.refreshAssociations()
+        }
+        val sld = repo.getSummits("W7W", "LC")
+        val result = sld.blockingObserve()
+        assertThat("Summits result is null", result, `is`(notNullValue()))
+        assertThat("Has summits", result!!.count(), `is`(greaterThanOrEqualTo(1)))
+        val summitIndex = result.indexOfFirst { it.code.contains("001") }
+        assertThat("Found summit", summitIndex, `is`(greaterThanOrEqualTo(0)))
+        val summit = result[summitIndex]
+        runBlocking {
+            repo.updateGpxTracks(summit)
+        }
+        val result2 = repo.getGpxTracks(summit)
+
+        val gpxTracks = result2.blockingObserve()
+        assertThat("Gpx Tracks is null", gpxTracks, `is`(notNullValue()))
+        assertThat("Correct number of tracks", gpxTracks, `is`(empty()))
+    }
+
+    @Test
+    fun testCanGpxTracks() {
+        runBlocking {
+            repo.refreshAssociations()
+        }
+        val sld = repo.getSummits("W7W", "LC")
+        val result = sld.blockingObserve()
+        assertThat("Summits result is null", result, `is`(notNullValue()))
+        assertThat("Has summits", result!!.count(), `is`(greaterThanOrEqualTo(1)))
+        val summitIndex = result.indexOfFirst { it.code.contains("050") }
+        assertThat("Found summit", summitIndex, `is`(greaterThanOrEqualTo(0)))
+        val summit = result[summitIndex]
+        runBlocking {
+            repo.updateGpxTracks(summit)
+        }
+        val result2 = repo.getGpxTracks(summit)
+
+        val gpxTracks = result2.blockingObserve()
+        assertThat("Gpx Tracks is null", gpxTracks, `is`(notNullValue()))
+        assertThat("Correct number of tracks", gpxTracks!!.count(), `is`(equalTo(1)))
+        val track = gpxTracks[0]
+        assertThat("Has correct callsign", track.callsign, `is`(equalTo("ND7Y")))
+        assertThat("Has valid notes", track.trackNotes, StringContains("Hike the trail"))
+        assertThat("Has valid title", track.trackTitle, StringContains("Tillicum Campground"))
+    }
+
+    @Test
+    fun testCanGpxTrackPoints() {
+        runBlocking {
+            repo.refreshAssociations()
+        }
+        val sld = repo.getSummits("W7W", "LC")
+        val result = sld.blockingObserve()
+        assertThat("Summits result is null", result, `is`(notNullValue()))
+        assertThat("Has summits", result!!.count(), `is`(greaterThanOrEqualTo(1)))
+        val summitIndex = result.indexOfFirst { it.code.contains("050") }
+        assertThat("Found summit", summitIndex, `is`(greaterThanOrEqualTo(0)))
+        val summit = result[summitIndex]
+        runBlocking {
+            repo.updateGpxTracks(summit)
+        }
+        val result2 = repo.getGpxTracks(summit)
+
+        val gpxTracks = result2.blockingObserve()
+        assertThat("Gpx Tracks is null", gpxTracks, `is`(notNullValue()))
+        assertThat("Correct number of tracks", gpxTracks!!.count(), `is`(equalTo(1)))
+        val track = gpxTracks[0]
+        val points = repo.getGpxPoints(track).blockingObserve()
+        assertThat("Gpx track points is null", points, `is`(notNullValue()))
+        assertThat("Correct number of track points", points, hasSize(69))
+        assertThat("Correct index", points!![0].index, `is`(equalTo(1)))
+        assertThat("Correct latitude", points[0].latitude, `is`(closeTo(46.124222, 1e-6)))
+        assertThat("Correct longitude", points[0].longitude, `is`(closeTo(-121.782583, 1e-6)))
+        assertThat("Correct altitude", points[0].altitude, `is`(closeTo(1179.734, 1e-6)))
+        assertThat("Correct distance", points[0].distance, `is`(closeTo(0.000, 1e-6)))
+        assertThat("Correct index", points[68].index, `is`(equalTo(69)))
+        assertThat("Correct latitude", points[68].latitude, `is`(closeTo(46.117085, 1e-6)))
+        assertThat("Correct longitude", points[68].longitude, `is`(closeTo(-121.802399, 1e-6)))
+        assertThat("Correct altitude", points[68].altitude, `is`(closeTo(1372.899, 1e-6)))
+        assertThat("Correct distance", points[68].distance, `is`(closeTo(10.357, 1e-6)))
     }
 }
 

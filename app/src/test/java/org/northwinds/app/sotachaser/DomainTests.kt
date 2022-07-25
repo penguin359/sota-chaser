@@ -5,9 +5,7 @@ import androidx.lifecycle.MutableLiveData
 import org.junit.Before
 import org.junit.Test
 import org.northwinds.app.sotachaser.room.SummitDao
-import org.northwinds.app.sotachaser.room.model.AssociationEntity
-import org.northwinds.app.sotachaser.room.model.RegionEntity
-import org.northwinds.app.sotachaser.room.model.SummitEntity
+import org.northwinds.app.sotachaser.room.model.*
 import org.northwinds.app.sotachaser.util.asAssociationDatabaseModel
 import org.northwinds.app.sotachaser.util.asRegionDatabaseModel
 import org.northwinds.app.sotachaser.util.asSummitDatabaseModel
@@ -86,6 +84,22 @@ class DomainTests {
             return MutableLiveData()
         }
 
+        override fun insertGpxTrack(vararg users: GpxTrackEntity): List<Long> {
+            TODO("Not yet implemented")
+        }
+
+        override fun getGpxTracks(summitId: Long): LiveData<List<GpxTrackEntity>> {
+            TODO("Not yet implemented")
+        }
+
+        override fun insertGpxPoint(vararg users: GpxPointEntity): List<Long> {
+            TODO("Not yet implemented")
+        }
+
+        override fun getGpxPoints(gpxTrackId: Long): LiveData<List<GpxPointEntity>> {
+            TODO("Not yet implemented")
+        }
+
         override fun clear() {
         }
     }
@@ -122,7 +136,7 @@ class DomainTests {
     fun canMapToSummitModel() {
         val associationToId = list.asAssociationDatabaseModel(dummyDao).withIndex().map { (idx, it) -> it.code to idx.toLong() }.toMap()
         val idToAssociation = associationToId.entries.associate { (k, v) -> v to k }
-        val regions = list.asRegionDatabaseModel(dummyDao, associationToId)
+        //val regions = list.asRegionDatabaseModel(dummyDao, associationToId)
         val regionToId = list.asRegionDatabaseModel(dummyDao, associationToId).withIndex().map { (idx, it) ->
             "${idToAssociation[it.associationId]}/${it.code}" to idx.toLong() }.toMap()
         val summits = list.asSummitDatabaseModel(dummyDao, regionToId)

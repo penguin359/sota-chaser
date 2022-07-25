@@ -55,7 +55,7 @@ fun RegionDto.asDatabaseModel(dao: SummitDao): RegionEntity {
     )
 }
 
-fun RegionEntity.asDomainModel(): Region = Region(
+fun RegionEntity.asDomainModel() = Region(
     id = id,
     associationId = associationId,
     code = code,
@@ -70,6 +70,13 @@ fun RegionEntity.asDomainModel(): Region = Region(
     minLong = minLong,
 )
 
-fun List<RegionEntity>.asDomainModel(): List<Region> = map {
+fun List<RegionEntity>.asDomainModel() = map {
     it.asDomainModel()
 }
+
+data class RegionCsvEntity(
+    val id: Long,
+    @ColumnInfo(name = "association_id") val associationId: Long,
+    @ColumnInfo(name = "code") val code: String,
+    @ColumnInfo(name = "name") val name: String,
+)

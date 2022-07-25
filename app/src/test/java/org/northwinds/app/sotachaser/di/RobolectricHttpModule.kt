@@ -18,20 +18,32 @@ object RobolectricHttpModule {
     @Provides
     fun provideInterceptor(): MockInterceptor {
         val interceptor = MockInterceptor().apply {
-            rule(url eq "https://www.sotadata.org.uk/summitslist.csv") {
+            rule(url eq "https://www.sotadata.org.uk/summitslist.csv", times = anyTimes) {
                 val input = RoboResources.rawRes(R.raw.summitslist)
                 respond(input)
             }
-            rule(url eq "https://api2.sota.org.uk/api/associations") {
+            rule(url eq "https://api2.sota.org.uk/api/associations", times = anyTimes) {
                 val input = ClasspathResources.resource("associations.json")
+                respond(input)
+            }
+            rule(url eq "https://api2.sota.org.uk/api/associations/HL", times = anyTimes) {
+                val input = ClasspathResources.resource("HL.json")
                 respond(input)
             }
             rule(url eq "https://api2.sota.org.uk/api/associations/W7O") {
                 val input = ClasspathResources.resource("W7O.json")
                 respond(input)
             }
+            rule(url eq "https://api2.sota.org.uk/api/regions/HL/GN", times = anyTimes) {
+                val input = ClasspathResources.resource("HL_GN.json")
+                respond(input)
+            }
             rule(url eq "https://api2.sota.org.uk/api/regions/W7O/CN") {
                 val input = ClasspathResources.resource("W7O_CN.json")
+                respond(input)
+            }
+            rule(url eq "https://api2.sota.org.uk/api/summits/HL/GN-001", times = anyTimes) {
+                val input = ClasspathResources.resource("HL_GN-001.json")
                 respond(input)
             }
             rule(url eq "https://api-db.sota.org.uk/smp/gpx/summit/W7W/LC-050", times = anyTimes) {

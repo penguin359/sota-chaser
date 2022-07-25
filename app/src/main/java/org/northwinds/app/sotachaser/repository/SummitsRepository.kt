@@ -13,20 +13,18 @@ import org.northwinds.app.sotachaser.util.asRegionDatabaseModel
 import org.northwinds.app.sotachaser.util.asSummitDatabaseModel
 
 interface SummitsRepository {
-    suspend fun refreshAssociations()
-    suspend fun updateAssociation(code: String)
-    suspend fun updateRegion(association: String, region: String)
+    suspend fun refreshAssociations(force: Boolean = false)
+    suspend fun updateAssociation(code: String, force: Boolean = false)
+    suspend fun updateRegion(association: String, region: String, force: Boolean = false)
+    suspend fun updateSummit(association: String, region: String, summit: String, force: Boolean = false)
     suspend fun updateGpxTracks(summit: Summit)
 
     fun getAssociations(): LiveData<List<Association>>
     fun getAssociationByCode(code: String): LiveData<Association?>
     fun getRegionsInAssociationName(associationId: String): LiveData<List<Region>>
-    //fun getRegionByCode(code: String): LiveData<Region>
     fun getRegionByCode(association: Association, code: String): LiveData<Region?>
     fun getSummits(associationId: String,  region: String): LiveData<List<Summit>>
-    //fun getSummitByCode(code: String): LiveData<Summit>
+    fun getSummitByCode(association: String, region: String, summit: String): LiveData<Summit?>
     fun getGpxTracks(summit: Summit): LiveData<List<GpxTrack>>
     fun getGpxPoints(gpxTrack: GpxTrack): LiveData<List<GpxPoint>>
-
-    //fun loadDatabase(dao: SummitDao, summitList: SummitList)
 }

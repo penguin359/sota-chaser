@@ -62,6 +62,25 @@ fun AssociationEntity.asDomainModel() = Association(
     minLong = minLong,
 )
 
-fun List<AssociationEntity>.asDomainModel(): List<Association> = map {
+fun List<AssociationEntity>.asDomainModel() = map {
     it.asDomainModel()
 }
+
+data class AssociationCsvEntity(
+    val id: Long,
+    @ColumnInfo(name = "code") val code: String,
+    @ColumnInfo(name = "name") val name: String,
+)
+
+//fun Entry<String, String>.asAssociationDatabaseModel(dao: SummitDao): AssociationCsvEntity {
+//    val old = dao.getAssociationByCode(first)
+//    return AssociationCsvEntity(
+//        id = old?.id ?: 0,
+//        code = first,
+//        name = second,
+//    )
+//}
+//
+//fun Map<String, String>.asAssociationDatabaseModel(dao: SummitDao) = map {
+//    it.asAssociationDatabaseModel(dao)
+//}

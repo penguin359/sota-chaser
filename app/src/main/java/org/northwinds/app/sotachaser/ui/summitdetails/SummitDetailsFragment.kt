@@ -27,7 +27,7 @@ const val TAG = "SOTAChaser-SummitDetailsFragment"
  */
 @AndroidEntryPoint
 class SummitDetailsFragment : Fragment(), OnMapReadyCallback {
-    private val model: MapsViewModel by viewModels()
+    private val model: SummitDetailsViewModel by viewModels()
     private lateinit var binding: FragmentSummitDetailsBinding
 
     private var association: String? = null
@@ -56,24 +56,8 @@ class SummitDetailsFragment : Fragment(), OnMapReadyCallback {
             .findFragmentById(R.id.map) as SupportMapFragment
         mapFragment.getMapAsync(this)
 
-        model.associations.observe(viewLifecycleOwner) {
-            if(association == null)
-                return@observe
-            val index = it.indexOfFirst { it.code == association }
-            if(index >= 0)
-                model.setAssociation(index)
-        }
-        model.regions.observe(viewLifecycleOwner) {
-            if(region == null)
-                return@observe
-            val index = it.indexOfFirst { it.code == region }
-            if(index >= 0)
-                model.setRegion(index)
-        }
-        model.summits.observe(viewLifecycleOwner) {
-            if(summit == null)
-                return@observe
-            val summitInfo = it.find { summit2 -> summit2.code.split("-")[1] == summit }
+        model.updateSummit(args.association, args.region, args.summit)
+        model.summit.observe(viewLifecycleOwner) { summitInfo ->
             summitInfo?.let { info ->
                 binding.code.text = info.code.toString()
                 binding.name.text = info.name
@@ -129,11 +113,9 @@ class SummitDetailsFragment : Fragment(), OnMapReadyCallback {
         mMap = googleMap
 
         //Log.d(MapsFragment.Tag, "Google Maps ready")
-        model.summits.observe(this) { summits ->
-            if(summits == null)
+        model.summit.observe(this) { summitInfo ->
+            if(summitInfo == null)
                 return@observe
-            val summitInfo = summits.find { summit2 -> summit2.code.split("-")[1] == summit }
-                ?: return@observe
             val location = LatLng(summitInfo.latitude, summitInfo.longitude)
             mMap.clear()
             mMap.addMarker(MarkerOptions().position(location).title(summitInfo.code))

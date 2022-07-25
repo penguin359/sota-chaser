@@ -44,6 +44,6 @@ interface SotaApiService {
     @DELETE("api/spots/{id}")
     suspend fun deleteSpot(@Path("id") id: Long)
 
-    @GET("api/summits/{assocCode}/{summitCode}")
-    suspend fun getSummit(@Path("assocCode") association: String, @Path("summitCode") summit: String): SummitDto
+    @GET("api/summits/{assocCode}/{regionCode}-{summitCode}")
+    suspend fun getSummit(@Path("assocCode") association: String, @Path("regionCode") region: String, @Path("summitCode") summit: String): SummitDto
 }

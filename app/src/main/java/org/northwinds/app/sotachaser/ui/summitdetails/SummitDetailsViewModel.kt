@@ -14,7 +14,10 @@ class SummitDetailsViewModel @Inject constructor(private val repo: SummitsReposi
     val summit = _tuple.switchMap {
         if(it.equals(Triple("", "", "")))
             return@switchMap MutableLiveData()
-        repo.getSummitByCode(it.first, it.second, it.third)
+        repo.getSummitByCode(it.first, it.second, it.third).map { a ->
+            val code = "${it.first}/${it.second}-${a?.code}"
+            a?.copy(code = code)
+        }
     }.distinctUntilChanged()
 
     fun updateSummit(a: String, r: String, s: String) = viewModelScope.launch {

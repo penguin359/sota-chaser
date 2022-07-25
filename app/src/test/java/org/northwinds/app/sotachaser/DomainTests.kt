@@ -17,8 +17,16 @@ class DomainTests {
     private lateinit var list: SummitList
 
     class MockDao : SummitDao {
+        override fun insertAssociation(vararg users: AssociationCsvEntity): List<Long> {
+            TODO("Not yet implemented")
+        }
+
         override fun insertAssociation(vararg users: AssociationEntity): List<Long> {
             return listOf()
+        }
+
+        override fun updateAssociation(vararg users: AssociationCsvEntity): Int {
+            TODO("Not yet implemented")
         }
 
         override fun updateAssociation(vararg users: AssociationEntity): Int {
@@ -37,8 +45,16 @@ class DomainTests {
             return MutableLiveData()
         }
 
+        override fun insertRegion(vararg users: RegionCsvEntity): List<Long> {
+            TODO("Not yet implemented")
+        }
+
         override fun insertRegion(vararg users: RegionEntity): List<Long> {
             return listOf()
+        }
+
+        override fun updateRegion(vararg users: RegionCsvEntity): Int {
+            TODO("Not yet implemented")
         }
 
         override fun updateRegion(vararg users: RegionEntity): Int {
@@ -61,8 +77,16 @@ class DomainTests {
             return MutableLiveData()
         }
 
+        override fun insertSummit(vararg users: SummitCsvEntity): List<Long> {
+            TODO("Not yet implemented")
+        }
+
         override fun insertSummit(vararg users: SummitEntity): List<Long> {
             return listOf()
+        }
+
+        override fun updateSummit(vararg users: SummitCsvEntity): Int {
+            TODO("Not yet implemented")
         }
 
         override fun updateSummit(vararg users: SummitEntity): Int {

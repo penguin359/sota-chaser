@@ -13,10 +13,10 @@ import org.northwinds.app.sotachaser.util.asRegionDatabaseModel
 import org.northwinds.app.sotachaser.util.asSummitDatabaseModel
 
 interface SummitsRepository {
-    suspend fun refreshAssociations()
-    suspend fun updateAssociation(code: String)
-    suspend fun updateRegion(association: String, region: String)
-    suspend fun updateSummit(association: String, region: String, summit: String)
+    suspend fun refreshAssociations(force: Boolean = false)
+    suspend fun updateAssociation(code: String, force: Boolean = false)
+    suspend fun updateRegion(association: String, region: String, force: Boolean = false)
+    suspend fun updateSummit(association: String, region: String, summit: String, force: Boolean = false)
     suspend fun updateGpxTracks(summit: Summit)
 
     fun getAssociations(): LiveData<List<Association>>

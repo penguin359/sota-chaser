@@ -18,4 +18,5 @@ data class Summit(
     val activationCount: Int,
     val activationDate: String?,
     val activationCall: String?,
+    val valid: Boolean?,
 )

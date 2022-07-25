@@ -100,8 +100,29 @@ fun SummitEntity.asDomainModel() = Summit(
     activationCount = activationCount,
     activationDate = activationDate,
     activationCall = activationCall,
+    valid = valid,
 )
 
 fun List<SummitEntity>.asDomainModel() = map {
     it.asDomainModel()
 }
+
+data class SummitCsvEntity(
+    val id: Long,
+    @ColumnInfo(name = "region_id") val regionId: Long,
+    @ColumnInfo(name = "code") val code: String,
+    @ColumnInfo(name = "name") val name: String,
+    @ColumnInfo(name = "alt_m") val altM: Int,
+    @ColumnInfo(name = "alt_ft") val altFt: Int,
+    @ColumnInfo(name = "grid_ref1") val gridRef1: String?,
+    @ColumnInfo(name = "grid_ref2") val gridRef2: String?,
+    @ColumnInfo(name = "longitude") val longitude: Double,
+    @ColumnInfo(name = "latitude") val latitude: Double,
+    @ColumnInfo(name = "points") val points: Int,
+    @ColumnInfo(name = "bonus_points") val bonusPoints: Int,
+    @ColumnInfo(name = "valid_from") val validFrom: String?,
+    @ColumnInfo(name = "valid_to") val validTo: String?,
+    @ColumnInfo(name = "activation_count") val activationCount: Int,
+    @ColumnInfo(name = "activation_date") val activationDate: String?,
+    @ColumnInfo(name = "activation_call") val activationCall: String?,
+)

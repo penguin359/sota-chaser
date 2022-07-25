@@ -28,12 +28,12 @@ import javax.inject.Inject
 class SummitsRepositoryImpl @Inject constructor(private val context: Application, private val dao: SummitDao, private val client: OkHttpClient, private val api: SotaApiService, private val smpApi: SmpApiService, private val executor: ExecutorService) : SummitsRepository {
     private var hasRefreshed = false
 
-    private suspend fun checkForRefresh() {
-        if(hasRefreshed)
+    private suspend fun checkForRefresh(force: Boolean) {
+        if(hasRefreshed && !force)
             return
         withContext(executor.asCoroutineDispatcher()) {
             val prefs = context.getSharedPreferences("database", Context.MODE_PRIVATE)
-            if(!prefs.getBoolean("database_loaded", false)) {
+            if(!prefs.getBoolean("database_loaded", false) || force) {
                 Log.v(TAG, "Downloading summit list")
                 val list = try {
                     SummitData(client).getSummitData()
@@ -57,8 +57,8 @@ class SummitsRepositoryImpl @Inject constructor(private val context: Application
         }
     }
 
-    override suspend fun refreshAssociations() {
-        checkForRefresh()
+    override suspend fun refreshAssociations(force: Boolean) {
+        checkForRefresh(force)
         withContext(executor.asCoroutineDispatcher()) {
             val results = api.getAssociations()
             synchronized(this) {
@@ -69,8 +69,8 @@ class SummitsRepositoryImpl @Inject constructor(private val context: Application
         }
     }
 
-    override suspend fun updateAssociation(code: String) {
-        checkForRefresh()
+    override suspend fun updateAssociation(code: String, force: Boolean) {
+        checkForRefresh(force)
         withContext(executor.asCoroutineDispatcher()) {
             val result = api.getAssociation(code)
             synchronized(this) {
@@ -82,8 +82,8 @@ class SummitsRepositoryImpl @Inject constructor(private val context: Application
         }
     }
 
-    override suspend fun updateRegion(association: String, region: String) {
-        checkForRefresh()
+    override suspend fun updateRegion(association: String, region: String, force: Boolean) {
+        checkForRefresh(force)
         withContext(executor.asCoroutineDispatcher()) {
             val result = api.getRegion(association, region)
             synchronized(this) {
@@ -120,8 +120,8 @@ class SummitsRepositoryImpl @Inject constructor(private val context: Application
         }
     }
 
-    override suspend fun updateSummit(association: String, region: String, summit: String) {
-        checkForRefresh()
+    override suspend fun updateSummit(association: String, region: String, summit: String, force: Boolean) {
+        checkForRefresh(force)
         withContext(executor.asCoroutineDispatcher()) {
             val result = api.getSummit(association, region, summit)
             synchronized(this) {

@@ -73,3 +73,10 @@ fun RegionEntity.asDomainModel() = Region(
 fun List<RegionEntity>.asDomainModel() = map {
     it.asDomainModel()
 }
+
+data class RegionCsvEntity(
+    val id: Long,
+    @ColumnInfo(name = "association_id") val associationId: Long,
+    @ColumnInfo(name = "code") val code: String,
+    @ColumnInfo(name = "name") val name: String,
+)

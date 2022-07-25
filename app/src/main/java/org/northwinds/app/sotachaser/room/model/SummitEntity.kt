@@ -82,24 +82,26 @@ fun SummitDto.asDatabaseModel(dao: SummitDao): SummitEntity {
     )
 }
 
-fun List<SummitEntity>.asDomainModel(): List<Summit> = map {
-    Summit(
-        id = it.id,
-        regionId = it.regionId,
-        code = it.code,
-        name = it.name,
-        altM = it.altM,
-        altFt = it.altFt,
-        gridRef1 = it.gridRef1,
-        gridRef2 = it.gridRef2,
-        longitude = it.longitude,
-        latitude = it.latitude,
-        points = it.points,
-        bonusPoints = it.bonusPoints,
-        validFrom = it.validFrom,
-        validTo = it.validTo,
-        activationCount = it.activationCount,
-        activationDate = it.activationDate,
-        activationCall = it.activationCall,
-    )
+fun SummitEntity.asDomainModel() = Summit(
+    id = id,
+    regionId = regionId,
+    code = code,
+    name = name,
+    altM = altM,
+    altFt = altFt,
+    gridRef1 = gridRef1,
+    gridRef2 = gridRef2,
+    longitude = longitude,
+    latitude = latitude,
+    points = points,
+    bonusPoints = bonusPoints,
+    validFrom = validFrom,
+    validTo = validTo,
+    activationCount = activationCount,
+    activationDate = activationDate,
+    activationCall = activationCall,
+)
+
+fun List<SummitEntity>.asDomainModel() = map {
+    it.asDomainModel()
 }

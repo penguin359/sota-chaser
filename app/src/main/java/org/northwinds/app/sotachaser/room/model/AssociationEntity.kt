@@ -62,6 +62,6 @@ fun AssociationEntity.asDomainModel() = Association(
     minLong = minLong,
 )
 
-fun List<AssociationEntity>.asDomainModel(): List<Association> = map {
+fun List<AssociationEntity>.asDomainModel() = map {
     it.asDomainModel()
 }

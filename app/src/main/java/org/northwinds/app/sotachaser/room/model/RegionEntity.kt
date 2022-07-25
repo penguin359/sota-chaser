@@ -55,7 +55,7 @@ fun RegionDto.asDatabaseModel(dao: SummitDao): RegionEntity {
     )
 }
 
-fun RegionEntity.asDomainModel(): Region = Region(
+fun RegionEntity.asDomainModel() = Region(
     id = id,
     associationId = associationId,
     code = code,
@@ -70,6 +70,6 @@ fun RegionEntity.asDomainModel(): Region = Region(
     minLong = minLong,
 )
 
-fun List<RegionEntity>.asDomainModel(): List<Region> = map {
+fun List<RegionEntity>.asDomainModel() = map {
     it.asDomainModel()
 }

@@ -3,10 +3,7 @@ package org.northwinds.app.sotachaser.network.model
 import com.squareup.moshi.JsonClass
 
 @JsonClass(generateAdapter = true)
-data class AlertList(val alerts: List<AlertEntity>)
-
-@JsonClass(generateAdapter = true)
-data class AlertEntity(
+data class AlertDto(
     val id: Long,
     val userID: Long,
     val timeStamp: String?,  // 2022-07-10T02:11:34.455Z
@@ -22,7 +19,7 @@ data class AlertEntity(
 )
 
 @JsonClass(generateAdapter = true)
-data class AlertPostEntity(
+data class AlertPostEntityDto(
     val id: Long?,  // null if new alert, otherwise modify existing
     val userID: Long,
     val dateActivated: String,  // 2022-07-10T02:11:34.455Z
@@ -34,4 +31,21 @@ data class AlertPostEntity(
     val activatingName: String?,
     val frequency: String,
     val comments: String?,
+)
+
+@JsonClass(generateAdapter = true)
+data class SpotDto(
+    val id: Long,
+    val userID: Long,
+    val timeStamp: String,  // 2022-07-10T02:22:00.461Z
+    val comments: String?,
+    val callsign: String?,
+    val associationCode: String,
+    val summitCode: String,
+    val activatorCallsign: String,  // max len: 12
+    val activatorName: String?,
+    val frequency: String,
+    val mode: String,
+    val summitDetails: String?,
+    val highlightColor: String?,
 )

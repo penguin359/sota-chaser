@@ -1,11 +1,10 @@
 package org.northwinds.app.sotachaser.ui.abstraction
 
-import android.util.Log
-import androidx.lifecycle.*
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.ViewModel
 import kotlinx.coroutines.Job
-import kotlinx.coroutines.runBlocking
 import org.northwinds.app.sotachaser.repository.SummitsRepository
-import org.northwinds.app.sotachaser.ui.map.MapsViewModel
 import java.util.concurrent.ExecutorService
 
 /*

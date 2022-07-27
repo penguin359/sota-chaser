@@ -3,7 +3,6 @@ package org.northwinds.app.sotachaser.ui.regions
 import androidx.lifecycle.*
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
-import org.northwinds.app.sotachaser.domain.models.Association
 import org.northwinds.app.sotachaser.domain.models.Region
 import org.northwinds.app.sotachaser.repository.SummitsRepository
 import org.northwinds.app.sotachaser.ui.abstraction.AbstractViewModel

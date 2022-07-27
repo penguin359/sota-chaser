@@ -184,7 +184,7 @@ class MapsModelViewTest {
     fun setup() {
         hiltRule.inject()
         val app = ApplicationProvider.getApplicationContext<Application>()
-        model = MapsViewModel(app, executor, repo)
+        model = MapsViewModel(app, repo)
     }
 
     @Test

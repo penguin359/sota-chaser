@@ -32,7 +32,7 @@ import javax.inject.Inject
  */
 
 @HiltViewModel
-class AssociationViewModel @Inject constructor(private val executorService: ExecutorService, private val repo: SummitsRepository) : AbstractViewModel<Association>(executorService, repo) {
+class AssociationViewModel @Inject constructor(executorService: ExecutorService, private val repo: SummitsRepository) : AbstractViewModel<Association>(executorService, repo) {
     override val list_items = filter.switchMap { f ->
         repo.getAssociations().map { items ->
             items.filter {

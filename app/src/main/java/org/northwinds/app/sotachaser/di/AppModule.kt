@@ -24,6 +24,7 @@ import javax.inject.Singleton
 @Module
 @InstallIn(SingletonComponent::class)
 abstract class AppModule {
+    @Singleton
     @Binds abstract fun provideSummitsRepository(repo: SummitsRepositoryImpl): SummitsRepository
 
     companion object {

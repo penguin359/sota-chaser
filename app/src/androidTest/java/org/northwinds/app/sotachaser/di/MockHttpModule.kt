@@ -23,7 +23,7 @@ object MockHttpModule {
     @Provides
     fun provideInterceptor(context: Application): MockInterceptor {
         val interceptor = MockInterceptor().apply {
-            rule(url eq "https://www.sotadata.org.uk/summitslist.csv") {
+            rule(url eq "https://www.sotadata.org.uk/summitslist.csv", times = anyTimes) {
                 val input = AndroidResources.rawRes(context, R.raw.summitslist)
                 respond(input)
             }

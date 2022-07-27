@@ -189,6 +189,7 @@ class MapsModelViewTest {
 
     @Test
     fun load_map_view_model() {
+        Espresso.onIdle()
         val associations = model.associations.getOrAwaitValue()
         assertEquals(
             "Incorrect number of associations",

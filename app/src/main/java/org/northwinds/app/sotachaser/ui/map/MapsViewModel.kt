@@ -91,6 +91,8 @@ class MapsViewModel @Inject constructor(app: Application, private val executorSe
     }
 
     fun setRegion(entry: Int) {
+        if(regions.value == null || entry >= regions.value!!.count())
+            return
         val newRegion = regions.value!![entry].code
         if(newRegion == region.value)
             return
@@ -108,6 +110,10 @@ class MapsViewModel @Inject constructor(app: Application, private val executorSe
 
     fun refreshAssociations() = viewModelScope.launch {
         repo.refreshAssociations()
+    }
+
+    init {
+        refreshAssociations()
     }
 
     fun updateSummit(a: String, r: String, s: String) = viewModelScope.launch {

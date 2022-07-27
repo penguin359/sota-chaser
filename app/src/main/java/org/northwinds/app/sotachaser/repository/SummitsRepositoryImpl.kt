@@ -29,6 +29,10 @@ import javax.inject.Inject
 class SummitsRepositoryImpl @Inject constructor(private val context: Application, private val dao: SummitDao, private val client: OkHttpClient, private val api: SotaApiService, private val smpApi: SmpApiService, private val executor: ExecutorService) : SummitsRepository {
     private var hasRefreshed = false
 
+    init {
+        Log.v(TAG, "Starting new Summits Repository")
+    }
+
     private suspend fun checkForRefresh(force: Boolean) {
         if(hasRefreshed && !force)
             return

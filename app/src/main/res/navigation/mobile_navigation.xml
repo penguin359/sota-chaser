@@ -61,7 +61,28 @@
         <argument
             android:name="summit"
             app:argType="string" />
+        <action
+            android:id="@+id/action_summitDetailsFragment_to_gpxTrackFragment"
+            app:destination="@id/gpxTrackFragment" />
     </fragment>
+    <fragment
+        android:id="@+id/gpxTrackFragment"
+        android:name="org.northwinds.app.sotachaser.ui.gpxtrack.GpxTrackFragment"
+        android:label="GpxTrackFragment" >
+        <argument
+            android:name="association"
+            app:argType="string" />
+        <argument
+            android:name="region"
+            app:argType="string" />
+        <argument
+            android:name="summit"
+            app:argType="string" />
+        <argument
+            android:name="track"
+            app:argType="integer" />
+    </fragment>
+
 
     <!--
         <fragment

@@ -1,18 +1,11 @@
-package org.northwinds.app.sotachaser.ui.summitdetails
+package org.northwinds.app.sotachaser.ui.gpxtrack
 
-import android.app.Dialog
 import android.content.Intent
-import android.database.DataSetObserver
 import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ListAdapter
-import android.widget.TextView
-import android.widget.Toast
-import androidx.appcompat.app.AlertDialog
-import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.navArgs
@@ -26,7 +19,6 @@ import dagger.hilt.android.AndroidEntryPoint
 import org.northwinds.app.sotachaser.R
 import org.northwinds.app.sotachaser.databinding.FragmentSummitDetailsBinding
 import org.northwinds.app.sotachaser.domain.models.GpxTrack
-import org.northwinds.app.sotachaser.ui.gpxtrack.GpxListFragment
 import org.northwinds.app.sotachaser.ui.map.MapsViewModel
 
 const val TAG = "SOTAChaser-SummitDetailsFragment"
@@ -35,25 +27,13 @@ const val TAG = "SOTAChaser-SummitDetailsFragment"
  * A fragment representing a list of Items.
  */
 @AndroidEntryPoint
-class SummitDetailsFragment : Fragment(), OnMapReadyCallback {
-    private val model: SummitDetailsViewModel by viewModels()
+class GpxTrackFragment : Fragment(), OnMapReadyCallback {
+    private val model: MapsViewModel by viewModels()
     private lateinit var binding: FragmentSummitDetailsBinding
-
-    private var association: String? = null
-    private var region: String? = null
-    private var summit: String? = null
 
     private lateinit var mMap: GoogleMap
 
-    val args: SummitDetailsFragmentArgs by navArgs()
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-
-        association = args.association
-        region = args.region
-        summit = args.summit
-    }
+    val args: GpxTrackFragmentArgs by navArgs()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -65,8 +45,18 @@ class SummitDetailsFragment : Fragment(), OnMapReadyCallback {
             .findFragmentById(R.id.map) as SupportMapFragment
         mapFragment.getMapAsync(this)
 
-        model.updateSummit(args.association, args.region, args.summit)
-        model.summit.observe(viewLifecycleOwner) { summitInfo ->
+        model.associations.observe(viewLifecycleOwner) {
+            val index = it.indexOfFirst { it.code == args.association }
+            if(index >= 0)
+                model.setAssociation(index)
+        }
+        model.regions.observe(viewLifecycleOwner) {
+            val index = it.indexOfFirst { it.code == args.region }
+            if(index >= 0)
+                model.setRegion(index)
+        }
+        model.summits.observe(viewLifecycleOwner) {
+            val summitInfo = it.find { summit2 -> summit2.code.split("-")[1] == args.summit }
             summitInfo?.let { info ->
                 binding.code.text = info.code.toString()
                 binding.name.text = info.name
@@ -81,15 +71,6 @@ class SummitDetailsFragment : Fragment(), OnMapReadyCallback {
                 }
                 binding.sotlasBtn.setOnClickListener {
                     startActivity(Intent(Intent.ACTION_VIEW, Uri.parse("https://sotl.as/summits/${summitInfo.code}")))
-                }
-            }
-
-            binding.trackList.setOnClickListener {
-                GpxListFragment().apply {
-                    arguments = Bundle().apply {
-                        putSerializable("value", model.tracks.value?.toTypedArray())
-                    }
-                    show(this@SummitDetailsFragment.childFragmentManager, null)
                 }
             }
         }
@@ -131,9 +112,11 @@ class SummitDetailsFragment : Fragment(), OnMapReadyCallback {
         mMap = googleMap
 
         //Log.d(MapsFragment.Tag, "Google Maps ready")
-        model.summit.observe(this) { summitInfo ->
-            if(summitInfo == null)
+        model.summits.observe(this) { summits ->
+            if(summits == null)
                 return@observe
+            val summitInfo = summits.find { summit2 -> summit2.code.split("-")[1] == args.summit }
+                ?: return@observe
             val location = LatLng(summitInfo.latitude, summitInfo.longitude)
             mMap.clear()
             mMap.addMarker(MarkerOptions().position(location).title(summitInfo.code))

@@ -76,8 +76,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textAppearance="?attr/textAppearanceListItem"
-        app:layout_constraintTop_toBottomOf="@id/activation_callsign"
         app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/activation_callsign"
         tools:text="2022-02-15" />
 
     <Button
@@ -85,6 +85,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="SOTA"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/activation_date" />
 
     <Button
@@ -94,6 +95,22 @@
         android:text="SOTL.AS"
         app:layout_constraintStart_toEndOf="@+id/sota_btn"
         app:layout_constraintTop_toBottomOf="@+id/activation_date" />
+
+    <Button
+        android:id="@+id/geo_btn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Map"
+        app:layout_constraintStart_toEndOf="@+id/sotlas_btn"
+        app:layout_constraintTop_toBottomOf="@+id/activation_date" />
+
+    <Button
+        android:id="@+id/track_list"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="GPX Tracks"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/distance" />
 
     <fragment xmlns:map="http://schemas.android.com/apk/res-auto"
         android:id="@+id/map"

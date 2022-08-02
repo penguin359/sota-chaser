@@ -10,6 +10,10 @@
     <string name="title_changelog">Changelog</string>
     <string name="changelog_text">Updates in this release:\n
 \n
+<b>Version 0.7.2 Alpha</b>\n
+• A quick summary of summit data is now loaded first while the full CSV file is downloaded\n
+• Fixed issue with multiple downloads happening in parallel\n
+\n
 <b>Version 0.7.1 Alpha</b>\n
 • Fixed issues with API not reloading data correctly.\n
 \n

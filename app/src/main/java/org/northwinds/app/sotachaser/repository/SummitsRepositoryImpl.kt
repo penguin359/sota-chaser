@@ -63,7 +63,6 @@ class SummitsRepositoryImpl @Inject constructor(private val context: Application
     }
 
     override suspend fun refreshAssociations(force: Boolean) {
-        checkForRefresh(force)
         withContext(executor.asCoroutineDispatcher()) {
             val results = api.getAssociations()
             synchronized(this) {
@@ -72,10 +71,11 @@ class SummitsRepositoryImpl @Inject constructor(private val context: Application
                 }
             }
         }
+        checkForRefresh(force)
     }
 
     override suspend fun updateAssociation(code: String, force: Boolean) {
-        checkForRefresh(force)
+        //checkForRefresh(force)
         withContext(executor.asCoroutineDispatcher()) {
             val result = api.getAssociation(code)
             synchronized(this) {
@@ -88,7 +88,7 @@ class SummitsRepositoryImpl @Inject constructor(private val context: Application
     }
 
     override suspend fun updateRegion(association: String, region: String, force: Boolean) {
-        checkForRefresh(force)
+        //checkForRefresh(force)
         withContext(executor.asCoroutineDispatcher()) {
             val result = api.getRegion(association, region)
             synchronized(this) {
@@ -126,7 +126,7 @@ class SummitsRepositoryImpl @Inject constructor(private val context: Application
     }
 
     override suspend fun updateSummit(association: String, region: String, summit: String, force: Boolean) {
-        checkForRefresh(force)
+        //checkForRefresh(force)
         withContext(executor.asCoroutineDispatcher()) {
             val result = api.getSummit(association, region, summit)
             synchronized(this) {

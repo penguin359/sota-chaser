@@ -14,7 +14,7 @@
     <fragment
         android:id="@+id/associationFragment"
         android:name="org.northwinds.app.sotachaser.ui.associations.AssociationFragment"
-        android:label="AssociationFragment" >
+        android:label="Association List" >
         <action
             android:id="@+id/action_associationFragment_to_regionFragment"
             app:destination="@id/regionFragment" />
@@ -23,7 +23,7 @@
     <fragment
         android:id="@+id/regionFragment"
         android:name="org.northwinds.app.sotachaser.ui.regions.RegionFragment"
-        android:label="RegionFragment" >
+        android:label="Region List" >
         <action
             android:id="@+id/action_regionFragment_to_navigation_dashboard"
             app:destination="@id/navigation_dashboard" />
@@ -51,7 +51,7 @@
     <fragment
         android:id="@+id/summitDetailsFragment"
         android:name="org.northwinds.app.sotachaser.ui.summitdetails.SummitDetailsFragment"
-        android:label="SummitDetailsFragment" >
+        android:label="Summit Details" >
         <argument
             android:name="association"
             app:argType="string" />
@@ -68,7 +68,7 @@
     <fragment
         android:id="@+id/gpxTrackFragment"
         android:name="org.northwinds.app.sotachaser.ui.gpxtrack.GpxTrackFragment"
-        android:label="GpxTrackFragment" >
+        android:label="GPX Track" >
         <argument
             android:name="association"
             app:argType="string" />

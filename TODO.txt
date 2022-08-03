@@ -74,6 +74,9 @@ Implement ARM display
 Implement restrictions on summits
 Implement locator
 
+Show min/max altitude on GPX track
+Colorize hue based on altitude range of track
+
 
 adb shell setprop log.tag.SQLiteLog V
 adb shell setprop log.tag.SQLiteStatements V

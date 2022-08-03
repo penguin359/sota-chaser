@@ -13,6 +13,7 @@ import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.LatLng
+import com.google.android.gms.maps.model.LatLngBounds
 import com.google.android.gms.maps.model.MarkerOptions
 import com.google.android.gms.maps.model.PolylineOptions
 import dagger.hilt.android.AndroidEntryPoint
@@ -109,13 +110,31 @@ class GpxTrackFragment : Fragment(), OnMapReadyCallback {
         }
         model.points.observe(this) { pointList ->
             if(pointList.isNotEmpty()) {
+                var minLatitude = pointList[0].latitude
+                var maxLatitude = pointList[0].latitude
+                var minLongitude = pointList[0].longitude
+                var maxLongitude = pointList[0].longitude
                 val polyline = PolylineOptions().apply {
                     pointList.forEach {
+                        if(it.latitude < minLatitude)
+                            minLatitude = it.latitude
+                        if(it.latitude > maxLatitude)
+                            maxLatitude = it.latitude
+                        if(it.longitude < minLongitude)
+                            minLongitude = it.longitude
+                        if(it.longitude > maxLongitude)
+                            maxLongitude = it.longitude
                         add(LatLng(it.latitude, it.longitude))
                     }
                     color(0xff0000ff.toInt())
                 }
                 val build = mMap.addPolyline(polyline)
+                mMap.moveCamera(
+                    CameraUpdateFactory.newLatLngBounds(
+                        LatLngBounds(
+                            LatLng(minLatitude, minLongitude),
+                            LatLng(maxLatitude, maxLongitude)
+                        ), 75))
                 //build.remove()
                 Log.d(TAG, "Updating Map with track points: " + pointList.count())
             }

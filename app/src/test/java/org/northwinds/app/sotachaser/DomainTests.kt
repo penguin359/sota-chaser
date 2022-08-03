@@ -140,6 +140,10 @@ class DomainTests {
             TODO("Not yet implemented")
         }
 
+        override fun getGpxTrack(id: Long): LiveData<GpxTrackEntity?> {
+            TODO("Not yet implemented")
+        }
+
         override fun insertGpxPoint(vararg users: GpxPointEntity): List<Long> {
             TODO("Not yet implemented")
         }

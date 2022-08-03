@@ -1,13 +1,22 @@
 package org.northwinds.app.sotachaser.ui.summitdetails
 
+import android.app.Dialog
 import android.content.Intent
+import android.database.DataSetObserver
 import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ListAdapter
+import android.widget.TextView
+import android.widget.Toast
+import androidx.appcompat.app.AlertDialog
+import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.setFragmentResultListener
 import androidx.fragment.app.viewModels
+import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
@@ -18,6 +27,8 @@ import com.google.android.gms.maps.model.MarkerOptions
 import dagger.hilt.android.AndroidEntryPoint
 import org.northwinds.app.sotachaser.R
 import org.northwinds.app.sotachaser.databinding.FragmentSummitDetailsBinding
+import org.northwinds.app.sotachaser.domain.models.GpxTrack
+import org.northwinds.app.sotachaser.ui.gpxtrack.GpxListFragment
 import org.northwinds.app.sotachaser.ui.map.MapsViewModel
 
 const val TAG = "SOTAChaser-SummitDetailsFragment"
@@ -72,6 +83,21 @@ class SummitDetailsFragment : Fragment(), OnMapReadyCallback {
                 }
                 binding.sotlasBtn.setOnClickListener {
                     startActivity(Intent(Intent.ACTION_VIEW, Uri.parse("https://sotl.as/summits/${summitInfo.code}")))
+                }
+                binding.geoBtn.setOnClickListener {
+                    startActivity(Intent(Intent.ACTION_VIEW, Uri.parse("geo:${summitInfo.latitude},${summitInfo.longitude}")))
+                }
+            }
+
+            binding.trackList.setOnClickListener {
+                GpxListFragment().apply {
+                    arguments = Bundle().apply {
+                        putSerializable("value", model.tracks.value?.toTypedArray())
+                    }
+                    show(this@SummitDetailsFragment.childFragmentManager, null)
+                    setFragmentResultListener("a", ) { _, response ->
+                        findNavController().navigate(SummitDetailsFragmentDirections.actionSummitDetailsFragmentToGpxTrackFragment(args.association, args.region, args.summit, response.getLong("id")))
+                    }
                 }
             }
         }

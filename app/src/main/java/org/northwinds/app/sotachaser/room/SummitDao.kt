@@ -200,6 +200,9 @@ interface SummitDao {
     @Query("SELECT * FROM gpx_track WHERE summit_id = :summitId ORDER BY callsign")
     fun getGpxTracks(summitId: Long): LiveData<List<GpxTrackEntity>>
 
+    @Query("SELECT * FROM gpx_track WHERE id = :id")
+    fun getGpxTrack(id: Long): LiveData<GpxTrackEntity?>
+
     @Insert
     fun insertGpxPoint(vararg users: GpxPointEntity): List<Long>
 

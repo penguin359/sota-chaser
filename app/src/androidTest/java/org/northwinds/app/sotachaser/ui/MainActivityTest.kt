@@ -66,6 +66,7 @@ import org.northwinds.app.sotachaser.repository.SummitsRepository
 import org.northwinds.app.sotachaser.testing.HiltFragmentScenario
 import org.northwinds.app.sotachaser.ui.map.MapsFragment
 import org.northwinds.app.sotachaser.ui.map.MapsViewModel
+import java.lang.Thread.sleep
 import java.util.concurrent.CountDownLatch
 import java.util.concurrent.ExecutorService
 import java.util.concurrent.TimeUnit
@@ -300,6 +301,8 @@ class MapsFragmentTest {
             it.binding.region.setSelection(0)
         }
         onView(withId(R.id.association)).check(matches(isDisplayed()))
+        sleep(500)
+        Espresso.onIdle()
         onView(withId(R.id.association)).check { view, noViewException ->
             if (view == null)
                 throw noViewException

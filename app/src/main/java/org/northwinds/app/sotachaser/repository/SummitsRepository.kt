@@ -26,5 +26,6 @@ interface SummitsRepository {
     fun getSummits(associationId: String,  region: String): LiveData<List<Summit>>
     fun getSummitByCode(association: String, region: String, summit: String): LiveData<Summit?>
     fun getGpxTracks(summit: Summit): LiveData<List<GpxTrack>>
+    fun getGpxTrack(id: Long): LiveData<GpxTrack?>
     fun getGpxPoints(gpxTrack: GpxTrack): LiveData<List<GpxPoint>>
 }

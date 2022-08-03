@@ -14,7 +14,9 @@ import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.setFragmentResultListener
 import androidx.fragment.app.viewModels
+import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
@@ -90,6 +92,9 @@ class SummitDetailsFragment : Fragment(), OnMapReadyCallback {
                         putSerializable("value", model.tracks.value?.toTypedArray())
                     }
                     show(this@SummitDetailsFragment.childFragmentManager, null)
+                    setFragmentResultListener("a", ) { _, response ->
+                        findNavController().navigate(SummitDetailsFragmentDirections.actionSummitDetailsFragmentToGpxTrackFragment(args.association, args.region, args.summit, response.getLong("id")))
+                    }
                 }
             }
         }

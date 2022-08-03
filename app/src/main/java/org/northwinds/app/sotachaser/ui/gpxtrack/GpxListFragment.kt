@@ -9,7 +9,10 @@ import android.view.ViewGroup
 import android.widget.*
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.DialogFragment
+import androidx.fragment.app.setFragmentResult
+import androidx.navigation.fragment.findNavController
 import org.northwinds.app.sotachaser.domain.models.GpxTrack
+import org.northwinds.app.sotachaser.ui.summitdetails.SummitDetailsFragmentDirections
 
 class GpxListFragment() : DialogFragment() {
     var items: Array<GpxTrack> = arrayOf()
@@ -24,6 +27,9 @@ class GpxListFragment() : DialogFragment() {
             }
             .setAdapter(GpxList(items)) { dialog2, position ->
                 Toast.makeText(requireContext(), "Clicked on ${items[position]}", Toast.LENGTH_LONG).show()
+                setFragmentResult("a", Bundle().apply {
+                    putLong("id", items[position].id)
+                })
             }
             .create()
     }

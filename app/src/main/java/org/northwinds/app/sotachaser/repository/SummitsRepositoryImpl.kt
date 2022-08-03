@@ -119,6 +119,12 @@ class SummitsRepositoryImpl @Inject constructor(private val context: Application
         }
     }
 
+    override fun getGpxTrack(id: Long): LiveData<GpxTrack?> {
+        return dao.getGpxTrack(id).map() {
+            it?.asDomainModel()
+        }
+    }
+
     override fun getGpxPoints(gpxTrack: GpxTrack): LiveData<List<GpxPoint>> {
         return dao.getGpxPoints(gpxTrack.id).map() {
             it.asDomainModel()

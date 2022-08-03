@@ -84,6 +84,9 @@ class SummitDetailsFragment : Fragment(), OnMapReadyCallback {
                 binding.sotlasBtn.setOnClickListener {
                     startActivity(Intent(Intent.ACTION_VIEW, Uri.parse("https://sotl.as/summits/${summitInfo.code}")))
                 }
+                binding.geoBtn.setOnClickListener {
+                    startActivity(Intent(Intent.ACTION_VIEW, Uri.parse("geo:${summitInfo.latitude},${summitInfo.longitude}")))
+                }
             }
 
             binding.trackList.setOnClickListener {

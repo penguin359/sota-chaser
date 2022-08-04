@@ -10,6 +10,10 @@
     <string name="title_changelog">Changelog</string>
     <string name="changelog_text">Updates in this release:\n
 \n
+<b>Version 0.8.2 Alpha</b>\n
+• Show my location on summit detail map\n
+• Fixed invalid summit data that was being loaded\n
+\n
 <b>Version 0.8.1 Alpha</b>\n
 • Fixed potential crash when downloading summit data\n
 • Ensure latest GPX track data is downloaded\n

@@ -15,7 +15,7 @@ import org.northwinds.app.sotachaser.domain.models.*
 import org.northwinds.app.sotachaser.network.SmpApiService
 import org.northwinds.app.sotachaser.network.SotaApiService
 import org.northwinds.app.sotachaser.network.SummitData
-import org.northwinds.app.sotachaser.room.*
+import org.northwinds.app.sotachaser.room.SummitDao
 import org.northwinds.app.sotachaser.room.model.asDatabaseModel
 import org.northwinds.app.sotachaser.room.model.asDomainModel
 import org.northwinds.app.sotachaser.room.model.asSummitDatabaseModel
@@ -106,6 +106,7 @@ class SummitsRepositoryImpl @Inject constructor(private val context: Application
             val r = summit.code.split("/")[1].split("-")[0]
             val s = summit.code.split("-")[1]
             val track = smpApi.getGpxTracks(a, r, s)
+            dao.deleteGpxTrack(*track.asDatabaseModel(summit.id).toTypedArray())
             val ids = dao.insertGpxTrack(*track.asDatabaseModel(summit.id).toTypedArray())
             ids.zip(track).forEach { (id, track) ->
                 dao.insertGpxPoint(*track.points.asDatabaseModel(id).toTypedArray())

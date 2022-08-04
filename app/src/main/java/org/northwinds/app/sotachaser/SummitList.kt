@@ -60,7 +60,7 @@ class SummitList(input: InputStream) {
                 }
             }
             summits = proc.beans.filter {
-                if(TextUtils.isEmpty(it.summitCode)) {
+                if(!TextUtils.isEmpty(it.summitCode)) {
                     true
                 } else {
                     Log.w(TAG, "Empty CSV record: $it")

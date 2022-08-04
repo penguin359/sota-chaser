@@ -10,8 +10,13 @@
     <string name="title_changelog">Changelog</string>
     <string name="changelog_text">Updates in this release:\n
 \n
+<b>Version 0.8.1 Alpha</b>\n
+• Fixed potential crash when downloading summit data\n
+• Ensure latest GPX track data is downloaded\n
+• Allow the map type to be selected for normal, satellite, and terrain\n
+\n
 <b>Version 0.8 Alpha</b>\n
-• Map view for uploaded GPX tracks to a summit
+• Map view for uploaded GPX tracks to a summit\n
 • Added geo: link integration with Google Maps, Google Earth, and Gaia GPS\n
 \n
 <b>Version 0.7.2 Alpha</b>\n

@@ -166,6 +166,7 @@ class SummitDetailsFragment : Fragment(), OnMapReadyCallback {
             mMap.clear()
             mMap.addMarker(MarkerOptions().position(location).title(summitInfo.code))
             mMap.moveCamera(CameraUpdateFactory.newLatLng(location))
+            mMap.isMyLocationEnabled = true
             //Log.d(MapsFragment.Tag, "Updating Map with summit count: " + summits.count())
         }
     }

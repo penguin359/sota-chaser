@@ -2,6 +2,7 @@ package org.northwinds.app.sotachaser.ui.summitdetails
 
 import android.app.Dialog
 import android.content.Intent
+import android.content.SharedPreferences
 import android.database.DataSetObserver
 import android.net.Uri
 import android.os.Bundle
@@ -18,6 +19,7 @@ import androidx.fragment.app.setFragmentResultListener
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
+import androidx.preference.PreferenceManager
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
@@ -135,8 +137,26 @@ class SummitDetailsFragment : Fragment(), OnMapReadyCallback {
         return binding.root
     }
 
+    fun setMapType(value: String) {
+        mMap.mapType = when(value) {
+            "satellite" -> GoogleMap.MAP_TYPE_SATELLITE
+            "hybrid" -> GoogleMap.MAP_TYPE_HYBRID
+            "terrain" -> GoogleMap.MAP_TYPE_TERRAIN
+            else -> GoogleMap.MAP_TYPE_NORMAL
+        }
+    }
+
+    private val prefsListener = SharedPreferences.OnSharedPreferenceChangeListener(function = { prefs, key ->
+        if(key == "map_type" || key == null)
+            setMapType(prefs.getString("map_type", "") ?: "")
+    })
+
     override fun onMapReady(googleMap: GoogleMap) {
         mMap = googleMap
+
+        val prefs = PreferenceManager.getDefaultSharedPreferences(requireContext())
+        prefs.registerOnSharedPreferenceChangeListener(prefsListener)
+        setMapType(prefs.getString("map_type", "") ?: "")
 
         //Log.d(MapsFragment.Tag, "Google Maps ready")
         model.summit.observe(this) { summitInfo ->

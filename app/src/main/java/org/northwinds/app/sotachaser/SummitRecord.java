@@ -22,19 +22,19 @@ public class SummitRecord {
     @Parsed private String activationCall;
 
     public String getSummitCode() {
-        return summitCode;
+        return summitCode != null ? summitCode : "";
     }
 
     public String getAssociationName() {
-        return associationName;
+        return associationName != null ? associationName : "";
     }
 
     public String getRegionName() {
-        return regionName;
+        return regionName != null ? regionName : "";
     }
 
     public String getSummitName() {
-        return summitName;
+        return summitName != null ? summitName : "";
     }
 
     public int getAltM() {
@@ -46,11 +46,11 @@ public class SummitRecord {
     }
 
     public String getGridRef1() {
-        return gridRef1;
+        return gridRef1 != null ? gridRef1 : "";
     }
 
     public String getGridRef2() {
-        return gridRef2;
+        return gridRef2 != null ? gridRef2 : "";
     }
 
     public double getLongitude() {
@@ -70,11 +70,11 @@ public class SummitRecord {
     }
 
     public String getValidFrom() {
-        return validFrom;
+        return validFrom != null ? validFrom : "";
     }
 
     public String getValidTo() {
-        return validTo;
+        return validTo != null ? validTo : "";
     }
 
     public int getActivationCount() {
@@ -82,11 +82,11 @@ public class SummitRecord {
     }
 
     public String getActivationDate() {
-        return activationDate;
+        return activationDate != null ? activationDate : "";
     }
 
     public String getActivationCall() {
-        return activationCall;
+        return activationCall != null ? activationCall : "";
     }
 
     public void setSummitName(String summitName) {

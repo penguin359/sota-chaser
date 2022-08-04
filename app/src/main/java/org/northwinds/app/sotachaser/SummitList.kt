@@ -1,5 +1,7 @@
 package org.northwinds.app.sotachaser
 
+import android.text.TextUtils
+import android.util.Log
 import com.univocity.parsers.common.TextParsingException
 import com.univocity.parsers.common.processor.BeanListProcessor
 import com.univocity.parsers.csv.CsvParser
@@ -40,8 +42,8 @@ class SummitList(input: InputStream) {
     val summits: List<SummitRecord>
 
     init {
-        BufferedReader(InputStreamReader(input, StandardCharsets.UTF_8)).use {
-            it.readLine()
+        BufferedReader(InputStreamReader(input, StandardCharsets.UTF_8)).use { reader ->
+            reader.readLine()
             val proc = BeanListProcessor(SummitRecord::class.java)
             val parserSettings = CsvParserSettings()
             parserSettings.isLineSeparatorDetectionEnabled = true
@@ -49,7 +51,7 @@ class SummitList(input: InputStream) {
             parserSettings.isHeaderExtractionEnabled = true
             val parser = CsvParser(parserSettings)
             try {
-                parser.parse(it)
+                parser.parse(reader)
             } catch(ex: TextParsingException) {
                 if(ex.cause is IOException) {
                     throw ex.cause as IOException
@@ -57,7 +59,14 @@ class SummitList(input: InputStream) {
                     throw IllegalStateException(ex)
                 }
             }
-            summits = proc.beans
+            summits = proc.beans.filter {
+                if(TextUtils.isEmpty(it.summitCode)) {
+                    true
+                } else {
+                    Log.w(TAG, "Empty CSV record: $it")
+                    false
+                }
+            }
         }
     }
 
@@ -76,5 +85,9 @@ class SummitList(input: InputStream) {
     val summitsByRegion by lazy {
         val regionsByAssociation = summits.groupBy { it.summitCode.split("/")[0] }
         regionsByAssociation.mapValues { it.value.groupBy { it.summitCode.split("-")[0].split("/")[1] } }
+    }
+
+    companion object {
+        private const val TAG = "SOTAChaser-SummitList"
     }
 }

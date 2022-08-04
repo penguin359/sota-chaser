@@ -1,5 +1,13 @@
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
+    <PreferenceCategory android:title="Map Settings">
+        <ListPreference
+            android:defaultValue="roadmap"
+            android:entries="@array/map_types"
+            android:entryValues="@array/map_types_values"
+            android:key="map_type"
+            android:title="Map Type" />
+    </PreferenceCategory>
     <PreferenceCategory app:title="@string/title_analytics">
         <SwitchPreferenceCompat
             app:defaultValue="false"

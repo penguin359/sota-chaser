@@ -69,4 +69,17 @@
     <string name="title_home">Map</string>
     <string name="title_dashboard">Summit List</string>
     <string name="title_notifications">Notifications</string>
+
+    <string-array name="map_types">
+        <item>Roadmap</item>
+        <item>Satellite</item>
+        <item>Hybrid</item>
+        <item>Terrain</item>
+    </string-array>
+    <string-array name="map_types_values">
+        <item>roadmap</item>
+        <item>satellite</item>
+        <item>hybrid</item>
+        <item>terrain</item>
+    </string-array>
 </resources>

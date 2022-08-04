@@ -21,6 +21,7 @@
  */
 package org.northwinds.app.sotachaser.ui.map
 
+import android.content.SharedPreferences
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -135,6 +136,20 @@ class MapsFragment : Fragment(), OnMapReadyCallback {
         return binding.root
     }
 
+    fun setMapType(value: String) {
+        mMap.mapType = when(value) {
+            "satellite" -> GoogleMap.MAP_TYPE_SATELLITE
+            "hybrid" -> GoogleMap.MAP_TYPE_HYBRID
+            "terrain" -> GoogleMap.MAP_TYPE_TERRAIN
+            else -> GoogleMap.MAP_TYPE_NORMAL
+        }
+    }
+
+    private val prefsListener = SharedPreferences.OnSharedPreferenceChangeListener(function = { prefs, key ->
+        if(key == "map_type" || key == null)
+            setMapType(prefs.getString("map_type", "") ?: "")
+    })
+
     /**
      * Manipulates the map once available.
      * This callback is triggered when the map is ready to be used.
@@ -146,6 +161,10 @@ class MapsFragment : Fragment(), OnMapReadyCallback {
      */
     override fun onMapReady(googleMap: GoogleMap) {
         mMap = googleMap
+
+        val prefs = PreferenceManager.getDefaultSharedPreferences(requireContext())
+        prefs.registerOnSharedPreferenceChangeListener(prefsListener)
+        setMapType(prefs.getString("map_type", "") ?: "")
 
         Log.d(Companion.Tag, "Google Maps ready")
         // Add a marker in Sydney and move the camera

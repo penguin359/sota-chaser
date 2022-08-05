@@ -89,13 +89,6 @@ object MockHttpModule {
                     |    "summitsCount": 0
                     |}""".trimMargin(), MediaTypes.MEDIATYPE_JSON) }
             }
-            rule(path matches "/smp/gpx/summit/(\\w+)/(.*)".toRegex(), times = anyTimes) {
-                respond {
-                    //val association = it.url.pathSegments[2]
-                    body("""
-                    |[
-                    |]""".trimMargin(), MediaTypes.MEDIATYPE_JSON) }
-            }
             rule(path matches "/api/regions/(\\w+)/(\\w+)".toRegex(), times = anyTimes) {
                 respond {
                     val association = it.url.pathSegments[2]
@@ -108,6 +101,33 @@ object MockHttpModule {
                     |        "summits": 0
                     |    }
                     |}""".trimMargin(), MediaTypes.MEDIATYPE_JSON) }
+            }
+            rule(path matches "/api/summits/(\\w+)/(.*)".toRegex(), times = anyTimes) {
+                respond {
+                    val association = it.url.pathSegments[2]
+                    val region = it.url.pathSegments[3].split("-")[0]
+                    val summit = it.url.pathSegments[3].split("-")[1]
+                    body("""
+                    |{
+                    |    "summitCode": "$association/$region-$summit",
+                    |    "shortCode": "$region-$summit",
+                    |    "altM": 0,
+                    |    "altFt": 0,
+                    |    "validFrom": "",
+                    |    "validTo": "",
+                    |    "longitude": 0,
+                    |    "latitude": 0,
+                    |    "points": 0,
+                    |    "valid": false,
+                    |    "restrictionMask": false
+                    |}""".trimMargin(), MediaTypes.MEDIATYPE_JSON) }
+            }
+            rule(path matches "/smp/gpx/summit/(\\w+)/(.*)".toRegex(), times = anyTimes) {
+                respond {
+                    //val association = it.url.pathSegments[2]
+                    body("""
+                    |[
+                    |]""".trimMargin(), MediaTypes.MEDIATYPE_JSON) }
             }
             rule(get) {
                 respond { throw IllegalStateException("I/O Error") }

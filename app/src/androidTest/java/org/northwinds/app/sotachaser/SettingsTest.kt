@@ -78,7 +78,8 @@ class SettingsSimpleTest {
     @FlakyTest
     fun settingsBackButtonExitTest() {
         val device = UiDevice.getInstance(InstrumentationRegistry.getInstrumentation())
-        device.pressBack()
+        //device.pressBack()
+        Espresso.pressBackUnconditionally()
         assertEquals(Lifecycle.State.DESTROYED, mActivityScenarioRule.scenario.state)
     }
 

@@ -91,8 +91,8 @@ class MapsViewModel @Inject constructor(app: Application, private val repo: Summ
         }
     }
 
-    fun refreshAssociations() = viewModelScope.launch {
-        repo.refreshAssociations()
+    fun refreshAssociations(force: Boolean = false) = viewModelScope.launch {
+        repo.refreshAssociations(force)
     }
 
     init {

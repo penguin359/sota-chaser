@@ -77,6 +77,8 @@ Implement locator
 Show min/max altitude on GPX track
 Colorize hue based on altitude range of track
 
+Button to open up current map region in list
+Mapforge
 
 adb shell setprop log.tag.SQLiteLog V
 adb shell setprop log.tag.SQLiteStatements V

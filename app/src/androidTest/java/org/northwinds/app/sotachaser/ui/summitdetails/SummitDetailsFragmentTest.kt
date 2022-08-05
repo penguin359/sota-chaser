@@ -55,6 +55,7 @@ class SummitDetailsFragmentTest {
     fun canOpenSpecificSummit() {
         runBlocking {
             repo.updateAssociation("HL")
+            repo.updateRegion("HL", "GN")
         }
         HiltFragmentScenario.launchInHiltContainer(
             SummitDetailsFragment::class.java, bundleOf(
@@ -73,7 +74,7 @@ class SummitDetailsFragmentTest {
         Espresso.onView(withId(R.id.activation_callsign))
             .check(matches(withText(containsString("DS5SQS"))))
         Espresso.onView(withId(R.id.activation_date))
-            .check(matches(withText(containsString("08/01/2022"))))
+            .check(matches(withText(containsString("2022-01-08"))))
         Espresso.onView(withId(R.id.activation_count))
             .check(matches(withText(containsString("37"))))
     }
@@ -82,6 +83,7 @@ class SummitDetailsFragmentTest {
     fun canOpenDifferentSummit() {
         runBlocking {
             repo.updateAssociation("W7W")
+            repo.updateRegion("W7W", "LC")
         }
         HiltFragmentScenario.launchInHiltContainer(
             SummitDetailsFragment::class.java, bundleOf(
@@ -100,7 +102,7 @@ class SummitDetailsFragmentTest {
         Espresso.onView(withId(R.id.activation_callsign))
             .check(matches(withText(containsString("K7WXW"))))
         Espresso.onView(withId(R.id.activation_date))
-            .check(matches(withText(containsString("16/10/2021"))))
+            .check(matches(withText(containsString("2022-06-25"))))
         Espresso.onView(withId(R.id.activation_count))
             .check(matches(withText(containsString("8"))))
     }

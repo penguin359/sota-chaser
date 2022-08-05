@@ -63,6 +63,10 @@ object MockHttpModule {
                 val input = ClasspathResources.resource("W7O_CN.json")
                 respond(input)
             }
+            rule(url eq "https://api2.sota.org.uk/api/regions/W7W/LC", times = anyTimes) {
+                val input = ClasspathResources.resource("W7W_LC.json")
+                respond(input)
+            }
             rule(url eq "https://api2.sota.org.uk/api/summits/HL/GN-001", times = anyTimes) {
                 val input = ClasspathResources.resource("HL_GN-001.json")
                 respond(input)

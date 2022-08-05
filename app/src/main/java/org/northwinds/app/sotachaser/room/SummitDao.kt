@@ -31,6 +31,9 @@ interface SummitDao {
     @Update
     fun updateAssociation(vararg users: AssociationEntity): Int
 
+    @Delete
+    fun deleteAssociation(vararg users: AssociationEntity): Int
+
     fun upsertAssociation(vararg users: AssociationEntity): List<Long> {
         val ids = users.map {
             //val old = getAssociationByCode(it.code)
@@ -53,6 +56,9 @@ interface SummitDao {
 
     @Query("SELECT * FROM association ORDER BY code")
     fun getAssociations(): LiveData<List<AssociationEntity>>
+
+    @Query("SELECT * FROM association ORDER BY code")
+    fun getAssociationsPlain(): List<AssociationEntity>
 
     @Query("SELECT * FROM association WHERE code = :code")
     fun getAssociationByCode(code: String): AssociationEntity?

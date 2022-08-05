@@ -184,6 +184,10 @@ class SummitsRepositoryImpl @Inject constructor(private val context: Application
             //dao.clear()
             val items = summitList.asAssociationDatabaseModel(dao)
             val aids = dao.upsertAssociation(*items.toTypedArray())
+            val oldAssociations = dao.getAssociationsPlain().filter {
+                !aids.contains(it.id)
+            }
+            dao.deleteAssociation(*oldAssociations.toTypedArray())
             val associationToId = items.map { it.code }.zip(aids).toMap()
             val idToAssociation = associationToId.entries.associate { (k, v) -> v to k }
             val regions = summitList.asRegionDatabaseModel(dao, associationToId)

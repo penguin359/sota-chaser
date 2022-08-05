@@ -15,19 +15,31 @@ import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
+import kotlinx.coroutines.runBlocking
 import org.hamcrest.Matchers.allOf
 import org.hamcrest.Matchers.containsString
+import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.northwinds.app.sotachaser.R
+import org.northwinds.app.sotachaser.repository.SummitsRepository
 import org.northwinds.app.sotachaser.testing.HiltFragmentScenario
+import javax.inject.Inject
 
 @RunWith(AndroidJUnit4::class)
 @HiltAndroidTest
 class SummitDetailsFragmentTest {
     @get:Rule
     val hiltRule = HiltAndroidRule(this)
+
+    @Inject
+    lateinit var repo: SummitsRepository
+
+    @Before
+    fun setUp() {
+        hiltRule.inject()
+    }
 
     @Test
     fun canOpenFragment() {
@@ -41,6 +53,9 @@ class SummitDetailsFragmentTest {
 
     @Test
     fun canOpenSpecificSummit() {
+        runBlocking {
+            repo.updateAssociation("HL")
+        }
         HiltFragmentScenario.launchInHiltContainer(
             SummitDetailsFragment::class.java, bundleOf(
             "association" to "HL",
@@ -65,6 +80,9 @@ class SummitDetailsFragmentTest {
 
     @Test
     fun canOpenDifferentSummit() {
+        runBlocking {
+            repo.updateAssociation("W7W")
+        }
         HiltFragmentScenario.launchInHiltContainer(
             SummitDetailsFragment::class.java, bundleOf(
             "association" to "W7W",

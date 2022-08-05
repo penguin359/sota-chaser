@@ -33,8 +33,16 @@ class DomainTests {
             return 0
         }
 
+        override fun deleteAssociation(vararg users: AssociationEntity): Int {
+            TODO("Not yet implemented")
+        }
+
         override fun getAssociations(): LiveData<List<AssociationEntity>> {
             return MutableLiveData()
+        }
+
+        override fun getAssociationsPlain(): List<AssociationEntity> {
+            TODO("Not yet implemented")
         }
 
         override fun getAssociationByCode(code: String): AssociationEntity? {
@@ -133,6 +141,10 @@ class DomainTests {
         }
 
         override fun insertGpxTrack(vararg users: GpxTrackEntity): List<Long> {
+            TODO("Not yet implemented")
+        }
+
+        override fun deleteGpxTrack(vararg users: GpxTrackEntity): Int {
             TODO("Not yet implemented")
         }
 

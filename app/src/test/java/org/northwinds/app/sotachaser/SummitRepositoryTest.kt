@@ -173,6 +173,7 @@ class SummitRepositoryTest {
     @Test
     fun testWillLoadRegionExtraDetails() {
         runBlocking {
+            repo.updateAssociation("W7O")
             repo.updateRegion("W7O", "CN")
         }
         val association = repo.getAssociationByCode("W7O")
@@ -238,6 +239,7 @@ class SummitRepositoryTest {
             withContext(Dispatchers.IO) {
                 dao.clear()
             }
+            repo.updateAssociation("HL")
             repo.updateRegion("HL", "GN")
         }
         val association = repo.getAssociationByCode("HL").blockingObserve()
@@ -255,6 +257,7 @@ class SummitRepositoryTest {
     @Test
     fun testWillKeepRegionNonCsvDetailsOnSummitUpdate() {
         runBlocking {
+            repo.updateAssociation("HL")
             repo.updateRegion("HL", "GN")
             repo.updateSummit("HL", "GN", "001", true)
         }
@@ -304,6 +307,7 @@ class SummitRepositoryTest {
     @Test
     fun testWillKeepSummitNonCsvDetailsOnAssociationUpdate() {
         runBlocking {
+            repo.updateAssociation("HL")
             repo.updateSummit("HL", "GN", "001")
             repo.updateAssociation("HL", true)
         }
@@ -330,6 +334,7 @@ class SummitRepositoryTest {
             //withContext(Dispatchers.IO) {
             //    dao.clear()
             //}
+            repo.refreshAssociations()
             repo.updateRegion("HL", "GN")
         }
         val summit = repo.getSummitByCode("HL", "GN", "001")

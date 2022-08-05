@@ -32,22 +32,22 @@ jobs:
       - name: Run Unit Tests
         run: ./gradlew testDebug
 
-      - name: Run Instrumented Tests
-        uses: reactivecircus/android-emulator-runner@v2
-        with:
-          api-level: 29
-          target: google_apis_playstore
-          arch: x86
-          profile: Nexus 6
-          script: >
-            adb logcat -c && adb logcat -f /sdcard/logcat.txt &
-            mkdir -p app/build/reports/ &&
-            ./gradlew installDebug --stacktrace &&
-            adb shell am start -n org.northwinds.app.sotachaser.dev/org.northwinds.app.sotachaser.ui.MainActivity &&
-            sleep 600 &&
-            ./gradlew connectedDebugAndroidTest --stacktrace ||
-            ( adb pull /sdcard/logcat.txt app/build/reports/; adb pull /sdcard/screenshots app/build/reports/; exit 1 )
-            #./gradlew connectedCheck --stacktrace ||
+      #- name: Run Instrumented Tests
+      #  uses: reactivecircus/android-emulator-runner@v2
+      #  with:
+      #    api-level: 29
+      #    target: google_apis_playstore
+      #    arch: x86
+      #    profile: Nexus 6
+      #    script: >
+      #      adb logcat -c && adb logcat -f /sdcard/logcat.txt &
+      #      mkdir -p app/build/reports/ &&
+      #      ./gradlew installDebug --stacktrace &&
+      #      adb shell am start -n org.northwinds.app.sotachaser.dev/org.northwinds.app.sotachaser.ui.MainActivity &&
+      #      sleep 600 &&
+      #      ./gradlew connectedDebugAndroidTest --stacktrace ||
+      #      ( adb pull /sdcard/logcat.txt app/build/reports/; adb pull /sdcard/screenshots app/build/reports/; exit 1 )
+      #      #./gradlew connectedCheck --stacktrace ||
 
       - name: Upload reports
         uses: actions/upload-artifact@v2

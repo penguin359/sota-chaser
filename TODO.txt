@@ -85,6 +85,12 @@ adb shell setprop log.tag.SQLiteStatements V
 To enable debug logging run: adb shell setprop log.tag.FA VERBOSE
 To enable faster debug mode event logging run: adb shell setprop debug.firebase.analytics.app org.northwinds.app.sotachaser.dev
 
+adb shell settings put global window_animation_scale 0.0
+adb shell settings put global transition_animation_scale 0.0
+adb shell settings put global animator_duration_scale 0.0
+adb shell settings put secure spell_checker_enabled 0
+adb shell settings put secure show_ime_with_hard_keyboard 0
+
 SearchView
 ListFragment
 TextUtils.isEmpty()

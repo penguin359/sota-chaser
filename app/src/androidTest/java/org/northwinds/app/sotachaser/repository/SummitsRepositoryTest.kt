@@ -43,15 +43,17 @@ class SummitsRepositoryTest {
         //val summit = repo.getSummits(region.value!!.id, "050")
         dao.clear()
         runBlocking {
-            repo.refreshAssociations()
+            repo.refreshAssociations(true)
+            //repo.updateAssociation("W7W")
+            //repo.updateRegion("W7W", "LC")
         }
         val summitsData = repo.getSummits("W7W", "LC")
         runOnUiThread {
             summitsData.observeForever { }
         }
         Espresso.onIdle()
-        sleep(1000)
-        Espresso.onIdle()
+        //sleep(10000)
+        //Espresso.onIdle()
         assertThat("Has list of summits", summitsData.value, `is`(notNullValue()))
         val summits = summitsData.value!!
         assertThat("Has many summits", summits.count(), `is`(greaterThanOrEqualTo(50)))

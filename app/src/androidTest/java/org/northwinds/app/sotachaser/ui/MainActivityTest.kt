@@ -296,6 +296,7 @@ class MapsFragmentTest {
     fun load_map_activity() {
         Espresso.onIdle()
         frag.onFragment {
+            it.model.refreshAssociations(true)
             it.binding.association.setSelection(0)
         }
         Espresso.onIdle()

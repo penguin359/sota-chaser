@@ -1,16 +1,19 @@
 package org.northwinds.app.sotachaser.ui.abstraction
 
+import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import android.util.Log
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
 import android.widget.EditText
+import androidx.core.view.MenuProvider
 import androidx.core.widget.doOnTextChanged
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewbinding.ViewBinding
+import org.northwinds.app.sotachaser.BuildConfig
+import org.northwinds.app.sotachaser.ui.SettingsActivity
 
 
 abstract class AbstractFilterListFragment<E, VB: ViewBinding, R: AbstractRecyclerViewAdapter<E, *>, VM: AbstractViewModel<E>> : Fragment() {
@@ -21,6 +24,11 @@ abstract class AbstractFilterListFragment<E, VB: ViewBinding, R: AbstractRecycle
     protected lateinit var binding: VB
     abstract val bindingInflater: (LayoutInflater) -> VB
     abstract val listView: RecyclerView
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setHasOptionsMenu(true)
+    }
+
     abstract val filterView: EditText
 
     abstract fun adapterFactory(value: List<E>): R
@@ -46,6 +54,26 @@ abstract class AbstractFilterListFragment<E, VB: ViewBinding, R: AbstractRecycle
             }
         }
 
+        requireActivity().addMenuProvider(menu, viewLifecycleOwner)
+
         return binding.root
+    }
+
+    val menu = object : MenuProvider {
+        override fun onCreateMenu(menu: Menu, menuInflater: MenuInflater) {
+            menuInflater.inflate(org.northwinds.app.sotachaser.R.menu.list_menu, menu)
+        }
+
+        override fun onMenuItemSelected(item: MenuItem): Boolean {
+            return when (item.itemId) {
+                org.northwinds.app.sotachaser.R.id.enable_favorites -> {
+                    true
+                }
+                org.northwinds.app.sotachaser.R.id.sort -> {
+                    true
+                }
+                else -> false
+            }
+        }
     }
 }

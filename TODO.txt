@@ -94,3 +94,10 @@ adb shell settings put secure show_ime_with_hard_keyboard 0
 SearchView
 ListFragment
 TextUtils.isEmpty()
+  Doesn't exist on local unit tests
+
+High network usage
+Crash on bad network
+Makes bad network requests
+Crash on CSV due to OOM
+Constantly reupdate UI while loading data

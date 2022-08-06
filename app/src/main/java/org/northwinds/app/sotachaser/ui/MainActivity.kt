@@ -5,12 +5,14 @@ import android.net.Uri
 import android.os.Bundle
 import android.util.Log
 import android.view.Menu
+import android.view.MenuInflater
 import android.view.MenuItem
 import android.widget.Button
 import androidx.appcompat.app.AlertDialog
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.edit
+import androidx.core.view.MenuProvider
 import androidx.navigation.findNavController
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.setupActionBarWithNavController
@@ -45,6 +47,7 @@ class MainActivity : AppCompatActivity() {
         )
         setupActionBarWithNavController(navController, appBarConfiguration)
         navView.setupWithNavController(navController)
+        addMenuProvider(menu, this)
 
         val crashButton = Button(this)
         crashButton.text = "Test Crash"
@@ -102,29 +105,28 @@ class MainActivity : AppCompatActivity() {
         Log.d(Tag, "Maps activity configured")
     }
 
-    override fun onCreateOptionsMenu(menu: Menu): Boolean {
-        //val inflater: MenuInflater = menuInflater
-        menuInflater.inflate(R.menu.top, menu)
-        return true
-    }
+    val menu = object: MenuProvider {
+        override fun onCreateMenu(menu: Menu, menuInflater: MenuInflater) {
+            menuInflater.inflate(R.menu.top, menu)
+        }
 
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        // Handle item selection
-        return when (item.itemId) {
-            R.id.settings -> {
-                startActivity(Intent(applicationContext, SettingsActivity::class.java))
-                true
+        override fun onMenuItemSelected(item: MenuItem): Boolean {
+            return when (item.itemId) {
+                R.id.settings -> {
+                    startActivity(Intent(applicationContext, SettingsActivity::class.java))
+                    true
+                }
+                R.id.feedback -> {
+                    val intent = Intent(Intent.ACTION_SENDTO, Uri.Builder().scheme("mailto").build())
+                    //intent.type = "text/html"
+                    intent.putExtra(Intent.EXTRA_EMAIL, arrayOf("penguin359@gmail.com"))
+                    intent.putExtra(Intent.EXTRA_SUBJECT, "Feedback for SOTA Chaser")
+                    intent.putExtra(Intent.EXTRA_TEXT, "Version ${BuildConfig.VERSION_NAME}\n\n")
+                    startActivity(Intent.createChooser(intent, "Send Feedback"))
+                    true
+                }
+                else -> false
             }
-            R.id.feedback -> {
-                val intent = Intent(Intent.ACTION_SENDTO, Uri.Builder().scheme("mailto").build())
-                //intent.type = "text/html"
-                intent.putExtra(Intent.EXTRA_EMAIL, arrayOf("penguin359@gmail.com"))
-                intent.putExtra(Intent.EXTRA_SUBJECT, "Feedback for SOTA Chaser")
-                intent.putExtra(Intent.EXTRA_TEXT, "Version ${BuildConfig.VERSION_NAME}\n\n")
-                startActivity(Intent.createChooser(intent, "Send Feedback"))
-                true
-            }
-            else -> super.onOptionsItemSelected(item)
         }
     }
 }

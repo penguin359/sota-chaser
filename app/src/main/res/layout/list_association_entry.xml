@@ -6,13 +6,23 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
+    <CheckBox
+        android:id="@+id/favorite"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        style="?android:attr/starStyle"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        />
+
     <TextView
         android:id="@+id/code"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
         android:textAppearance="?attr/textAppearanceListItem"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintStart_toEndOf="@id/favorite"
         app:layout_constraintTop_toTopOf="parent"
         tools:text="AB" />
 
@@ -22,7 +32,7 @@
         android:layout_height="wrap_content"
         android:layout_marginBottom="12dp"
         android:textAppearance="?attr/textAppearanceListItem"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintStart_toEndOf="@id/favorite"
         app:layout_constraintTop_toBottomOf="@id/code"
         tools:text="My Association" />
 
@@ -31,7 +41,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textAppearance="?attr/textAppearanceListItem"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintStart_toEndOf="@id/favorite"
         app:layout_constraintTop_toBottomOf="@id/name"
         tools:text="John Doe" />
 
@@ -40,7 +50,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textAppearance="?attr/textAppearanceListItem"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintStart_toEndOf="@id/favorite"
         app:layout_constraintTop_toBottomOf="@id/manager"
         tools:text="AB1CDE" />
 

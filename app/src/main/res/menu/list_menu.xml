@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/enable_favorites"
+        android:checkable="true"
+        android:title="Favorites First" />
+    <item
+        android:id="@+id/sort"
+        android:title="Sort By" />
+    <group android:checkableBehavior="single" >
+        <item android:title="code" />
+        <item android:title="name" />
+    </group>
+</menu>

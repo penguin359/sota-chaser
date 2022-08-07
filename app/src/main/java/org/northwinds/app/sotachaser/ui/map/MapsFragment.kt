@@ -30,8 +30,11 @@ import android.view.ViewGroup
 import android.widget.AdapterView
 import android.widget.SimpleAdapter
 import androidx.core.content.edit
+import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.navigation.findNavController
+import androidx.navigation.fragment.findNavController
 import androidx.preference.PreferenceManager
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
@@ -41,6 +44,8 @@ import com.google.android.gms.maps.model.*
 import dagger.hilt.android.AndroidEntryPoint
 import org.northwinds.app.sotachaser.R
 import org.northwinds.app.sotachaser.databinding.FragmentMapsBinding
+import org.northwinds.app.sotachaser.ui.associations.AssociationFragmentDirections
+import org.northwinds.app.sotachaser.ui.summits.SummitFragmentDirections
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -53,7 +58,7 @@ private const val ARG_PARAM2 = "param2"
  * create an instance of this fragment.
  */
 @AndroidEntryPoint
-class MapsFragment : Fragment(), OnMapReadyCallback {
+class MapsFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnInfoWindowClickListener {
     // TODO: Rename and change types of parameters
     private var param1: String? = null
     private var param2: String? = null
@@ -166,6 +171,8 @@ class MapsFragment : Fragment(), OnMapReadyCallback {
         prefs.registerOnSharedPreferenceChangeListener(prefsListener)
         setMapType(prefs.getString("map_type", "") ?: "")
 
+        mMap.setOnInfoWindowClickListener(this)
+
         Log.d(Companion.Tag, "Google Maps ready")
         // Add a marker in Sydney and move the camera
         val sydney = LatLng(-34.0, 151.0)
@@ -259,5 +266,13 @@ class MapsFragment : Fragment(), OnMapReadyCallback {
             }
 
         private const val Tag = "SOTAChaser-MapsFragment"
+    }
+
+    override fun onInfoWindowClick(marker: Marker) {
+        Log.d(Tag, "Opening marker ${marker.title}")
+        val a = marker.title.toString().split("/")[0]
+        val r = marker.title.toString().split("/")[1].split("-")[0]
+        val s = marker.title.toString().split("-")[1]
+        findNavController().navigate(R.id.summitDetailsFragment, bundleOf("association" to a, "region" to r, "summit" to s))
     }
 }

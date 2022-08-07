@@ -14,7 +14,8 @@
     <fragment
         android:id="@+id/associationFragment"
         android:name="org.northwinds.app.sotachaser.ui.associations.AssociationFragment"
-        android:label="Association List" >
+        android:label="Association List"
+        tools:layout="@layout/fragment_summit_list" >
         <action
             android:id="@+id/action_associationFragment_to_regionFragment"
             app:destination="@id/regionFragment" />

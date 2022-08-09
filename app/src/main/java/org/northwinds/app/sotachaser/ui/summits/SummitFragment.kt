@@ -66,15 +66,16 @@ class SummitFragment : AbstractFilterListFragment<Summit, FragmentSummitListBind
                     // ...
                 }
                 else -> {
-                    registerForActivityResult(ActivityResultContracts.RequestPermission()) { isGranted ->
-                        if (isGranted) {
+                    registerForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) { result ->
+                        if (result.getOrDefault(Manifest.permission.ACCESS_COARSE_LOCATION, false) ||
+                            result.getOrDefault(Manifest.permission.ACCESS_FINE_LOCATION, false)) {
                             val locationClient =
                                 LocationServices.getFusedLocationProviderClient(requireActivity())
                             locationClient.lastLocation.addOnSuccessListener { location ->
                                 model.setLocation(location)
                             }
                         }
-                    }.launch(Manifest.permission.ACCESS_COARSE_LOCATION)
+                    }.launch(arrayOf(Manifest.permission.ACCESS_COARSE_LOCATION, Manifest.permission.ACCESS_FINE_LOCATION))
                 }
             }
         }

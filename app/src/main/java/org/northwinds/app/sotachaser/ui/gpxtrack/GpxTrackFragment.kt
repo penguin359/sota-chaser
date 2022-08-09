@@ -128,6 +128,7 @@ class GpxTrackFragment : Fragment(), OnMapReadyCallback {
             mMap.moveCamera(CameraUpdateFactory.newLatLng(location))
             Log.d(TAG, "Updating Map with summit code: " + summits.code)
         }
+        mMap.isMyLocationEnabled = true
         model.points.observe(this) { pointList ->
             if(pointList.isNotEmpty()) {
                 var minLatitude = pointList[0].latitude

@@ -1,14 +1,19 @@
 package org.northwinds.app.sotachaser.ui.summits
 
 import android.Manifest
+import android.app.Activity
+import android.app.Dialog
 import android.content.pm.PackageManager
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.appcompat.app.AlertDialog
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import androidx.fragment.app.DialogFragment
 import androidx.navigation.fragment.navArgs
 import com.google.android.gms.common.ConnectionResult
 import com.google.android.gms.common.GoogleApiAvailability
@@ -63,7 +68,38 @@ class SummitFragment : AbstractFilterListFragment<Summit, FragmentSummitListBind
                     }
                 }
                 ActivityCompat.shouldShowRequestPermissionRationale(requireActivity(), Manifest.permission.ACCESS_COARSE_LOCATION) -> {
-                    // ...
+                    class A : DialogFragment() {
+                        private lateinit var permissionRequest: ActivityResultLauncher<Array<String>>
+
+                        override fun onCreate(savedInstanceState: Bundle?) {
+                            super.onCreate(savedInstanceState)
+                            permissionRequest = registerForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) { result ->
+                                if (result.getOrDefault(Manifest.permission.ACCESS_COARSE_LOCATION, false) ||
+                                    result.getOrDefault(Manifest.permission.ACCESS_FINE_LOCATION, false)) {
+                                    val locationClient =
+                                        LocationServices.getFusedLocationProviderClient(requireActivity())
+                                    locationClient.lastLocation.addOnSuccessListener { location ->
+                                        model.setLocation(location)
+                                    }
+                                }
+                            }
+                        }
+
+                        override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
+                            return AlertDialog.Builder(requireContext())
+                                .setTitle("Location Permission")
+                                .setMessage("This app uses location to find your distance from various summits" +
+                                        "and to show your position on a map with summit location.")
+                                .setPositiveButton(android.R.string.ok) { dialog, which ->
+                                    permissionRequest.launch(arrayOf(Manifest.permission.ACCESS_COARSE_LOCATION, Manifest.permission.ACCESS_FINE_LOCATION))
+                                }
+                                .setNegativeButton(android.R.string.cancel) { dialog, which ->
+                                    // TODO save preference
+                                }
+                                .create()
+                        }
+                    }
+                    A().show(childFragmentManager, null)
                 }
                 else -> {
                     registerForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) { result ->

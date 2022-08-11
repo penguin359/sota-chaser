@@ -18,11 +18,10 @@ import com.dannyroa.espresso_samples.recyclerview.RecyclerViewMatcher
 import com.github.flank.utility.screenshot.ScreenshotTestRule
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
-import org.junit.Assert.assertEquals
+import kotlinx.coroutines.runBlocking
 import org.aprsdroid.app.testing.SharedPreferencesRule
-import org.hamcrest.Matchers
-import org.hamcrest.Matchers.allOf
-import org.hamcrest.Matchers.containsString
+import org.hamcrest.Matchers.*
+import org.junit.Assert.assertEquals
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -30,13 +29,12 @@ import org.junit.runner.RunWith
 import org.northwinds.app.sotachaser.BuildConfig
 import org.northwinds.app.sotachaser.R
 import org.northwinds.app.sotachaser.SotaChaserBaseApplication
+import org.northwinds.app.sotachaser.repository.SummitsRepository
 import org.northwinds.app.sotachaser.room.SummitDao
 import org.northwinds.app.sotachaser.testing.HiltFragmentScenario
 import org.northwinds.app.sotachaser.testing.Matcher.atPosition
 import org.northwinds.app.sotachaser.ui.MainActivity
-import org.northwinds.app.sotachaser.ui.associations.AssociationFragmentDirections
 import org.northwinds.app.sotachaser.ui.associations.AssociationRecyclerViewAdapterVH
-import org.northwinds.app.sotachaser.ui.regions.RegionFragment
 import org.northwinds.app.sotachaser.ui.regions.RegionFragmentDirections
 import javax.inject.Inject
 
@@ -50,6 +48,9 @@ class SummitFragmentTest {
 
     @Inject
     lateinit var dao: SummitDao
+
+    @Inject
+    lateinit var repo: SummitsRepository
 
     @get:Rule
     val permissionRule: GrantPermissionRule = GrantPermissionRule.grant(Manifest.permission.ACCESS_COARSE_LOCATION)
@@ -71,6 +72,10 @@ class SummitFragmentTest {
 
     @Test
     fun loadSpecificSummitList() {
+        runBlocking {
+            repo.refreshAssociations(true)
+            //repo.updateAssociation("W7O")
+        }
         val frag = HiltFragmentScenario.launchInHiltContainer(SummitFragment::class.java,
             RegionFragmentDirections.actionRegionFragmentToNavigationDashboard("W7O", "NC").arguments)
         onView(withId(R.id.list)).check { view, noMatchingViewException ->
@@ -79,11 +84,14 @@ class SummitFragmentTest {
             val recyclerView = view as RecyclerView
             assertEquals(127, recyclerView.adapter?.itemCount)
         }
-        frag.close()
+        //frag.close()
     }
 
     @Test
     fun loadMultipleSummitLists() {
+        runBlocking {
+            repo.refreshAssociations(true)
+        }
         var frag = HiltFragmentScenario.launchInHiltContainer(SummitFragment::class.java,
             RegionFragmentDirections.actionRegionFragmentToNavigationDashboard("W7O", "NC").arguments)
         onView(withId(R.id.list)).check { view, noMatchingViewException ->
@@ -92,7 +100,7 @@ class SummitFragmentTest {
             val recyclerView = view as RecyclerView
             assertEquals(127, recyclerView.adapter?.itemCount)
         }
-        frag.close()
+        //frag.close()
 
         frag = HiltFragmentScenario.launchInHiltContainer(SummitFragment::class.java,
             RegionFragmentDirections.actionRegionFragmentToNavigationDashboard("BV", "HL").arguments)
@@ -102,11 +110,14 @@ class SummitFragmentTest {
             val recyclerView = view as RecyclerView
             assertEquals(76, recyclerView.adapter?.itemCount)
         }
-        frag.close()
+        //frag.close()
     }
 
     @Test
     fun loadSummitSummary() {
+        runBlocking {
+            repo.refreshAssociations(true)
+        }
         val frag = HiltFragmentScenario.launchInHiltContainer(SummitFragment::class.java,
             RegionFragmentDirections.actionRegionFragmentToNavigationDashboard("HL", "GN").arguments)
         onView(RecyclerViewMatcher(R.id.list).atPosition(0)).check(
@@ -148,16 +159,18 @@ class SummitFragmentTest {
             matches(withText(containsString("DS5SQS")))
         )
         onView(RecyclerViewMatcher(R.id.list).atPositionOnView(0, R.id.activation_date)).check(
-            matches(withText(containsString("08/01/2022")))
+            matches(withText(containsString("2022-01-08")))
         )
         onView(RecyclerViewMatcher(R.id.list).atPositionOnView(0, R.id.activation_count)).check(
             matches(withText(containsString("37")))
         )
-        frag.close()
     }
 
     @Test
     fun loadSummitSummaryAtBottomOfList() {
+        runBlocking {
+            repo.refreshAssociations(true)
+        }
         // Position for summit HL/GN-046
         val summitPosition = 44  // Zero-indexed and summit HL/GN-011 doesn't exist
         val frag = HiltFragmentScenario.launchInHiltContainer(SummitFragment::class.java,
@@ -199,7 +212,7 @@ class SummitFragmentTest {
                 summitPosition,
                 R.id.activation_date
             )
-        ).check(matches(withText(containsString("02/10/2020"))))
+        ).check(matches(withText(containsString("2020-10-02"))))
         onView(
             RecyclerViewMatcher(R.id.list).atPositionOnView(
                 summitPosition,
@@ -223,11 +236,13 @@ class SummitFragmentTest {
         //kotlin.test.assertEquals(9, entry.activationCount)
         //kotlin.test.assertEquals("02/10/2020", entry.activationDate)
         //kotlin.test.assertEquals("DS5VKX", entry.activationCall)
-        frag.close()
     }
 
     @Test
     fun filterSummitList() {
+        runBlocking {
+            repo.refreshAssociations(true)
+        }
         val frag = HiltFragmentScenario.launchInHiltContainer(SummitFragment::class.java,
             RegionFragmentDirections.actionRegionFragmentToNavigationDashboard("W7O", "CN").arguments)
         onView(withId(R.id.filter)).perform(ViewActions.replaceText("Ridge"))
@@ -251,12 +266,15 @@ class SummitFragmentTest {
             val recyclerView = view as RecyclerView
             assertEquals(0, recyclerView.adapter?.itemCount)
         }
-        frag.close()
     }
 
     @Test
     fun loadSummitsAfterClear() {
         dao.clear()
+        runBlocking {
+            // FIXME This is passing, but it shouldn't without this line???
+            //repo.updateAssociation("W7O")
+        }
         val frag = HiltFragmentScenario.launchInHiltContainer(SummitFragment::class.java,
             RegionFragmentDirections.actionRegionFragmentToNavigationDashboard("W7O", "CN").arguments)
         onView(withId(R.id.list)).check(matches(isDisplayed()))
@@ -265,10 +283,9 @@ class SummitFragmentTest {
                 throw noMatchingViewException
             val recyclerView = view as RecyclerView
             assertThat(recyclerView.adapter?.itemCount as Int,
-                Matchers.`is`(Matchers.greaterThanOrEqualTo(10))
+                `is`(greaterThanOrEqualTo(10))
             )
         }
-        frag.close()
     }
 }
 

@@ -101,3 +101,5 @@ Crash on bad network
 Makes bad network requests
 Crash on CSV due to OOM
 Constantly reupdate UI while loading data
+Custom theme with SOTA colors
+Animations

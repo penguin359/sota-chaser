@@ -18,7 +18,11 @@
         tools:layout="@layout/fragment_summit_list" >
         <action
             android:id="@+id/action_associationFragment_to_regionFragment"
-            app:destination="@id/regionFragment" />
+            app:destination="@id/regionFragment"
+            app:enterAnim="@anim/nav_default_enter_anim"
+            app:exitAnim="@anim/nav_default_exit_anim"
+            app:popEnterAnim="@anim/nav_default_pop_enter_anim"
+            app:popExitAnim="@anim/nav_default_pop_exit_anim" />
     </fragment>
 
     <fragment
@@ -27,7 +31,11 @@
         android:label="Region List" >
         <action
             android:id="@+id/action_regionFragment_to_navigation_dashboard"
-            app:destination="@id/navigation_dashboard" />
+            app:destination="@id/navigation_dashboard"
+            app:enterAnim="@anim/nav_default_enter_anim"
+            app:exitAnim="@anim/nav_default_exit_anim"
+            app:popEnterAnim="@anim/nav_default_pop_enter_anim"
+            app:popExitAnim="@anim/nav_default_pop_exit_anim" />
         <argument
             android:name="association"
             app:argType="string" />
@@ -40,7 +48,11 @@
         tools:layout="@layout/list_summit_entry" >
         <action
             android:id="@+id/action_navigation_dashboard_to_summitDetailsFragment"
-            app:destination="@id/summitDetailsFragment" />
+            app:destination="@id/summitDetailsFragment"
+            app:enterAnim="@anim/nav_default_enter_anim"
+            app:exitAnim="@anim/nav_default_exit_anim"
+            app:popEnterAnim="@anim/nav_default_pop_enter_anim"
+            app:popExitAnim="@anim/nav_default_pop_exit_anim" />
         <argument
             android:name="association"
             app:argType="string" />

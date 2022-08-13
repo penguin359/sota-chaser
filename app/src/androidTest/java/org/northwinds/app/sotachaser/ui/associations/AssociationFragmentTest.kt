@@ -188,7 +188,7 @@ class AssociationFragmentTest {
             if (view == null)
                 throw noMatchingViewException
             val recyclerView = view as RecyclerView
-            assertThat(recyclerView.adapter?.itemCount as Int, `is`(greaterThanOrEqualTo(10)))
+            assertThat(recyclerView.adapter?.itemCount, `is`(greaterThanOrEqualTo(10)))
         }
         frag.close()
     }

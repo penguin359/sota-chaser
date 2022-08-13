@@ -28,7 +28,7 @@ jobs:
         run: echo MAPS_API_KEY="${MAPS_API_KEY}" >> local.properties
       - name: Build with Gradle
         #run: ./gradlew build
-        run: ./gradlew buildDebug
+        run: ./gradlew buildDebug && ./gradlew assembleDebugAndroidTest
       - name: Run Unit Tests
         run: ./gradlew testDebug
 

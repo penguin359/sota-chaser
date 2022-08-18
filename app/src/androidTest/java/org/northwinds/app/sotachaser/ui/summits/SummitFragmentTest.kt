@@ -282,7 +282,7 @@ class SummitFragmentTest {
             if (view == null)
                 throw noMatchingViewException
             val recyclerView = view as RecyclerView
-            assertThat(recyclerView.adapter?.itemCount as Int,
+            assertThat(recyclerView.adapter!!.itemCount,
                 `is`(greaterThanOrEqualTo(10))
             )
         }

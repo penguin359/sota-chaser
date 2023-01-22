@@ -29,6 +29,14 @@ import java.util.concurrent.ExecutorService
  * SOFTWARE.
  */
 
+enum class SortOrder {
+   CODE, NAME, ALTITUDE, DISTANCE, POINTS,
+}
+
+enum class FilterActivations {
+    ALL, ACTIVATED, UNACTIVATED,
+}
+
 abstract class AbstractViewModel<E>(private val executorService: ExecutorService, private val repo: SummitsRepository) : ViewModel() {
     //private val context = getApplication<Application>().applicationContext
 
@@ -46,8 +54,22 @@ abstract class AbstractViewModel<E>(private val executorService: ExecutorService
     private val _filter = MutableLiveData<String>().apply { value = "" }
     protected val filter: LiveData<String> = _filter
 
+    private val _sortOrder = MutableLiveData<SortOrder>().apply { value = SortOrder.CODE }
+    val sortOrder: LiveData<SortOrder> = _sortOrder
+
+    private val _filterActivations = MutableLiveData<FilterActivations>().apply { value = FilterActivations.ALL }
+    val filterActivations: LiveData<FilterActivations> = _filterActivations
+
     internal fun setFilter(filter: String) {
         _filter.value = filter
+    }
+
+    internal fun setSortOrder(sortOrder: SortOrder) {
+        _sortOrder.value = sortOrder
+    }
+
+    internal fun setFilterActivations(filterActivations: FilterActivations) {
+        _filterActivations.value = filterActivations
     }
 
     abstract val list_items: LiveData<List<E>>

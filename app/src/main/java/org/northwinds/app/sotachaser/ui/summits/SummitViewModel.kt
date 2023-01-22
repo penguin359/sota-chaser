@@ -8,8 +8,11 @@ import org.northwinds.app.sotachaser.domain.models.asDetailModel
 import org.northwinds.app.sotachaser.domain.models.SummitDetail
 import org.northwinds.app.sotachaser.repository.SummitsRepository
 import org.northwinds.app.sotachaser.ui.abstraction.AbstractViewModel
+import org.northwinds.app.sotachaser.ui.abstraction.FilterActivations
+import org.northwinds.app.sotachaser.ui.abstraction.SortOrder
 import java.util.concurrent.ExecutorService
 import javax.inject.Inject
+import kotlin.reflect.jvm.internal.impl.descriptors.deserialization.PlatformDependentDeclarationFilter.All
 
 /*
  * Copyright (c) 2022 Loren M. Lang
@@ -63,14 +66,49 @@ class SummitViewModel @Inject constructor(executorService: ExecutorService, priv
         association.switchMap { a ->
             region.switchMap { r ->
                 location.switchMap { l ->
-                    repo.getSummits(a, r).map { items ->
-                        items.filter {
-                            it.code.contains(f, ignoreCase = true) || it.name.contains(
-                                f,
-                                ignoreCase = true
-                            )
+                    sortOrder.switchMap { m ->
+                        filterActivations.switchMap { fa ->
+                            repo.getSummits(a, r).map { items ->
+                                items.filter {
+                                    it.code.contains(f, ignoreCase = true) || it.name.contains(
+                                        f,
+                                        ignoreCase = true
+                                    )
+                                }
+                            }.map {
+                                val data = it.asDetailModel(l).filter {
+                                    when(fa) {
+                                        FilterActivations.ALL -> true
+                                        FilterActivations.ACTIVATED -> it.activationCount > 0
+                                        FilterActivations.UNACTIVATED -> it.activationCount == 0
+                                        //else -> true,
+                                    }
+                                }
+                                when(m) {
+                                    SortOrder.CODE ->
+                                        data.sortedBy { list ->
+                                            list.code
+                                        }
+                                    SortOrder.NAME ->
+                                        data.sortedBy { list ->
+                                            list.name
+                                        }
+                                    SortOrder.ALTITUDE ->
+                                        data.sortedBy { list ->
+                                            list.altM
+                                        }
+                                    SortOrder.DISTANCE ->
+                                        data.sortedBy { list ->
+                                            list.distance
+                                        }
+                                    SortOrder.POINTS ->
+                                        data.sortedBy { list ->
+                                            list.points
+                                        }
+                                }
+                            }
                         }
-                    }.map { it.asDetailModel(l) }
+                    }
                 }
             }
         }

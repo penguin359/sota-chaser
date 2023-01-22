@@ -3,12 +3,48 @@
     <item
         android:id="@+id/enable_favorites"
         android:checkable="true"
-        android:title="Favorites First" />
+        android:title="Favorites First" ></item>
     <item
         android:id="@+id/sort"
-        android:title="Sort By" />
-    <group android:checkableBehavior="single" >
-        <item android:title="code" />
-        <item android:title="name" />
+        android:title="Sort By" >
+    <menu>
+    <group android:checkableBehavior="single">
+        <item
+            android:id="@+id/code"
+            android:title="Code" />
+        <item
+            android:id="@+id/name"
+            android:title="Name" />
+        <item
+            android:id="@+id/altitude"
+            android:title="Altitude" />
+        <item
+            android:id="@+id/distance"
+            android:title="Distance" />
+        <item
+            android:id="@+id/points"
+            android:title="Points" />
     </group>
+</menu>
+    </item>
+    <item
+        android:id="@+id/filter"
+        android:title="Filter By">
+        <menu>
+    <group android:checkableBehavior="single">
+        <item
+            android:id="@+id/all_summits"
+            android:title="All summits" />
+        <item
+            android:id="@+id/activated_summits"
+            android:title="Activated summits" />
+        <item
+            android:id="@+id/unactivated_summits"
+            android:title="Unactivated summits" />
+        <item
+            android:id="@+id/activated_by_me"
+            android:title="Only activated by me" />
+    </group>
+        </menu>
+    </item>
 </menu>

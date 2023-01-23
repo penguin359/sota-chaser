@@ -10,6 +10,14 @@
     <string name="title_changelog">Changelog</string>
     <string name="changelog_text">Updates in this release:\n
 \n
+<b>Version 0.9 Alpha</b>\n
+• Fixed crashes on network errors\n
+• Added option to sort summits on name, altitude, distance, and other parameters\n
+• Added option to filter summits on zon-zero activation count\n
+• Added my location overlay to map views\n
+• Added a link to summit details from map tab\n
+• \n
+\n
 <b>Version 0.8.2 Alpha</b>\n
 • Show my location on summit detail map\n
 • Fixed invalid summit data that was being loaded\n

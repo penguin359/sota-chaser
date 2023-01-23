@@ -22,6 +22,7 @@ import org.northwinds.app.sotachaser.room.model.asSummitDatabaseModel
 import org.northwinds.app.sotachaser.util.asAssociationDatabaseModel
 import org.northwinds.app.sotachaser.util.asRegionDatabaseModel
 import org.northwinds.app.sotachaser.util.asSummitDatabaseModel
+import retrofit2.HttpException
 import java.io.IOException
 import java.util.concurrent.ExecutorService
 import javax.inject.Inject
@@ -64,11 +65,17 @@ class SummitsRepositoryImpl @Inject constructor(private val context: Application
 
     override suspend fun refreshAssociations(force: Boolean) {
         withContext(executor.asCoroutineDispatcher()) {
-            val results = api.getAssociations()
-            synchronized(this) {
-                results.forEach {
-                    dao.upsertAssociation(it.asDatabaseModel(dao))
+            try {
+                val results = api.getAssociations()
+                synchronized(this) {
+                    results.forEach {
+                        dao.upsertAssociation(it.asDatabaseModel(dao))
+                    }
                 }
+            } catch (ex: IOException) {
+                Log.e(TAG, "Network Error downloading summits", ex)
+            } catch (ex: HttpException) {
+                Log.e(TAG, "Network Error downloading summits", ex)
             }
         }
         checkForRefresh(force)
@@ -77,12 +84,18 @@ class SummitsRepositoryImpl @Inject constructor(private val context: Application
     override suspend fun updateAssociation(code: String, force: Boolean) {
         //checkForRefresh(force)
         withContext(executor.asCoroutineDispatcher()) {
-            val result = api.getAssociation(code)
-            synchronized(this) {
-                dao.upsertAssociation(result.asDatabaseModel(dao))
-                result.regions?.forEach {
-                    dao.upsertRegion(it.asDatabaseModel(dao))
+            try {
+                val result = api.getAssociation(code)
+                synchronized(this) {
+                    dao.upsertAssociation(result.asDatabaseModel(dao))
+                    result.regions?.forEach {
+                        dao.upsertRegion(it.asDatabaseModel(dao))
+                    }
                 }
+            } catch (ex: IOException) {
+                Log.e(TAG, "Network Error downloading summits", ex)
+            } catch (ex: HttpException) {
+                Log.e(TAG, "Network Error downloading summits", ex)
             }
         }
     }
@@ -90,12 +103,18 @@ class SummitsRepositoryImpl @Inject constructor(private val context: Application
     override suspend fun updateRegion(association: String, region: String, force: Boolean) {
         //checkForRefresh(force)
         withContext(executor.asCoroutineDispatcher()) {
-            val result = api.getRegion(association, region)
-            synchronized(this) {
-                dao.upsertRegion(result.region.asDatabaseModel(dao))
-                result.summits?.forEach {
-                    dao.upsertSummit(it.asDatabaseModel(dao))
+            try {
+                val result = api.getRegion(association, region)
+                synchronized(this) {
+                    dao.upsertRegion(result.region.asDatabaseModel(dao))
+                    result.summits?.forEach {
+                        dao.upsertSummit(it.asDatabaseModel(dao))
+                    }
                 }
+            } catch (ex: IOException) {
+                Log.e(TAG, "Network Error downloading summits", ex)
+            } catch (ex: HttpException) {
+                Log.e(TAG, "Network Error downloading summits", ex)
             }
         }
     }
@@ -135,9 +154,15 @@ class SummitsRepositoryImpl @Inject constructor(private val context: Application
     override suspend fun updateSummit(association: String, region: String, summit: String, force: Boolean) {
         //checkForRefresh(force)
         withContext(executor.asCoroutineDispatcher()) {
-            val result = api.getSummit(association, region, summit)
-            synchronized(this) {
-                dao.upsertSummit(result.asSummitDatabaseModel(dao))
+            try {
+                val result = api.getSummit(association, region, summit)
+                synchronized(this) {
+                    dao.upsertSummit(result.asSummitDatabaseModel(dao))
+                }
+            } catch (ex: IOException) {
+                Log.e(TAG, "Network Error downloading summits", ex)
+            } catch (ex: HttpException) {
+                Log.e(TAG, "Network Error downloading summits", ex)
             }
         }
     }

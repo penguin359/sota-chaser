@@ -10,7 +10,7 @@ import org.northwinds.app.sotachaser.room.model.*
     SummitEntity::class,
     GpxTrackEntity::class,
     GpxPointEntity::class],
-    version = 6)
+    version = 7)
 abstract class SummitDatabase : RoomDatabase() {
     abstract fun summitDao(): SummitDao
 }

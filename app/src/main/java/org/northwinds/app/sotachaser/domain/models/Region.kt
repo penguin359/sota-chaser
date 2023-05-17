@@ -13,4 +13,5 @@ data class Region(
     val maxLong: Double? = null,
     val minLat: Double? = null,
     val minLong: Double? = null,
+    val favorite: Boolean = false,
 )

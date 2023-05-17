@@ -22,6 +22,7 @@ data class Summit(
     val activationDate: String?,
     val activationCall: String?,
     val valid: Boolean?,
+    val favorite: Boolean = false,
 )
 
 data class SummitDetail(
@@ -42,6 +43,7 @@ data class SummitDetail(
     val activationCount: Int,
     val activationDate: String?,
     val activationCall: String?,
+    val favorite: Boolean = false,
     val distance: Double?,
 )
 
@@ -64,6 +66,7 @@ fun List<Summit>.asDetailModel(location: Location?): List<SummitDetail> = map {
         activationCount = it.activationCount,
         activationDate = it.activationDate,
         activationCall = it.activationCall,
+        favorite = it.favorite,
         distance = location?.run {
             calculateDistance(latitude, longitude, it.latitude, it.longitude)
         },

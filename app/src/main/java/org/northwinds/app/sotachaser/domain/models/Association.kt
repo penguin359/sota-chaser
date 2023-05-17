@@ -1,5 +1,7 @@
 package org.northwinds.app.sotachaser.domain.models
 
+import androidx.room.ColumnInfo
+
 data class Association(
     val id: Long,
     val code: String,
@@ -14,4 +16,5 @@ data class Association(
     val maxLong: Double? = null,
     val minLat: Double? = null,
     val minLong: Double? = null,
+    val favorite: Boolean = false,
 )

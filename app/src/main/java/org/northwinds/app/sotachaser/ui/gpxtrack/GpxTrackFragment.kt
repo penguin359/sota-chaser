@@ -149,7 +149,7 @@ class GpxTrackFragment : Fragment(), OnMapReadyCallback {
                     }
                     color(0xff0000ff.toInt())
                 }
-                val build = mMap.addPolyline(polyline)
+                mMap.addPolyline(polyline)
                 mMap.moveCamera(
                     CameraUpdateFactory.newLatLngBounds(
                         LatLngBounds(

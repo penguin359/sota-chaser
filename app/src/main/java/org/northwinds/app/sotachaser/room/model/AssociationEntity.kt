@@ -24,6 +24,7 @@ data class AssociationEntity(
     @ColumnInfo(name = "max_long") val maxLong: Double? = null,
     @ColumnInfo(name = "min_lat") val minLat: Double? = null,
     @ColumnInfo(name = "min_long") val minLong: Double? = null,
+    @ColumnInfo(name = "favorite", defaultValue = "FALSE") val favorite: Boolean = false,
     @ColumnInfo(name = "updated_at") val updatedAt: Long? = null,
 )
 

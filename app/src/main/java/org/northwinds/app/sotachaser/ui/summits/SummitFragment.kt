@@ -46,7 +46,7 @@ class SummitFragment : AbstractFilterListFragment<SummitDetail, FragmentSummitLi
         model.refresh()
 
         with(binding.list) {
-            model.location.observe(viewLifecycleOwner) { location ->
+            model.location.observe(viewLifecycleOwner) { _ ->
                 if(model.list_items.value != null) {
                     adapter = SummitRecyclerViewAdapter(model.list_items.value!!)
                 }
@@ -89,10 +89,10 @@ class SummitFragment : AbstractFilterListFragment<SummitDetail, FragmentSummitLi
                                 .setTitle("Location Permission")
                                 .setMessage("This app uses location to find your distance from various summits" +
                                         "and to show your position on a map with summit location.")
-                                .setPositiveButton(android.R.string.ok) { dialog, which ->
+                                .setPositiveButton(android.R.string.ok) { _, _ ->
                                     permissionRequest.launch(arrayOf(Manifest.permission.ACCESS_COARSE_LOCATION, Manifest.permission.ACCESS_FINE_LOCATION))
                                 }
-                                .setNegativeButton(android.R.string.cancel) { dialog, which ->
+                                .setNegativeButton(android.R.string.cancel) { _, _ ->
                                     // TODO save preference
                                 }
                                 .create()

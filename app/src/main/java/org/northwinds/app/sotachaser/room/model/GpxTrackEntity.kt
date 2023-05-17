@@ -22,7 +22,7 @@ import org.northwinds.app.sotachaser.room.SummitDao
 )
 data class GpxTrackEntity(
     @PrimaryKey(autoGenerate = true) val id: Long,
-    @ColumnInfo(name = "summit_id") val summitId: Long,
+    @ColumnInfo(name = "summit_id", index = true) val summitId: Long,
     @ColumnInfo(name = "callsign") val callsign: String,
     @ColumnInfo(name = "track_notes") val trackNotes: String,
     @ColumnInfo(name = "track_title") val trackTitle: String,

@@ -44,6 +44,7 @@ data class SummitEntity(
     @ColumnInfo(name = "notes") val notes: String? = null,
     @ColumnInfo(name = "valid") val valid: Boolean? = null,
     @ColumnInfo(name = "restriction_mask") val restrictionMask: Boolean? = null,
+    @ColumnInfo(name = "favorite", defaultValue = "FALSE") val favorite: Boolean = false,
     @ColumnInfo(name = "updated_at") val updatedAt: Long? = null,
 )
 
